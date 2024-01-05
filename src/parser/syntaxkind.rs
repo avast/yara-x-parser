@@ -26,4 +26,5 @@ pub enum SyntaxKind {
     COMMENT,
     MULTILINECOMMENT,
     ERROR,
+    __LAST,
 }
