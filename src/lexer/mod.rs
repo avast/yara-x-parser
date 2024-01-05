@@ -182,3 +182,93 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::MultilineComment => SyntaxKind::MULTILINECOMMENT,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tokenize_empty() {
+        let input = "";
+        let (tokens, errors) = tokenize(input);
+        assert!(errors.is_empty());
+        assert!(tokens.is_empty());
+    }
+
+    #[test]
+    fn test_tokenize_whitespace() {
+        let input = " ";
+        let (tokens, errors) = tokenize(input);
+        assert!(errors.is_empty());
+        assert_eq!(tokens.len(), 2);
+        assert_eq!(tokens[0].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[1].kind, SyntaxKind::EOF);
+    }
+
+    #[test]
+    fn test_tokenize_rule() {
+        let input = r#"
+            rule foo {
+                condition:
+                    $a
+            }
+        "#;
+        let (tokens, errors) = tokenize(input);
+        assert!(errors.is_empty());
+        assert_eq!(tokens.len(), 15);
+        assert_eq!(tokens[0].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[1].kind, SyntaxKind::RULE);
+        assert_eq!(tokens[2].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[3].kind, SyntaxKind::IDENTIFIER);
+        assert_eq!(tokens[4].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[5].kind, SyntaxKind::LBRACE);
+        assert_eq!(tokens[6].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION);
+        assert_eq!(tokens[8].kind, SyntaxKind::COLON);
+        assert_eq!(tokens[9].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[10].kind, SyntaxKind::VARIABLE);
+        assert_eq!(tokens[11].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[12].kind, SyntaxKind::RBRACE);
+        assert_eq!(tokens[13].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[14].kind, SyntaxKind::EOF);
+    }
+
+    #[test]
+    fn tokenize_error() {
+        let input = r#"
+            rule foo {
+                condition:
+                    $a = "test"
+                    $b = 1234567890123456789012345678901234567890
+            }
+        "#;
+        let (tokens, errors) = tokenize(input);
+        assert_eq!(errors.len(), 1);
+        assert_eq!(tokens.len(), 25);
+        assert_eq!(tokens[0].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[1].kind, SyntaxKind::RULE);
+        assert_eq!(tokens[2].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[3].kind, SyntaxKind::IDENTIFIER);
+        assert_eq!(tokens[4].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[5].kind, SyntaxKind::LBRACE);
+        assert_eq!(tokens[6].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION);
+        assert_eq!(tokens[8].kind, SyntaxKind::COLON);
+        assert_eq!(tokens[9].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[10].kind, SyntaxKind::VARIABLE);
+        assert_eq!(tokens[11].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[12].kind, SyntaxKind::ASSIGN);
+        assert_eq!(tokens[13].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[14].kind, SyntaxKind::STRING);
+        assert_eq!(tokens[15].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[16].kind, SyntaxKind::VARIABLE);
+        assert_eq!(tokens[17].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[18].kind, SyntaxKind::ASSIGN);
+        assert_eq!(tokens[19].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[20].kind, SyntaxKind::ERROR);
+        assert_eq!(tokens[21].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[22].kind, SyntaxKind::RBRACE);
+        assert_eq!(tokens[23].kind, SyntaxKind::WHITESPACE);
+        assert_eq!(tokens[24].kind, SyntaxKind::EOF);
+    }
+}
