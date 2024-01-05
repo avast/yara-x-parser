@@ -20,7 +20,7 @@ fn main() {
 }
 
 fn parse_text(text: &str) -> ((), Vec<SyntaxError>) {
-    let tokens = tokenize(&text);
+    let tokens = tokenize(text);
     println!("{:?}", tokens);
 
     ((), Vec::new())

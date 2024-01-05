@@ -122,23 +122,20 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
     let mut errors = Vec::new();
     let mut offset = 0;
 
-    let logos_tokens: Vec<_> = LogosToken::lexer(&text).spanned().collect();
+    let logos_tokens: Vec<_> = LogosToken::lexer(text).spanned().collect();
 
     // Loop over all tokens, convert them to syntaxkind and push them into tokens vector
     // also push errors into errors vector
     for (token, range) in logos_tokens {
         let token_len = range.len().try_into().unwrap();
         let token_range = TextRange::at(offset.try_into().unwrap(), token_len);
-        let syntaxkind;
-        match token {
-            Ok(token) => {
-                syntaxkind = logos_tokenkind_to_syntaxkind(token);
-            }
+        let syntaxkind = match token {
+            Ok(token) => logos_tokenkind_to_syntaxkind(token),
             Err(err) => {
                 errors.push(SyntaxError::new(err.to_string(), token_range));
-                syntaxkind = SyntaxKind::ERROR;
+                SyntaxKind::ERROR
             }
-        }
+        };
         tokens.push(Token {
             kind: syntaxkind,
             len: token_len,
