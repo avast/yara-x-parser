@@ -7,8 +7,9 @@
 //! module just wraps its API.
 
 use rowan_test::{GreenNodeBuilder, Language};
+use text_size::TextSize;
 
-use crate::parser::syntaxkind::SyntaxKind;
+use crate::parser::{self, syntaxkind::SyntaxKind};
 use crate::SyntaxError;
 
 pub(crate) use rowan_test::GreenNode;
@@ -58,5 +59,10 @@ impl SyntaxTreeBuilder {
 
     pub fn finish_node(&mut self) {
         self.inner.finish_node()
+    }
+
+    pub fn error(&mut self, error: parser::ParseError, text_pos: TextSize) {
+        self.errors
+            .push(SyntaxError::new_at_offset(*error.0, text_pos))
     }
 }

@@ -1,26 +1,36 @@
 pub mod syntaxkind;
 
-#[allow(unreachable_pub)]
-pub use self::syntaxkind::SyntaxKind;
+pub use syntaxkind::SyntaxKind;
+mod parser;
 
-impl From<u16> for SyntaxKind {
-    #[inline]
-    fn from(d: u16) -> SyntaxKind {
-        assert!(d <= (SyntaxKind::__LAST as u16));
-        unsafe { std::mem::transmute::<u16, SyntaxKind>(d) }
-    }
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ParseError(pub Box<String>);
+
+pub trait TokenSource {
+    fn current(&self) -> Token;
+
+    fn lookahead_nth(&self, n: usize) -> Token;
+
+    fn bump(&mut self);
 }
 
-impl From<SyntaxKind> for u16 {
-    #[inline]
-    fn from(k: SyntaxKind) -> u16 {
-        k as u16
-    }
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+pub struct Token {
+    pub kind: SyntaxKind,
+
+    pub is_jointed_to_next: bool,
 }
 
-impl SyntaxKind {
-    #[inline]
-    pub fn is_trivia(self) -> bool {
-        matches!(self, SyntaxKind::WHITESPACE | SyntaxKind::COMMENT)
-    }
+pub trait TreeSink {
+    fn token(&mut self, kind: SyntaxKind, n_tokens: u8);
+
+    fn start_node(&mut self, kind: SyntaxKind);
+
+    fn finish_node(&mut self);
+
+    fn error(&mut self, error: ParseError);
+}
+
+pub fn parse(token_source: &mut dyn TokenSource, tree_sink: &mut dyn TreeSink) {
+    //let mut p = parser::Parser::new(token_source);
 }
