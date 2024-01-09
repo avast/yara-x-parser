@@ -9,3 +9,4 @@ edition = "2021"
 logos = "0.13.0"
 rowan-test = { git = "https://github.com/TommYDeeee/rowan-test.git" }
 text-size = "1.1.1"
+drop_bomb = "0.1.5"

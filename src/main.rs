@@ -7,6 +7,7 @@ use rowan_test::GreenNode;
 
 use crate::lexer::tokenize;
 use crate::parser::{TokenSource, TreeSink};
+use crate::syntax::syntax_node::SyntaxNode;
 use crate::syntax::{
     syntax_error::SyntaxError, text_token_source::TextTokenSource, text_tree_sink::TextTreeSink,
 };
@@ -33,6 +34,15 @@ fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
     parser::parse(&mut token_source, &mut tree_sink);
     let (tree, mut parser_errors) = tree_sink.finish();
     parser_errors.extend(lexer_errors);
+
+    let syntax_tree = SyntaxNode::new_root(tree.clone());
+
+    println!("{:?}", tree);
+    println!("{:?}", syntax_tree);
+
+    for child in tree.children() {
+        println!("{:?}", child.kind());
+    }
 
     (tree, parser_errors)
 }

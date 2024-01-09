@@ -25,6 +25,7 @@ pub enum SyntaxKind {
     WHITESPACE,
     COMMENT,
     ERROR,
+    SOURCE_FILE,
     __LAST,
 }
 

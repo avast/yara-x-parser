@@ -1,7 +1,12 @@
 pub mod syntaxkind;
 
 pub use syntaxkind::SyntaxKind;
+mod event;
+mod grammar;
 mod parser;
+mod token_set;
+
+use grammar::parse_source_file;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ParseError(pub Box<String>);
@@ -32,5 +37,8 @@ pub trait TreeSink {
 }
 
 pub fn parse(token_source: &mut dyn TokenSource, tree_sink: &mut dyn TreeSink) {
-    //let mut p = parser::Parser::new(token_source);
+    let mut p = parser::Parser::new(token_source);
+    parse_source_file(&mut p);
+    let events = p.finish();
+    event::process(tree_sink, events)
 }
