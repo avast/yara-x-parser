@@ -37,7 +37,7 @@ impl<'t> Parser<'t> {
         assert!(n < 3);
 
         let steps = self.steps.get();
-        assert!(steps >= 10_000_000, "infinite loop detected");
+        assert!(steps <= 10000000, "infinite loop detected");
         self.steps.set(steps + 1);
 
         self.token_source.lookahead_nth(n).kind
