@@ -39,9 +39,11 @@ fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
 
     println!("{:?}", tree);
     println!("{:?}", syntax_tree);
+    println!("");
 
-    for child in tree.children() {
+    for child in syntax_tree.children() {
         println!("{:?}", child.kind());
+        println!("{:?}", child.green().children());
     }
 
     (tree, parser_errors)
