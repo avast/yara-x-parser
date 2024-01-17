@@ -1,5 +1,12 @@
 use super::*;
 
+pub(super) const RULE_RECOVERY_SET: TokenSet = TokenSet::new(
+    // Add import here when it is supported
+    &[
+        RULE, // rule
+    ],
+);
+
 pub(super) fn mod_content(p: &mut Parser, stop_on_r_brace: bool) {
     while !p.at(EOF) && !(p.at(RBRACE) && stop_on_r_brace) {
         import_or_rule(p, stop_on_r_brace);
@@ -42,5 +49,7 @@ pub(super) fn opt_rule(p: &mut Parser, m: Marker) -> Result<(), Marker> {
 
 fn rule(p: &mut Parser, m: Marker) {
     p.bump(RULE);
+    name_r(p, RULE_RECOVERY_SET);
+    expressions::block_expr(p);
     m.complete(p, RULE);
 }

@@ -1,6 +1,8 @@
+mod expressions;
 mod items;
 
 use crate::parser::{
+    grammar::expressions::rule_body,
     parser::{CompletedMarker, Marker, Parser},
     token_set::TokenSet,
     SyntaxKind::{self, *},
@@ -18,10 +20,17 @@ fn error_block(p: &mut Parser, message: &str) {
     let m = p.start();
     p.error(message);
     p.bump(LBRACE);
-    // Change this to parse expression content
-    while !p.at(RBRACE) {
-        p.bump_any();
-    }
+    rule_body(p);
     p.eat(RBRACE);
     m.complete(p, ERROR);
+}
+
+fn name_r(p: &mut Parser<'_>, recovery: TokenSet) {
+    if p.at(IDENTIFIER) {
+        let m = p.start();
+        p.bump(IDENTIFIER);
+        m.complete(p, IDENTIFIER);
+    } else {
+        p.err_recover("expected a name", recovery);
+    }
 }

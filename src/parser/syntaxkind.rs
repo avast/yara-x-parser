@@ -26,6 +26,7 @@ pub enum SyntaxKind {
     COMMENT,
     ERROR,
     SOURCE_FILE,
+    BLOCK_EXPR,
     __LAST,
 }
 
