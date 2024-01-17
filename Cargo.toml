@@ -6,3 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+logos = "0.13.0"
+rowan-test = { git = "https://github.com/TommYDeeee/rowan-test.git" }
+text-size = "1.1.1"
