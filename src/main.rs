@@ -53,7 +53,7 @@ fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
 }
 
 fn print(indent: usize, element: SyntaxElement) {
-    let kind: SyntaxKind = element.kind().into();
+    let kind: SyntaxKind = element.kind();
     print!("{:indent$}", "", indent = indent);
     match element {
         NodeOrToken::Node(node) => {

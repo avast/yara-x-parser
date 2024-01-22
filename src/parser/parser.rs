@@ -94,7 +94,7 @@ impl<'t> Parser<'t> {
     }
 
     pub(crate) fn error<T: Into<String>>(&mut self, message: T) {
-        let msg = ParseError(Box::new(message.into()));
+        let msg = ParseError(message.into());
         self.push_event(Event::Error { msg });
     }
 

@@ -16,7 +16,7 @@ pub(crate) fn literal(p: &mut Parser) -> Option<CompletedMarker> {
 // add support for while/for loops, if/else statements, etc.
 pub(super) fn atom_expr(p: &mut Parser) -> Option<CompletedMarker> {
     if let Some(m) = literal(p) {
-        return Some(m);
+        Some(m)
     } else {
         todo!("add support for other atoms")
     }

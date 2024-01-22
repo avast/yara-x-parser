@@ -96,10 +96,7 @@ fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
 fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
     let mut lhs = match lhs(p) {
-        Some(lhs) => {
-            let lhs = lhs.extend_to(p, m);
-            lhs
-        }
+        Some(lhs) => lhs.extend_to(p, m),
         None => {
             m.abandon(p);
             return None;

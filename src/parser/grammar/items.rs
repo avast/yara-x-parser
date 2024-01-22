@@ -8,7 +8,7 @@ pub(super) const RULE_RECOVERY_SET: TokenSet = TokenSet::new(
 );
 
 pub(super) fn mod_content(p: &mut Parser, stop_on_r_brace: bool) {
-    while !p.at(EOF) && !(p.at(RBRACE) && stop_on_r_brace) {
+    while !(p.at(EOF) || p.at(RBRACE) && stop_on_r_brace) {
         process_top_level(p, stop_on_r_brace);
     }
 }
