@@ -27,6 +27,10 @@ pub enum SyntaxKind {
     ERROR,
     SOURCE_FILE,
     BLOCK_EXPR,
+    PREFIX_EXPR,
+    LITERAL,
+    EXPRESSION,
+    EXPRESSION_STMT,
     __LAST,
 }
 
