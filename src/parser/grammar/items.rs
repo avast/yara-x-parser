@@ -9,15 +9,14 @@ pub(super) const RULE_RECOVERY_SET: TokenSet = TokenSet::new(
 
 pub(super) fn mod_content(p: &mut Parser, stop_on_r_brace: bool) {
     while !p.at(EOF) && !(p.at(RBRACE) && stop_on_r_brace) {
-        import_or_rule(p, stop_on_r_brace);
+        process_top_level(p, stop_on_r_brace);
     }
 }
 
-// So far in this prototype, we only have one kind of item: a rule.
-// In the future, also imports will be supported here
-pub(super) fn import_or_rule(p: &mut Parser, stop_on_r_brace: bool) {
+// process either rule, import or include
+pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
     let m = p.start();
-    let m = match opt_rule(p, m) {
+    let m = match opt_rule_import_include(p, m) {
         Ok(()) => {
             return;
         }
@@ -39,7 +38,10 @@ pub(super) fn import_or_rule(p: &mut Parser, stop_on_r_brace: bool) {
     }
 }
 
-pub(super) fn opt_rule(p: &mut Parser, m: Marker) -> Result<(), Marker> {
+// So far in this prototype, we only have one kind of item: a rule.
+// In the future, also imports and includes will be supported here
+pub(super) fn opt_rule_import_include(p: &mut Parser, m: Marker) -> Result<(), Marker> {
+    // add rule modifiers to match current and lookahead next with p.nth(1) for RULE or ERROR
     match p.current() {
         RULE => rule(p, m),
         _ => return Err(m),
@@ -50,6 +52,7 @@ pub(super) fn opt_rule(p: &mut Parser, m: Marker) -> Result<(), Marker> {
 fn rule(p: &mut Parser, m: Marker) {
     p.bump(RULE);
     name_r(p, RULE_RECOVERY_SET);
+    // add optional support for rule tags
     expressions::block_expr(p);
     m.complete(p, RULE);
 }
