@@ -13,11 +13,18 @@ pub(crate) fn literal(p: &mut Parser) -> Option<CompletedMarker> {
     Some(m.complete(p, LITERAL))
 }
 
+const EXPR_RECOVERY_SET: TokenSet = TokenSet::new(&[VARIABLE, TRUE, FALSE]);
+
 // add support for while/for loops, if/else statements, etc.
 pub(super) fn atom_expr(p: &mut Parser) -> Option<CompletedMarker> {
     if let Some(m) = literal(p) {
-        Some(m)
-    } else {
-        todo!("add support for other atoms")
+        return Some(m);
     }
+
+    let _done = match p.current() {
+        _ => {
+            p.err_recover("expected expression", EXPR_RECOVERY_SET);
+            return None;
+        }
+    };
 }

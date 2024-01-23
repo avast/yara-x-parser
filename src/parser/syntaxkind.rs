@@ -33,6 +33,7 @@ pub enum SyntaxKind {
     LITERAL,
     EXPRESSION,
     EXPRESSION_STMT,
+    VARIABLE_STMT,
     __LAST,
 }
 

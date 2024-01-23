@@ -45,25 +45,34 @@ fn condition(p: &mut Parser) {
     m.complete(p, CONDITION);
 }
 
+const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[VARIABLE]);
+
 pub(super) fn strings_body(p: &mut Parser) {
     // add support for meta also
     while !p.at(EOF) && !p.at(STRINGS) && !p.at(CONDITION) && !p.at(RBRACE) {
-        assert!(p.at(VARIABLE));
         let m = p.start();
-        p.bump(VARIABLE);
+        if p.at(VARIABLE) {
+            let m = p.start();
+            p.bump(VARIABLE);
+            m.complete(p, VARIABLE);
+        } else {
+            p.err_recover("expected a variable", VARIABLE_RECOVERY_SET);
+        }
         p.expect(ASSIGN);
         // so far only strings are supported, later add match for hex strings and regex
         string(p);
-        m.complete(p, VARIABLE);
+        m.complete(p, VARIABLE_STMT);
     }
 }
 
-// do the same for hex and regex strings
+// add support for hex and regex strings later on
 fn string(p: &mut Parser) {
-    assert!(p.at(STRING));
     let m = p.start();
-    p.bump(STRING);
-    // add plain string modifiers
+    match p.current() {
+        STRING => p.bump(STRING),
+        _ => p.err_and_bump("expected a string"),
+    }
+    // add string modifiers
     m.complete(p, STRING);
 }
 
