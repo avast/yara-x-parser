@@ -21,7 +21,7 @@ pub(super) fn atom_expr(p: &mut Parser) -> Option<CompletedMarker> {
         return Some(m);
     }
 
-    let _done = match p.current() {
+    match p.current() {
         _ => {
             p.err_recover("expected expression", EXPR_RECOVERY_SET);
             return None;
