@@ -111,15 +111,8 @@ impl<'t> Parser<'t> {
     }
 
     pub(crate) fn err_recover(&mut self, message: &str, recovery: TokenSet) {
-        match self.current() {
-            LBRACE | RBRACE => {
-                self.error(message);
-                return;
-            }
-            _ => (),
-        }
-
         if self.at_ts(recovery) {
+            println!("recovery: {:?}", self.current());
             self.error(message);
             return;
         }

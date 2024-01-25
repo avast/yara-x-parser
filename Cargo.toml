@@ -10,3 +10,7 @@ logos = "0.13.0"
 rowan-test = { git = "https://github.com/avast/avast-rowan.git" }
 text-size = "1.1.1"
 drop_bomb = "0.1.5"
+
+[dev-dependencies]
+goldenfile = "1.6.0"
+globwalk = "0.9.1"
