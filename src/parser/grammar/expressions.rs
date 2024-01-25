@@ -46,7 +46,7 @@ fn condition(p: &mut Parser) {
 }
 
 const VARIABLE_RECOVERY_SET: TokenSet =
-    TokenSet::new(&[VARIABLE, CONDITION, STRINGS, ASSIGN, RBRACE]);
+    TokenSet::new(&[VARIABLE]);
 
 pub(super) fn strings_body(p: &mut Parser) {
     // add support for meta also
