@@ -1,15 +1,15 @@
 //Global comment
 
 //Rule comment
-rule test
+rule condition
 {
 	//Rule block comment
 
 	//String comment
-	strings:
-		$a = "foo"
+	string*
+		a = 00000
 		$b = "bar"
 	condition:
-		$a or
-		$b and true
+		a ord
+		$b ant 
 }

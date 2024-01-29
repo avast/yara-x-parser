@@ -1,3 +1,5 @@
+#![allow(clippy::upper_case_acronyms)]
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 #[repr(u16)]
 pub enum SyntaxKind {
@@ -31,6 +33,7 @@ pub enum SyntaxKind {
     LITERAL,
     EXPRESSION,
     EXPRESSION_STMT,
+    VARIABLE_STMT,
     __LAST,
 }
 

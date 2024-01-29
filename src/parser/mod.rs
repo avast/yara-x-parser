@@ -3,13 +3,14 @@ pub mod syntaxkind;
 pub use syntaxkind::SyntaxKind;
 mod event;
 mod grammar;
+#[allow(clippy::module_inception)]
 mod parser;
 mod token_set;
 
 use grammar::parse_source_file;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ParseError(pub Box<String>);
+pub struct ParseError(pub String);
 
 pub trait TokenSource {
     fn current(&self) -> Token;

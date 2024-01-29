@@ -148,9 +148,9 @@ fn n_attached_trivias<'a>(
     match kind {
         SyntaxKind::RULE | SyntaxKind::BLOCK_EXPR | SyntaxKind::STRINGS | SyntaxKind::CONDITION => {
             let mut res = 0;
-            let mut trivias = trivias.enumerate().peekable();
+            let trivias = trivias.enumerate().peekable();
 
-            while let Some((i, (kind, text))) = trivias.next() {
+            for (i, (kind, text)) in trivias {
                 match kind {
                     SyntaxKind::WHITESPACE if text.contains("\n\n") => {
                         break;

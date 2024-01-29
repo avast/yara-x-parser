@@ -63,6 +63,6 @@ impl SyntaxTreeBuilder {
 
     pub fn error(&mut self, error: parser::ParseError, text_pos: TextSize) {
         self.errors
-            .push(SyntaxError::new_at_offset(*error.0, text_pos))
+            .push(SyntaxError::new_at_offset(error.0, text_pos))
     }
 }

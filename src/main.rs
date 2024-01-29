@@ -1,7 +1,7 @@
 /// This library is used to create a parser for YARA language
 /// It should provide also token for whitespaces
 /// as we want full fidelity and error resilience.;
-use std::{env::args, fs, path::Path};
+use std::{env::args, fs, io::Write, path::Path};
 
 use rowan_test::{GreenNode, NodeOrToken};
 
@@ -42,27 +42,68 @@ fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
     println!();
 
     let indent = 0;
-    print(indent, syntax_tree.into());
-    //for child in syntax_tree.children() {
-    //    print!("{:indent$}", "", indent = indent);
-    //    println!("{:?}", child.kind());
-    //    println!("{:?}", child.green().children());
-    //}
+    let result = print(indent, syntax_tree.into());
+
+    print!("{}", result);
 
     (tree, parser_errors)
 }
 
-fn print(indent: usize, element: SyntaxElement) {
-    let kind: SyntaxKind = element.kind().into();
-    print!("{:indent$}", "", indent = indent);
+fn print(indent: usize, element: SyntaxElement) -> String {
+    let mut result = String::new();
+    let kind: SyntaxKind = element.kind();
+    result.push_str(&format!("{:indent$}", "", indent = indent));
     match element {
         NodeOrToken::Node(node) => {
-            println!("- {:?}", kind);
+            result.push_str(&format!("- {:?}\n", kind));
             for child in node.children_with_tokens() {
-                print(indent + 2, child);
+                result.push_str(&print(indent + 2, child));
             }
         }
 
-        NodeOrToken::Token(token) => println!("- {:?} {:?}", token.text(), kind),
+        NodeOrToken::Token(token) => {
+            result.push_str(&format!("- {:?} {:?}\n", token.text(), kind));
+        }
+    }
+    result
+}
+
+#[test]
+fn test_parse_text() {
+    let mut mint = goldenfile::Mint::new(".");
+
+    for entry in globwalk::glob("tests/*.in").unwrap().flatten() {
+        // Path to the .in.zip file.
+        let path = entry.into_path();
+        let display_path = path.display();
+
+        let input = fs::read_to_string(&path)
+            .unwrap_or_else(|_| panic!("Failed to read input file {:?}", display_path));
+
+        let (tree, errors) = parse_text(&input);
+
+        let out_path = path.with_extension("").with_extension("out");
+        let syntax_tree = SyntaxNode::new_root(tree.clone());
+
+        let output = print(0, syntax_tree.into());
+
+        let mut output_file = mint.new_goldenfile(out_path).unwrap();
+
+        write!(output_file, "{}", output).unwrap();
+
+        // Check errors
+        let err_path = path.with_extension("").with_extension("err");
+        if err_path.exists() {
+            let expected_errors = fs::read_to_string(&err_path)
+                .unwrap_or_else(|_| panic!("Failed to read error file {:?}", err_path.display()));
+            let actual_errors = errors
+                .iter()
+                .map(|error| format!("{:?}", error))
+                .collect::<Vec<_>>()
+                .join("\n");
+            assert_eq!(actual_errors, expected_errors);
+        } else {
+            assert!(errors.is_empty(), "Unexpected errors: {:?}", errors);
+        }
     }
 }
