@@ -13,7 +13,7 @@ pub(crate) fn literal(p: &mut Parser) -> Option<CompletedMarker> {
     Some(m.complete(p, LITERAL))
 }
 
-const EXPR_RECOVERY_SET: TokenSet = TokenSet::new(&[VARIABLE, TRUE, FALSE, AND, OR, NOT]);
+const EXPR_RECOVERY_SET: TokenSet = TokenSet::new(&[VARIABLE, TRUE, FALSE, NOT]);
 
 // add support for while/for loops, if/else statements, etc.
 pub(super) fn atom_expr(p: &mut Parser) -> Option<CompletedMarker> {
