@@ -112,7 +112,6 @@ impl<'t> Parser<'t> {
 
     pub(crate) fn err_recover(&mut self, message: &str, recovery: TokenSet) {
         if self.at_ts(recovery) {
-            println!("recovery: {:?}", self.current());
             self.error(message);
             return;
         }

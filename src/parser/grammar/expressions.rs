@@ -15,11 +15,28 @@ pub(crate) fn block_expr(p: &mut Parser) {
 }
 
 pub(super) fn rule_body(p: &mut Parser) {
+    let mut has_strings = false;
+    let mut has_condition = false;
     while !p.at(EOF) && !p.at(RBRACE) {
         match p.current() {
             // add metadata later
-            STRINGS => strings(p),
-            CONDITION => condition(p),
+            STRINGS => {
+                if has_strings {
+                    p.error("only one strings block is allowed");
+                }
+                if has_condition {
+                    p.error("strings block must come before condition block");
+                }
+                strings(p);
+                has_strings = true;
+            }
+            CONDITION => {
+                if has_condition {
+                    p.error("only one condition block is allowed");
+                }
+                condition(p);
+                has_condition = true;
+            }
             _ => {
                 p.err_and_bump("expected strings or condition");
             }
