@@ -3,12 +3,12 @@ use super::*;
 pub(super) const RULE_RECOVERY_SET: TokenSet = TokenSet::new(
     // Add import here when it is supported
     &[
-        RULE, // rule
+        T![rule], // rule
     ],
 );
 
 pub(super) fn mod_content(p: &mut Parser, stop_on_r_brace: bool) {
-    while !(p.at(EOF) || p.at(RBRACE) && stop_on_r_brace) {
+    while !(p.at(EOF) || p.at(T!['}']) && stop_on_r_brace) {
         process_top_level(p, stop_on_r_brace);
     }
 }
@@ -24,16 +24,16 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
     };
     m.abandon(p);
     match p.current() {
-        LBRACE => {
+        T!['{'] => {
             error_block(p, "expected an item");
         }
-        RBRACE if !stop_on_r_brace => {
+        T!['}'] if !stop_on_r_brace => {
             let e = p.start();
             p.error("unmatched }");
-            p.bump(RBRACE);
+            p.bump(T!['}']);
             e.complete(p, ERROR);
         }
-        EOF | RBRACE => p.error("expected an item"),
+        EOF | T!['}'] => p.error("expected an item"),
         _ => p.err_and_bump("expected an item"),
     }
 }
@@ -43,14 +43,14 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
 pub(super) fn opt_rule_import_include(p: &mut Parser, m: Marker) -> Result<(), Marker> {
     // add rule modifiers to match current and lookahead next with p.nth(1) for RULE or ERROR
     match p.current() {
-        RULE => rule(p, m),
+        T![rule] => rule(p, m),
         _ => return Err(m),
     }
     Ok(())
 }
 
 fn rule(p: &mut Parser, m: Marker) {
-    p.bump(RULE);
+    p.bump(T![rule]);
     name_r(p, RULE_RECOVERY_SET);
     // add optional support for rule tags
     expressions::block_expr(p);

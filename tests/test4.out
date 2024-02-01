@@ -4,20 +4,19 @@
   - RULE
     - "//Rule comment" COMMENT
     - "\n" WHITESPACE
-    - "rule" RULE
+    - "rule" RULE_KW
     - " " WHITESPACE
-    - IDENTIFIER
-      - "test" IDENTIFIER
+    - "test" IDENTIFIER
     - "\n" WHITESPACE
     - BLOCK_EXPR
-      - "{" LBRACE
+      - "{" L_BRACE
       - "\n\t" WHITESPACE
       - "//Rule block comment" COMMENT
       - "\n\n\t" WHITESPACE
       - STRINGS
         - "//String comment" COMMENT
         - "\n\t" WHITESPACE
-        - "strings" STRINGS
+        - "strings" STRINGS_KW
         - ":" COLON
         - "\n\t\t" WHITESPACE
         - VARIABLE_STMT
@@ -30,8 +29,7 @@
             - "\"foo\"" STRING
         - "\n\t\t" WHITESPACE
         - VARIABLE_STMT
-          - VARIABLE
-            - "$b" VARIABLE
+          - "$b" VARIABLE
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
@@ -39,7 +37,7 @@
             - "\"bar\"" STRING
       - "\n\t" WHITESPACE
       - CONDITION
-        - "condition" CONDITION
+        - "condition" CONDITION_KW
         - ":" COLON
         - "\n\t\t" WHITESPACE
         - EXPRESSION_STMT
@@ -47,16 +45,16 @@
             - LITERAL
               - "$a" VARIABLE
             - " " WHITESPACE
-            - "or" OR
+            - "or" OR_KW
             - "\n\t\t" WHITESPACE
             - EXPRESSION
               - LITERAL
                 - "$b" VARIABLE
               - " " WHITESPACE
-              - "and" AND
+              - "and" AND_KW
               - " " WHITESPACE
               - LITERAL
-                - "true" TRUE
+                - "true" TRUE_KW
       - "\n" WHITESPACE
-      - "}" RBRACE
+      - "}" R_BRACE
   - "\n" WHITESPACE

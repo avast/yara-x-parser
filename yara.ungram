@@ -1,0 +1,43 @@
+SourceFile = Rule*
+
+Rule = 
+    'rule' 'identifier'
+    body:BlockExpr
+
+BlockExpr = 
+    '{'
+        Strings? Condition
+    '}'
+
+Strings =
+    'strings' ':'
+        VariableStmt*
+
+VariableStmt =
+    'variable' '=' String
+
+String = 
+    'string'
+
+Condition =
+    'condition' ':'
+        ExpressionStmt
+
+ExpressionStmt = Expr
+
+Expr = 
+    Expression
+|   PrefixExpr
+|   Literal
+
+Expression = 
+    lhs:Expr 
+        'and' | 'or'
+    rhs:Expr
+
+PrefixExpr = 
+        'not'
+    Expr
+
+Literal =
+    'true' | 'false' | 'variable'

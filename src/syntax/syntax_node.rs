@@ -9,7 +9,7 @@
 use rowan_test::{GreenNodeBuilder, Language};
 use text_size::TextSize;
 
-use crate::parser::{self, syntaxkind::SyntaxKind};
+use crate::parser::{self, syntax_kind::SyntaxKind};
 use crate::SyntaxError;
 
 pub(crate) use rowan_test::GreenNode;
@@ -62,7 +62,6 @@ impl SyntaxTreeBuilder {
     }
 
     pub fn error(&mut self, error: parser::ParseError, text_pos: TextSize) {
-        self.errors
-            .push(SyntaxError::new_at_offset(error.0, text_pos))
+        self.errors.push(SyntaxError::new_at_offset(error.0, text_pos))
     }
 }

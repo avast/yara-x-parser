@@ -41,19 +41,19 @@
         - "\n\t\t" WHITESPACE
         - EXPRESSION_STMT
           - EXPRESSION
-            - LITERAL
-              - "$a" VARIABLE
-            - " " WHITESPACE
-            - "or" OR_KW
-            - "\n\t\t" WHITESPACE
             - EXPRESSION
               - LITERAL
-                - "$b" VARIABLE
+                - "$a" VARIABLE
               - " " WHITESPACE
               - "and" AND_KW
-              - " " WHITESPACE
+              - "\n\t\t" WHITESPACE
               - LITERAL
-                - "true" TRUE_KW
+                - "$b" VARIABLE
+            - " " WHITESPACE
+            - "or" OR_KW
+            - " " WHITESPACE
+            - LITERAL
+              - "true" TRUE_KW
       - "\n" WHITESPACE
       - "}" R_BRACE
   - "\n" WHITESPACE

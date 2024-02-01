@@ -6,7 +6,7 @@ use crate::parser::{
     event::Event,
     token_set::TokenSet,
     ParseError,
-    SyntaxKind::{self, EOF, ERROR, LBRACE, RBRACE, TOMBSTONE},
+    SyntaxKind::{self, EOF, ERROR, TOMBSTONE},
     TokenSource,
 };
 
@@ -18,11 +18,7 @@ pub(crate) struct Parser<'t> {
 
 impl<'t> Parser<'t> {
     pub(crate) fn new(token_source: &'t mut dyn TokenSource) -> Parser<'t> {
-        Parser {
-            token_source,
-            events: Vec::new(),
-            steps: Cell::new(0),
-        }
+        Parser { token_source, events: Vec::new(), steps: Cell::new(0) }
     }
 
     pub(crate) fn finish(self) -> Vec<Event> {
@@ -130,10 +126,7 @@ pub(crate) struct Marker {
 
 impl Marker {
     fn new(pos: u32) -> Marker {
-        Marker {
-            pos,
-            bomb: DropBomb::new("Marker must be either completed or abandoned"),
-        }
+        Marker { pos, bomb: DropBomb::new("Marker must be either completed or abandoned") }
     }
 
     pub(crate) fn complete(mut self, p: &mut Parser, kind: SyntaxKind) -> CompletedMarker {
@@ -154,10 +147,7 @@ impl Marker {
         let idx = self.pos as usize;
         if idx == p.events.len() - 1 {
             match p.events.pop() {
-                Some(Event::Start {
-                    kind: TOMBSTONE,
-                    forward_parent: None,
-                }) => (),
+                Some(Event::Start { kind: TOMBSTONE, forward_parent: None }) => (),
                 _ => unreachable!(),
             }
         }

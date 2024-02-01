@@ -4,13 +4,13 @@
   - RULE
     - "//Rule comment" COMMENT
     - "\n" WHITESPACE
-    - "rule" RULE
+    - "rule" RULE_KW
     - " " WHITESPACE
     - ERROR
-      - "condition" CONDITION
+      - "condition" CONDITION_KW
     - "\n" WHITESPACE
     - BLOCK_EXPR
-      - "{" LBRACE
+      - "{" L_BRACE
       - "\n\t" WHITESPACE
       - "//Rule block comment" COMMENT
       - "\n\n\t" WHITESPACE
@@ -40,7 +40,7 @@
         - "\"bar\"" STRING
       - "\n\t" WHITESPACE
       - CONDITION
-        - "condition" CONDITION
+        - "condition" CONDITION_KW
         - ":" COLON
         - "\n\t\t" WHITESPACE
         - ERROR
@@ -56,5 +56,5 @@
         - ERROR
           - "ant" IDENTIFIER
       - " \n" WHITESPACE
-      - "}" RBRACE
+      - "}" R_BRACE
   - "\n" WHITESPACE

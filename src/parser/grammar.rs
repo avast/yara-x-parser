@@ -4,6 +4,7 @@ mod items;
 use crate::parser::{
     grammar::expressions::rule_body,
     parser::{CompletedMarker, Marker, Parser},
+    syntax_kind::T,
     token_set::TokenSet,
     SyntaxKind::{self, *},
 };
@@ -16,20 +17,18 @@ pub(crate) fn parse_source_file(p: &mut Parser) {
 }
 
 fn error_block(p: &mut Parser, message: &str) {
-    assert!(p.at(LBRACE));
+    assert!(p.at(T!['{']));
     let m = p.start();
     p.error(message);
-    p.bump(LBRACE);
+    p.bump(T!['{']);
     rule_body(p);
-    p.eat(RBRACE);
+    p.eat(T!['}']);
     m.complete(p, ERROR);
 }
 
 fn name_r(p: &mut Parser<'_>, recovery: TokenSet) {
     if p.at(IDENTIFIER) {
-        let m = p.start();
         p.bump(IDENTIFIER);
-        m.complete(p, IDENTIFIER);
     } else {
         p.err_recover("expected a name", recovery);
     }

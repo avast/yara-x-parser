@@ -1,6 +1,6 @@
-pub mod syntaxkind;
+pub mod syntax_kind;
 
-pub use syntaxkind::SyntaxKind;
+pub use syntax_kind::SyntaxKind;
 mod event;
 mod grammar;
 #[allow(clippy::module_inception)]

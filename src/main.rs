@@ -1,16 +1,29 @@
 /// This library is used to create a parser for YARA language
 /// It should provide also token for whitespaces
 /// as we want full fidelity and error resilience.;
-use std::{env::args, fs, io::Write, path::Path};
+use std::{env::args, fs, path::Path};
 
-use rowan_test::{GreenNode, NodeOrToken};
+use rowan_test::GreenNode;
+use syntax::SourceFile;
 
-use crate::lexer::tokenize;
-use crate::parser::{SyntaxKind, TokenSource, TreeSink};
-use crate::syntax::syntax_node::{SyntaxElement, SyntaxNode};
-use crate::syntax::{
-    syntax_error::SyntaxError, text_token_source::TextTokenSource, text_tree_sink::TextTreeSink,
+use crate::{
+    lexer::tokenize,
+    parser::SyntaxKind,
+    syntax::{
+        syntax_error::SyntaxError,
+        syntax_node::{SyntaxNode, SyntaxToken},
+        text_token_source::TextTokenSource,
+        text_tree_sink::TextTreeSink,
+    },
 };
+
+// use only for tests
+#[cfg(test)]
+use crate::syntax::syntax_node::SyntaxElement;
+#[cfg(test)]
+use rowan_test::NodeOrToken;
+#[cfg(test)]
+use std::io::Write;
 
 mod lexer;
 mod parser;
@@ -22,7 +35,10 @@ fn main() {
     let path = Path::new(&arg);
     let input = fs::read_to_string(path).unwrap();
 
-    parse_text(&input);
+    let parse = SourceFile::parse(input.as_str());
+
+    let file: SourceFile = parse.tree();
+    print!("{:#?}", file.syntax);
 }
 
 fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
@@ -34,21 +50,10 @@ fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
     let (tree, mut parser_errors) = tree_sink.finish();
     parser_errors.extend(lexer_errors);
 
-    let syntax_tree = SyntaxNode::new_root(tree.clone());
-
-    println!("Tokens: \n{:?}", tokens);
-    println!();
-    println!("Errors: \n{:?}", parser_errors);
-    println!();
-
-    let indent = 0;
-    let result = print(indent, syntax_tree.into());
-
-    print!("{}", result);
-
     (tree, parser_errors)
 }
 
+#[cfg(test)]
 fn print(indent: usize, element: SyntaxElement) -> String {
     let mut result = String::new();
     let kind: SyntaxKind = element.kind();
@@ -96,11 +101,8 @@ fn test_parse_text() {
         if err_path.exists() {
             let expected_errors = fs::read_to_string(&err_path)
                 .unwrap_or_else(|_| panic!("Failed to read error file {:?}", err_path.display()));
-            let actual_errors = errors
-                .iter()
-                .map(|error| format!("{:?}", error))
-                .collect::<Vec<_>>()
-                .join("\n");
+            let actual_errors =
+                errors.iter().map(|error| format!("{:?}", error)).collect::<Vec<_>>().join("\n");
             assert_eq!(actual_errors, expected_errors);
         } else {
             assert!(errors.is_empty(), "Unexpected errors: {:?}", errors);

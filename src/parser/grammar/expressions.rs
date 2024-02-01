@@ -3,24 +3,24 @@ mod atom;
 use super::*;
 
 pub(crate) fn block_expr(p: &mut Parser) {
-    if !p.at(LBRACE) {
+    if !p.at(T!['{']) {
         p.error("expected a block expression");
         return;
     }
     let m = p.start();
-    p.bump(LBRACE);
+    p.bump(T!['{']);
     rule_body(p);
-    p.expect(RBRACE);
+    p.expect(T!['}']);
     m.complete(p, BLOCK_EXPR);
 }
 
 pub(super) fn rule_body(p: &mut Parser) {
     let mut has_strings = false;
     let mut has_condition = false;
-    while !p.at(EOF) && !p.at(RBRACE) {
+    while !p.at(EOF) && !p.at(T!['}']) {
         match p.current() {
             // add metadata later
-            STRINGS => {
+            T![strings] => {
                 if has_strings {
                     p.error("only one strings block is allowed");
                 }
@@ -30,7 +30,7 @@ pub(super) fn rule_body(p: &mut Parser) {
                 strings(p);
                 has_strings = true;
             }
-            CONDITION => {
+            T![condition] => {
                 if has_condition {
                     p.error("only one condition block is allowed");
                 }
@@ -45,37 +45,35 @@ pub(super) fn rule_body(p: &mut Parser) {
 }
 
 fn strings(p: &mut Parser) {
-    assert!(p.at(STRINGS));
+    assert!(p.at(T![strings]));
     let m = p.start();
-    p.bump(STRINGS);
-    p.expect(COLON);
+    p.bump(T![strings]);
+    p.expect(T![:]);
     strings_body(p);
     m.complete(p, STRINGS);
 }
 
 fn condition(p: &mut Parser) {
-    assert!(p.at(CONDITION));
+    assert!(p.at(T![condition]));
     let m = p.start();
-    p.bump(CONDITION);
-    p.expect(COLON);
+    p.bump(T![condition]);
+    p.expect(T![:]);
     condition_body(p);
     m.complete(p, CONDITION);
 }
 
-const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[VARIABLE]);
+const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[T![variable]]);
 
 pub(super) fn strings_body(p: &mut Parser) {
     // add support for meta also
-    while !p.at(EOF) && !p.at(STRINGS) && !p.at(CONDITION) && !p.at(RBRACE) {
+    while !p.at(EOF) && !p.at(T![strings]) && !p.at(T![condition]) && !p.at(T!['}']) {
         let m = p.start();
-        if p.at(VARIABLE) {
-            let m = p.start();
-            p.bump(VARIABLE);
-            m.complete(p, VARIABLE);
+        if p.at(T![variable]) {
+            p.bump(T![variable]);
         } else {
             p.err_recover("expected a variable", VARIABLE_RECOVERY_SET);
         }
-        p.expect(ASSIGN);
+        p.expect(T![=]);
         // so far only strings are supported, later add match for hex strings and regex
         string(p);
         m.complete(p, VARIABLE_STMT);
@@ -95,7 +93,7 @@ fn string(p: &mut Parser) {
 
 pub(super) fn condition_body(p: &mut Parser) {
     // add support for meta also
-    while !p.at(EOF) && !p.at(STRINGS) && !p.at(CONDITION) && !p.at(RBRACE) {
+    while !p.at(EOF) && !p.at(T![strings]) && !p.at(T![condition]) && !p.at(T!['}']) {
         let m = p.start();
         if let Some(cm) = expression(p, Some(m), 1) {
             let m = cm.precede(p);
@@ -113,8 +111,8 @@ enum Associativity {
 fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
         // add support for other operators
-        AND => (4, AND, Associativity::Left),
-        OR => (3, OR, Associativity::Left),
+        T![and] => (4, T![and], Associativity::Left),
+        T![or] => (3, T![or], Associativity::Left),
         _ => (0, ERROR, Associativity::Left),
     }
 }
@@ -151,7 +149,7 @@ fn lhs(p: &mut Parser) -> Option<CompletedMarker> {
     let m;
     let kind = match p.current() {
         // unary operators
-        NOT => {
+        T![not] => {
             m = p.start();
             p.bump_any();
             PREFIX_EXPR

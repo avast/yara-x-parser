@@ -42,10 +42,7 @@ fn mk_token(pos: usize, token_offset_pairs: &[(Token, TextSize)]) -> parser::Tok
         ),
         None => (EOF, false),
     };
-    parser::Token {
-        kind,
-        is_jointed_to_next,
-    }
+    parser::Token { kind, is_jointed_to_next }
 }
 
 impl<'t> TextTokenSource<'t> {
@@ -55,11 +52,7 @@ impl<'t> TextTokenSource<'t> {
             .filter_map({
                 let mut len = 0.into();
                 move |token| {
-                    let pair = if token.kind.is_trivia() {
-                        None
-                    } else {
-                        Some((*token, len))
-                    };
+                    let pair = if token.kind.is_trivia() { None } else { Some((*token, len)) };
                     len += token.len;
                     pair
                 }
@@ -67,10 +60,6 @@ impl<'t> TextTokenSource<'t> {
             .collect();
 
         let first = mk_token(0, &token_offset_pairs);
-        TextTokenSource {
-            text,
-            token_offset_pairs,
-            curr: (first, 0),
-        }
+        TextTokenSource { text, token_offset_pairs, curr: (first, 0) }
     }
 }

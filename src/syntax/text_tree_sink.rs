@@ -4,9 +4,7 @@ use text_size::{TextRange, TextSize};
 use crate::{
     lexer::Token,
     parser::{ParseError, SyntaxKind, TreeSink},
-    syntax::{
-        ast, syntax_error::SyntaxError, syntax_node::GreenNode, syntax_node::SyntaxTreeBuilder,
-    },
+    syntax::{syntax_error::SyntaxError, syntax_node::GreenNode, syntax_node::SyntaxTreeBuilder},
 };
 
 pub(crate) struct TextTreeSink<'a> {
@@ -54,10 +52,8 @@ impl<'a> TreeSink for TextTreeSink<'a> {
             State::Normal => (),
         }
 
-        let n_trivias = self.tokens[self.token_pos..]
-            .iter()
-            .take_while(|it| it.kind.is_trivia())
-            .count();
+        let n_trivias =
+            self.tokens[self.token_pos..].iter().take_while(|it| it.kind.is_trivia()).count();
         let leading_trivias = &self.tokens[self.token_pos..self.token_pos + n_trivias];
         let mut trivia_end =
             self.text_pos + leading_trivias.iter().map(|it| it.len).sum::<TextSize>();

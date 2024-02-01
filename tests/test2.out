@@ -1,20 +1,18 @@
 - SOURCE_FILE
   - RULE
-    - "rule" RULE
+    - "rule" RULE_KW
     - " " WHITESPACE
-    - IDENTIFIER
-      - "test" IDENTIFIER
+    - "test" IDENTIFIER
     - "\n" WHITESPACE
     - BLOCK_EXPR
-      - "{" LBRACE
+      - "{" L_BRACE
       - "\n\t" WHITESPACE
       - STRINGS
-        - "strings" STRINGS
+        - "strings" STRINGS_KW
         - ":" COLON
         - "\n\t\t" WHITESPACE
         - VARIABLE_STMT
-          - VARIABLE
-            - "$a" VARIABLE
+          - "$a" VARIABLE
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
@@ -22,8 +20,7 @@
             - "\"foo\"" STRING
         - "\n\t\t" WHITESPACE
         - VARIABLE_STMT
-          - VARIABLE
-            - "$b" VARIABLE
+          - "$b" VARIABLE
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
@@ -31,7 +28,7 @@
             - "\"bar\"" STRING
       - "\n\t" WHITESPACE
       - CONDITION
-        - "condition" CONDITION
+        - "condition" CONDITION_KW
         - ":" COLON
         - "\n\t\t" WHITESPACE
         - EXPRESSION_STMT
@@ -39,10 +36,10 @@
             - LITERAL
               - "$a" VARIABLE
             - " " WHITESPACE
-            - "or" OR
+            - "or" OR_KW
             - "\n\t\t" WHITESPACE
             - LITERAL
               - "$b" VARIABLE
       - "\n" WHITESPACE
-      - "}" RBRACE
+      - "}" R_BRACE
   - "\n" WHITESPACE
