@@ -8,29 +8,18 @@ use crate::parser::{
 
 #[derive(Debug)]
 pub(crate) enum Event {
-    Start {
-        kind: SyntaxKind,
-        forward_parent: Option<u32>,
-    },
+    Start { kind: SyntaxKind, forward_parent: Option<u32> },
 
     Finish,
 
-    Token {
-        kind: SyntaxKind,
-        n_raw_tokens: u8,
-    },
+    Token { kind: SyntaxKind, n_raw_tokens: u8 },
 
-    Error {
-        msg: ParseError,
-    },
+    Error { msg: ParseError },
 }
 
 impl Event {
     pub(crate) fn tombstone() -> Self {
-        Event::Start {
-            kind: TOMBSTONE,
-            forward_parent: None,
-        }
+        Event::Start { kind: TOMBSTONE, forward_parent: None }
     }
 }
 
@@ -39,20 +28,14 @@ pub(crate) fn process(sink: &mut dyn TreeSink, mut events: Vec<Event>) {
 
     for i in 0..events.len() {
         match mem::replace(&mut events[i], Event::tombstone()) {
-            Event::Start {
-                kind,
-                forward_parent,
-            } => {
+            Event::Start { kind, forward_parent } => {
                 forward_parents.push(kind);
                 let mut idx = i;
                 let mut fp = forward_parent;
                 while let Some(fwd) = fp {
                     idx += fwd as usize;
                     fp = match mem::replace(&mut events[idx], Event::tombstone()) {
-                        Event::Start {
-                            kind,
-                            forward_parent,
-                        } => {
+                        Event::Start { kind, forward_parent } => {
                             forward_parents.push(kind);
                             forward_parent
                         }

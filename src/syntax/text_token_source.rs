@@ -29,6 +29,13 @@ impl<'t> TokenSource for TextTokenSource<'t> {
         let pos = self.curr.1 + 1;
         self.curr = (mk_token(pos, &self.token_offset_pairs), pos);
     }
+
+    fn is_keyword(&self, kw: &str) -> bool {
+        self.token_offset_pairs
+            .get(self.curr.1)
+            .map(|(token, offset)| &self.text[TextRange::at(*offset, token.len)] == kw)
+            .unwrap_or(false)
+    }
 }
 
 fn mk_token(pos: usize, token_offset_pairs: &[(Token, TextSize)]) -> parser::Token {

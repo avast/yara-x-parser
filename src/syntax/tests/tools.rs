@@ -63,8 +63,7 @@ fn normalize_newlines(s: &str) -> String {
 
 pub fn project_root() -> PathBuf {
     let dir = env!("CARGO_MANIFEST_DIR");
-    let res = PathBuf::from(dir).to_owned();
-    res
+    PathBuf::from(dir).to_owned()
 }
 
 pub fn to_lower_snake_case(s: &str) -> String {

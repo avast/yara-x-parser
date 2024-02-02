@@ -44,6 +44,7 @@ impl<T> Parse<T> {
 }
 
 impl<T: AstNode> Parse<T> {
+    #[allow(clippy::wrong_self_convention)]
     pub fn to_syntax(self) -> Parse<SyntaxNode> {
         Parse { green: self.green, errors: self.errors, _ty: PhantomData }
     }
@@ -53,7 +54,7 @@ impl<T: AstNode> Parse<T> {
     }
 
     pub fn errors(&self) -> &[SyntaxError] {
-        &*self.errors
+        &self.errors
     }
 
     pub fn ok(self) -> Result<T, Arc<Vec<SyntaxError>>> {

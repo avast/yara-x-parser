@@ -18,6 +18,8 @@ pub trait TokenSource {
     fn lookahead_nth(&self, n: usize) -> Token;
 
     fn bump(&mut self);
+
+    fn is_keyword(&self, kw: &str) -> bool;
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]

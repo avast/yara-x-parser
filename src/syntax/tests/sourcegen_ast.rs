@@ -1,14 +1,8 @@
-use std::{
-    collections::{BTreeSet, HashSet},
-    env::var,
-    fmt::{format, Write},
-    str::Matches,
-};
+use std::{collections::HashSet, fmt::Write};
 
 use itertools::Itertools;
 use proc_macro2::{Punct, Spacing};
 use quote::{format_ident, quote};
-use rowan_test::ast;
 use ungrammar::{Grammar, Rule};
 
 use crate::syntax::tests::ast_src::{
@@ -35,7 +29,7 @@ fn sourcegen_ast() {
 
     let ast_tokens = generate_tokens(&ast);
     let ast_tokens_file = project_root().join("src/syntax/ast/generated/tokens.rs");
-    ensure_file_contents(&ast_tokens_file.as_path(), &ast_tokens);
+    ensure_file_contents(ast_tokens_file.as_path(), &ast_tokens);
 
     let ast_nodes = generate_nodes(KINDS_SRC, &ast);
     let ast_nodes_file = project_root().join("src/syntax/ast/generated/nodes.rs");
@@ -162,10 +156,7 @@ fn generate_nodes(kinds: KindsSrc<'_>, grammar: &AstSrc) -> String {
             let ast_node = quote! {
                 impl AstNode for #name {
                     fn can_cast(kind: SyntaxKind) -> bool {
-                        match kind {
-                            #(#kinds)|* => true,
-                            _ => false,
-                        }
+                        matches!(kind, #(#kinds)|*)
                     }
                     fn cast(syntax: SyntaxNode) -> Option<Self> {
                         let res = match syntax.kind() {
@@ -216,7 +207,7 @@ fn generate_nodes(kinds: KindsSrc<'_>, grammar: &AstSrc) -> String {
         .flat_map(|node| node.traits.iter().map(move |t| (t, node)))
         .into_group_map()
         .into_iter()
-        .sorted_by_key(|(k, _)| k.clone())
+        .sorted_by_key(|(k, _)| k.to_owned())
         .map(|(trait_name, nodes)| {
             let name = format_ident!("Any{}", trait_name);
             let trait_name = format_ident!("{}", trait_name);
@@ -287,6 +278,7 @@ fn generate_nodes(kinds: KindsSrc<'_>, grammar: &AstSrc) -> String {
     }
 
     let ast = quote! {
+        #![allow(clippy::enum_variant_names)]
         use crate::{
             SyntaxNode, SyntaxToken, SyntaxKind::{self, *},
             syntax::ast::{self, AstNode, AstChildren, support},
@@ -361,7 +353,7 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
     let nodes = grammar.nodes.iter().map(|name| format_ident!("{}", name)).collect::<Vec<_>>();
 
     let ast = quote! {
-        #![allow(bad_style, missing_docs, unreachable_pub)]
+        #![allow(bad_style, missing_docs, unreachable_pub, clippy::upper_case_acronyms)]
         /// The kind of syntax node, e.g. `IDENTIFIER`, `RULE_KW`, or `AND`.
         #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
         #[repr(u16)]
@@ -386,24 +378,15 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
 
         impl SyntaxKind {
             pub fn is_keyword(self) -> bool {
-                match self {
-                    #(#keywords)|* => true,
-                    _ => false,
-                }
+                matches!(self, #(#keywords)|*)
             }
 
             pub fn is_punct(self) -> bool {
-                match self {
-                    #(#punctuation)|* => true,
-                    _ => false,
-                }
+                matches!(self, #(#punctuation)|*)
             }
 
             pub fn is_literal(self) -> bool {
-                match self {
-                    #(#literals)|* => true,
-                    _ => false,
-                }
+                matches!(self, #(#literals)|*)
             }
 
             pub fn from_keyword(ident: &str) -> Option<SyntaxKind> {
@@ -482,12 +465,13 @@ impl Field {
 }
 
 fn lower(grammar: &Grammar) -> AstSrc {
-    let mut res = AstSrc::default();
-
-    res.tokens = "Whitespace Comment String Number Variable"
-        .split_ascii_whitespace()
-        .map(|it| it.to_string())
-        .collect::<Vec<_>>();
+    let mut res = AstSrc {
+        tokens: "Whitespace Comment String Number Variable"
+            .split_ascii_whitespace()
+            .map(|it| it.to_string())
+            .collect::<Vec<_>>(),
+        ..Default::default()
+    };
 
     let nodes = grammar.iter().collect::<Vec<_>>();
 
