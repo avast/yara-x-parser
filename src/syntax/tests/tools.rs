@@ -24,10 +24,7 @@ pub fn reformat(text: String) -> String {
     let _e = pushenv("RUSTUP_TOOLCHAIN", "stable");
     ensure_rustfmt();
     let rustfmt_toml = project_root().join("rustfmt.toml");
-    let mut stdout = cmd!("rustfmt --config-path {rustfmt_toml} --config fn_single_line=true")
-        .stdin(text)
-        .read()
-        .unwrap();
+    let mut stdout = cmd!("rustfmt --config-path {rustfmt_toml}").stdin(text).read().unwrap();
     if !stdout.ends_with('\n') {
         stdout.push('\n');
     }

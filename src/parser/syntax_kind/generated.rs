@@ -55,7 +55,9 @@ impl SyntaxKind {
     pub fn is_punct(self) -> bool {
         matches!(self, COLON | L_PAREN | R_PAREN | L_BRACE | R_BRACE | COMMA | ASSIGN)
     }
-    pub fn is_literal(self) -> bool { matches!(self, STRING | NUMBER) }
+    pub fn is_literal(self) -> bool {
+        matches!(self, STRING | NUMBER)
+    }
     pub fn from_keyword(ident: &str) -> Option<SyntaxKind> {
         let kw = match ident {
             "and" => AND_KW,
