@@ -12,7 +12,9 @@ pub struct SourceFile {
     pub(crate) syntax: SyntaxNode,
 }
 impl SourceFile {
-    pub fn rules(&self) -> AstChildren<Rule> { support::children(&self.syntax) }
+    pub fn rules(&self) -> AstChildren<Rule> {
+        support::children(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -20,11 +22,15 @@ pub struct Rule {
     pub(crate) syntax: SyntaxNode,
 }
 impl Rule {
-    pub fn rule_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![rule]) }
+    pub fn rule_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![rule])
+    }
     pub fn identifier_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![identifier])
     }
-    pub fn body(&self) -> Option<BlockExpr> { support::child(&self.syntax) }
+    pub fn body(&self) -> Option<BlockExpr> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -32,10 +38,18 @@ pub struct BlockExpr {
     pub(crate) syntax: SyntaxNode,
 }
 impl BlockExpr {
-    pub fn l_brace_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T!['{']) }
-    pub fn strings(&self) -> Option<Strings> { support::child(&self.syntax) }
-    pub fn condition(&self) -> Option<Condition> { support::child(&self.syntax) }
-    pub fn r_brace_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T!['}']) }
+    pub fn l_brace_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['{'])
+    }
+    pub fn strings(&self) -> Option<Strings> {
+        support::child(&self.syntax)
+    }
+    pub fn condition(&self) -> Option<Condition> {
+        support::child(&self.syntax)
+    }
+    pub fn r_brace_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['}'])
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -43,9 +57,15 @@ pub struct Strings {
     pub(crate) syntax: SyntaxNode,
 }
 impl Strings {
-    pub fn strings_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![strings]) }
-    pub fn colon_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![:]) }
-    pub fn variable_stmts(&self) -> AstChildren<VariableStmt> { support::children(&self.syntax) }
+    pub fn strings_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![strings])
+    }
+    pub fn colon_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![:])
+    }
+    pub fn variable_stmts(&self) -> AstChildren<VariableStmt> {
+        support::children(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -56,8 +76,12 @@ impl Condition {
     pub fn condition_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![condition])
     }
-    pub fn colon_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![:]) }
-    pub fn expression_stmt(&self) -> Option<ExpressionStmt> { support::child(&self.syntax) }
+    pub fn colon_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![:])
+    }
+    pub fn expression_stmt(&self) -> Option<ExpressionStmt> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -68,8 +92,12 @@ impl VariableStmt {
     pub fn variable_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![variable])
     }
-    pub fn assign_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![=]) }
-    pub fn string(&self) -> Option<String> { support::child(&self.syntax) }
+    pub fn assign_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![=])
+    }
+    pub fn string(&self) -> Option<String> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -83,7 +111,9 @@ pub struct ExpressionStmt {
     pub(crate) syntax: SyntaxNode,
 }
 impl ExpressionStmt {
-    pub fn expr(&self) -> Option<Expr> { support::child(&self.syntax) }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -91,8 +121,12 @@ pub struct Expression {
     pub(crate) syntax: SyntaxNode,
 }
 impl Expression {
-    pub fn and_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![and]) }
-    pub fn or_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![or]) }
+    pub fn and_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![and])
+    }
+    pub fn or_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![or])
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -100,8 +134,12 @@ pub struct PrefixExpr {
     pub(crate) syntax: SyntaxNode,
 }
 impl PrefixExpr {
-    pub fn not_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![not]) }
-    pub fn expr(&self) -> Option<Expr> { support::child(&self.syntax) }
+    pub fn not_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![not])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -109,8 +147,12 @@ pub struct Literal {
     pub(crate) syntax: SyntaxNode,
 }
 impl Literal {
-    pub fn true_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![true]) }
-    pub fn false_token(&self) -> Option<SyntaxToken> { support::token(&self.syntax, T![false]) }
+    pub fn true_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![true])
+    }
+    pub fn false_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![false])
+    }
     pub fn variable_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![variable])
     }
@@ -123,7 +165,9 @@ pub enum Expr {
     Literal(Literal),
 }
 impl AstNode for SourceFile {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == SOURCE_FILE }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == SOURCE_FILE
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -131,10 +175,14 @@ impl AstNode for SourceFile {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for Rule {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == RULE }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == RULE
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -142,10 +190,14 @@ impl AstNode for Rule {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for BlockExpr {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == BLOCK_EXPR }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == BLOCK_EXPR
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -153,10 +205,14 @@ impl AstNode for BlockExpr {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for Strings {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == STRINGS }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == STRINGS
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -164,10 +220,14 @@ impl AstNode for Strings {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for Condition {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == CONDITION }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == CONDITION
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -175,10 +235,14 @@ impl AstNode for Condition {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for VariableStmt {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == VARIABLE_STMT }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_STMT
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -186,10 +250,14 @@ impl AstNode for VariableStmt {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for String {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == STRING }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == STRING
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -197,10 +265,14 @@ impl AstNode for String {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for ExpressionStmt {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == EXPRESSION_STMT }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPRESSION_STMT
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -208,10 +280,14 @@ impl AstNode for ExpressionStmt {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for Expression {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == EXPRESSION }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPRESSION
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -219,10 +295,14 @@ impl AstNode for Expression {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for PrefixExpr {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == PREFIX_EXPR }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == PREFIX_EXPR
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -230,10 +310,14 @@ impl AstNode for PrefixExpr {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl AstNode for Literal {
-    fn can_cast(kind: SyntaxKind) -> bool { kind == LITERAL }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == LITERAL
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
             Some(Self { syntax })
@@ -241,19 +325,29 @@ impl AstNode for Literal {
             None
         }
     }
-    fn syntax(&self) -> &SyntaxNode { &self.syntax }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
 }
 impl From<Expression> for Expr {
-    fn from(node: Expression) -> Expr { Expr::Expression(node) }
+    fn from(node: Expression) -> Expr {
+        Expr::Expression(node)
+    }
 }
 impl From<PrefixExpr> for Expr {
-    fn from(node: PrefixExpr) -> Expr { Expr::PrefixExpr(node) }
+    fn from(node: PrefixExpr) -> Expr {
+        Expr::PrefixExpr(node)
+    }
 }
 impl From<Literal> for Expr {
-    fn from(node: Literal) -> Expr { Expr::Literal(node) }
+    fn from(node: Literal) -> Expr {
+        Expr::Literal(node)
+    }
 }
 impl AstNode for Expr {
-    fn can_cast(kind: SyntaxKind) -> bool { matches!(kind, EXPRESSION | PREFIX_EXPR | LITERAL) }
+    fn can_cast(kind: SyntaxKind) -> bool {
+        matches!(kind, EXPRESSION | PREFIX_EXPR | LITERAL)
+    }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
             EXPRESSION => Expr::Expression(Expression { syntax }),
