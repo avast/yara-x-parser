@@ -384,13 +384,10 @@ impl AnyHasComments {
 }
 impl AstNode for AnyHasComments {
     fn can_cast(kind: SyntaxKind) -> bool {
-        match kind {
-            SOURCE_FILE | RULE | BLOCK_EXPR | STRINGS | CONDITION => true,
-            _ => false,
-        }
+        matches!(kind, SOURCE_FILE | RULE | BLOCK_EXPR | STRINGS | CONDITION)
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
-        Self::can_cast(syntax.kind()).then(|| AnyHasComments { syntax })
+        Self::can_cast(syntax.kind()).then_some(AnyHasComments { syntax })
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
