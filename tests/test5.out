@@ -1,0 +1,62 @@
+- SOURCE_FILE
+  - "//Global comment" COMMENT
+  - "\n\n" WHITESPACE
+  - RULE
+    - "//Rule comment" COMMENT
+    - "\n" WHITESPACE
+    - "rule" RULE
+    - " " WHITESPACE
+    - IDENTIFIER
+      - "test" IDENTIFIER
+    - "\n" WHITESPACE
+    - BLOCK_EXPR
+      - "{" LBRACE
+      - "\n\t" WHITESPACE
+      - "//Rule block comment" COMMENT
+      - "\n\n\t" WHITESPACE
+      - STRINGS
+        - "//String comment" COMMENT
+        - "\n\t" WHITESPACE
+        - "strings" STRINGS
+        - ":" COLON
+        - "\n\t\t" WHITESPACE
+        - VARIABLE_STMT
+          - VARIABLE
+            - "$a" VARIABLE
+          - " " WHITESPACE
+          - "=" ASSIGN
+          - " " WHITESPACE
+          - STRING
+            - "\"foo\"" STRING
+        - "\n\t\t" WHITESPACE
+        - VARIABLE_STMT
+          - VARIABLE
+            - "$b" VARIABLE
+          - " " WHITESPACE
+          - "=" ASSIGN
+          - " " WHITESPACE
+          - STRING
+            - "\"bar\"" STRING
+      - "\n\t" WHITESPACE
+      - CONDITION
+        - "condition" CONDITION
+        - ":" COLON
+        - "\n\t\t" WHITESPACE
+        - EXPRESSION_STMT
+          - EXPRESSION
+            - EXPRESSION
+              - LITERAL
+                - "$a" VARIABLE
+              - " " WHITESPACE
+              - "or" OR
+              - "\n\t\t" WHITESPACE
+              - ERROR
+                - "b" IDENTIFIER
+            - " " WHITESPACE
+            - "and" AND
+            - " " WHITESPACE
+            - LITERAL
+              - "true" TRUE
+      - "\n" WHITESPACE
+      - "}" RBRACE
+  - "\n" WHITESPACE

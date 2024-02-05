@@ -11,5 +11,5 @@ rule test
 		$b = "bar"
 	condition:
 		$a or
-		$b and true
+		b and true
 }

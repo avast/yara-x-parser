@@ -175,8 +175,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::True => SyntaxKind::TRUE,
         LogosToken::False => SyntaxKind::FALSE,
         LogosToken::Whitespace => SyntaxKind::WHITESPACE,
-        LogosToken::Comment => SyntaxKind::COMMENT,
-        LogosToken::MultilineComment => SyntaxKind::MULTILINECOMMENT,
+        LogosToken::Comment | LogosToken::MultilineComment => SyntaxKind::COMMENT,
     }
 }
 

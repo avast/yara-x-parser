@@ -1,0 +1,33 @@
+- SOURCE_FILE
+  - RULE
+    - "rule" RULE
+    - " " WHITESPACE
+    - IDENTIFIER
+      - "test" IDENTIFIER
+    - "\n" WHITESPACE
+    - BLOCK_EXPR
+      - "{" LBRACE
+      - "\n\t" WHITESPACE
+      - STRINGS
+        - "strings" STRINGS
+        - ":" COLON
+        - "\n\t\t" WHITESPACE
+        - VARIABLE_STMT
+          - VARIABLE
+            - "$a" VARIABLE
+          - " " WHITESPACE
+          - "=" ASSIGN
+          - " " WHITESPACE
+          - STRING
+            - "\"foo\"" STRING
+      - "\n\t" WHITESPACE
+      - CONDITION
+        - "condition" CONDITION
+        - ":" COLON
+        - "\n\t\t" WHITESPACE
+        - EXPRESSION_STMT
+          - LITERAL
+            - "$a" VARIABLE
+      - "\n" WHITESPACE
+      - "}" RBRACE
+  - "\n" WHITESPACE

@@ -1,0 +1,60 @@
+- SOURCE_FILE
+  - "//Global comment" COMMENT
+  - "\n\n" WHITESPACE
+  - RULE
+    - "//Rule comment" COMMENT
+    - "\n" WHITESPACE
+    - "rule" RULE
+    - " " WHITESPACE
+    - ERROR
+      - "condition" CONDITION
+    - "\n" WHITESPACE
+    - BLOCK_EXPR
+      - "{" LBRACE
+      - "\n\t" WHITESPACE
+      - "//Rule block comment" COMMENT
+      - "\n\n\t" WHITESPACE
+      - "//String comment" COMMENT
+      - "\n\t" WHITESPACE
+      - ERROR
+        - "string" IDENTIFIER
+      - ERROR
+        - "*" ERROR
+      - "\n\t\t" WHITESPACE
+      - ERROR
+        - "a" IDENTIFIER
+      - " " WHITESPACE
+      - ERROR
+        - "=" ASSIGN
+      - " " WHITESPACE
+      - ERROR
+        - "00000" NUMBER
+      - "\n\t\t" WHITESPACE
+      - ERROR
+        - "$b" VARIABLE
+      - " " WHITESPACE
+      - ERROR
+        - "=" ASSIGN
+      - " " WHITESPACE
+      - ERROR
+        - "\"bar\"" STRING
+      - "\n\t" WHITESPACE
+      - CONDITION
+        - "condition" CONDITION
+        - ":" COLON
+        - "\n\t\t" WHITESPACE
+        - ERROR
+          - "a" IDENTIFIER
+        - " " WHITESPACE
+        - ERROR
+          - "ord" IDENTIFIER
+        - "\n\t\t" WHITESPACE
+        - EXPRESSION_STMT
+          - LITERAL
+            - "$b" VARIABLE
+        - " " WHITESPACE
+        - ERROR
+          - "ant" IDENTIFIER
+      - " \n" WHITESPACE
+      - "}" RBRACE
+  - "\n" WHITESPACE
