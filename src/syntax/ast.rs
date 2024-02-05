@@ -1,6 +1,7 @@
 mod generated;
-mod token_ext;
 mod traits;
+mod expr_ext;
+mod operators;
 
 use std::marker::PhantomData;
 

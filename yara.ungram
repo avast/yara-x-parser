@@ -32,7 +32,7 @@ Expr =
 
 Expression = 
     lhs:Expr 
-        'and' | 'or'
+        op:('and' | 'or')
     rhs:Expr
 
 PrefixExpr = 
@@ -40,4 +40,4 @@ PrefixExpr =
     Expr
 
 Literal =
-    'true' | 'false' | 'variable'
+    value:('true' | 'false' | 'variable')

@@ -125,14 +125,7 @@ impl ExpressionStmt {
 pub struct Expression {
     pub(crate) syntax: SyntaxNode,
 }
-impl Expression {
-    pub fn and_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![and])
-    }
-    pub fn or_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![or])
-    }
-}
+impl Expression {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PrefixExpr {
@@ -151,17 +144,7 @@ impl PrefixExpr {
 pub struct Literal {
     pub(crate) syntax: SyntaxNode,
 }
-impl Literal {
-    pub fn true_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![true])
-    }
-    pub fn false_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![false])
-    }
-    pub fn variable_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![variable])
-    }
-}
+impl Literal {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Expr {
