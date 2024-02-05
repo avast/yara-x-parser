@@ -491,6 +491,7 @@ fn lower(grammar: &Grammar) -> AstSrc {
         }
     }
 
+    extract_struct_traits(&mut res);
     res
 }
 
@@ -598,4 +599,13 @@ fn lower_comma_list(
     true
 }
 
-//TODO: possible deduplication and enum extraction, so far not needed
+//TODO: possible deduplication and enum extraction and struct traits, so far not needed
+fn extract_struct_traits(ast: &mut AstSrc) {
+    let nodes_with_comments = ["SourceFile", "Rule", "BlockExpr", "Strings", "Condition"];
+
+    for node in &mut ast.nodes {
+        if nodes_with_comments.contains(&&*node.name) {
+            node.traits.push("HasComments".into());
+        }
+    }
+}

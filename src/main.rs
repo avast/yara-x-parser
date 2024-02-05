@@ -1,7 +1,7 @@
 /// This library is used to create a parser for YARA language
 /// It should provide also token for whitespaces
 /// as we want full fidelity and error resilience.;
-use std::{env::args, fs, path::Path};
+use std::{any::Any, env::args, fs, path::Path};
 
 use rowan_test::GreenNode;
 use syntax::SourceFile;
@@ -38,7 +38,7 @@ fn main() {
     let parse = SourceFile::parse(input.as_str());
 
     let file: SourceFile = parse.tree();
-    print!("{:#?}", file.syntax);
+    println!("{:#?}", file);
 }
 
 fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {

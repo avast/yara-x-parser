@@ -1,5 +1,6 @@
 mod generated;
 mod token_ext;
+mod traits;
 
 use std::marker::PhantomData;
 
@@ -8,7 +9,10 @@ use crate::{
     SyntaxKind,
 };
 
-pub use self::generated::{nodes::*, tokens::*};
+pub use self::{
+    generated::{nodes::*, tokens::*},
+    traits::HasComments,
+};
 
 pub trait AstNode {
     fn can_cast(kind: SyntaxKind) -> bool

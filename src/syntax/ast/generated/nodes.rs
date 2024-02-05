@@ -11,6 +11,7 @@ use crate::{
 pub struct SourceFile {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasComments for SourceFile {}
 impl SourceFile {
     pub fn rules(&self) -> AstChildren<Rule> {
         support::children(&self.syntax)
@@ -21,6 +22,7 @@ impl SourceFile {
 pub struct Rule {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasComments for Rule {}
 impl Rule {
     pub fn rule_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![rule])
@@ -37,6 +39,7 @@ impl Rule {
 pub struct BlockExpr {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasComments for BlockExpr {}
 impl BlockExpr {
     pub fn l_brace_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['{'])
@@ -56,6 +59,7 @@ impl BlockExpr {
 pub struct Strings {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasComments for Strings {}
 impl Strings {
     pub fn strings_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![strings])
@@ -72,6 +76,7 @@ impl Strings {
 pub struct Condition {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasComments for Condition {}
 impl Condition {
     pub fn condition_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![condition])
@@ -164,6 +169,12 @@ pub enum Expr {
     PrefixExpr(PrefixExpr),
     Literal(Literal),
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct AnyHasComments {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ast::HasComments for AnyHasComments {}
 impl AstNode for SourceFile {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == SOURCE_FILE
@@ -363,6 +374,26 @@ impl AstNode for Expr {
             Expr::PrefixExpr(it) => &it.syntax,
             Expr::Literal(it) => &it.syntax,
         }
+    }
+}
+impl AnyHasComments {
+    #[inline]
+    pub fn new<T: ast::HasComments>(node: T) -> AnyHasComments {
+        AnyHasComments { syntax: node.syntax().clone() }
+    }
+}
+impl AstNode for AnyHasComments {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        match kind {
+            SOURCE_FILE | RULE | BLOCK_EXPR | STRINGS | CONDITION => true,
+            _ => false,
+        }
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        Self::can_cast(syntax.kind()).then(|| AnyHasComments { syntax })
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
     }
 }
 impl std::fmt::Display for Expr {
