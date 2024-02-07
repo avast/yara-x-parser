@@ -24,16 +24,16 @@
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
-          - STRING
-            - "\"foo\"" STRING
+          - PATTERN
+            - "\"foo\"" STRING_LIT
         - "\n\t\t" WHITESPACE
         - VARIABLE_STMT
           - "$b" VARIABLE
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
-          - STRING
-            - "\"bar\"" STRING
+          - PATTERN
+            - "\"bar\"" STRING_LIT
       - "\n\t" WHITESPACE
       - CONDITION
         - "condition" CONDITION_KW

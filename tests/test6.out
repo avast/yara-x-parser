@@ -37,7 +37,7 @@
         - "=" ASSIGN
       - " " WHITESPACE
       - ERROR
-        - "\"bar\"" STRING
+        - "\"bar\"" STRING_LIT
       - "\n\t" WHITESPACE
       - CONDITION
         - "condition" CONDITION_KW

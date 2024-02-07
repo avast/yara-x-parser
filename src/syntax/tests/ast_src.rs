@@ -17,7 +17,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         ("=", "ASSIGN"),
     ],
     keywords: &["and", "or", "not", "true", "false", "rule", "strings", "condition"],
-    literals: &["STRING", "NUMBER"],
+    literals: &["STRING_LIT", "NUMBER"],
     tokens: &["IDENTIFIER", "VARIABLE", "WHITESPACE", "COMMENT", "ERROR"],
     nodes: &[
         "RULE",
@@ -30,6 +30,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "EXPRESSION",
         "EXPRESSION_STMT",
         "VARIABLE_STMT",
+        "PATTERN",
     ],
 };
 

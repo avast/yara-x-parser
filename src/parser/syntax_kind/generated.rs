@@ -24,7 +24,7 @@ pub enum SyntaxKind {
     RULE_KW,
     STRINGS_KW,
     CONDITION_KW,
-    STRING,
+    STRING_LIT,
     NUMBER,
     IDENTIFIER,
     VARIABLE,
@@ -41,6 +41,7 @@ pub enum SyntaxKind {
     EXPRESSION,
     EXPRESSION_STMT,
     VARIABLE_STMT,
+    PATTERN,
     #[doc(hidden)]
     __LAST,
 }
@@ -56,7 +57,7 @@ impl SyntaxKind {
         matches!(self, COLON | L_PAREN | R_PAREN | L_BRACE | R_BRACE | COMMA | ASSIGN)
     }
     pub fn is_literal(self) -> bool {
-        matches!(self, STRING | NUMBER)
+        matches!(self, STRING_LIT | NUMBER)
     }
     pub fn from_keyword(ident: &str) -> Option<SyntaxKind> {
         let kw = match ident {
@@ -87,5 +88,5 @@ impl SyntaxKind {
     }
 }
 #[macro_export]
-macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [true] => { $ crate :: SyntaxKind :: TRUE_KW } ; [false] => { $ crate :: SyntaxKind :: FALSE_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; }
+macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [true] => { $ crate :: SyntaxKind :: TRUE_KW } ; [false] => { $ crate :: SyntaxKind :: FALSE_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; }
 pub use T;

@@ -100,16 +100,20 @@ impl VariableStmt {
     pub fn assign_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![=])
     }
-    pub fn string(&self) -> Option<String> {
+    pub fn pattern(&self) -> Option<Pattern> {
         support::child(&self.syntax)
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct String {
+pub struct Pattern {
     pub(crate) syntax: SyntaxNode,
 }
-impl String {}
+impl Pattern {
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ExpressionStmt {
@@ -248,9 +252,9 @@ impl AstNode for VariableStmt {
         &self.syntax
     }
 }
-impl AstNode for String {
+impl AstNode for Pattern {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == STRING
+        kind == PATTERN
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -411,7 +415,7 @@ impl std::fmt::Display for VariableStmt {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for String {
+impl std::fmt::Display for Pattern {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -3,7 +3,7 @@ use super::*;
 // So far the only literals we support are true, false and variables
 // numbers will be added later
 pub(crate) const LITERAL_FIRST: TokenSet =
-    TokenSet::new(&[T![true], T![false], T![variable], STRING, NUMBER]);
+    TokenSet::new(&[T![true], T![false], T![variable], T![string_lit], NUMBER]);
 
 pub(crate) fn literal(p: &mut Parser) -> Option<CompletedMarker> {
     if !p.at_ts(LITERAL_FIRST) {

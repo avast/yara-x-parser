@@ -160,7 +160,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Not => SyntaxKind::NOT_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
-        LogosToken::String(_) => SyntaxKind::STRING,
+        LogosToken::String(_) => SyntaxKind::STRING_LIT,
         LogosToken::Assign => T![=],
         LogosToken::Colon => T![:],
         LogosToken::LBrace => T!['{'],
@@ -252,7 +252,7 @@ mod tests {
         assert_eq!(tokens[11].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[12].kind, SyntaxKind::ASSIGN);
         assert_eq!(tokens[13].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[14].kind, SyntaxKind::STRING);
+        assert_eq!(tokens[14].kind, SyntaxKind::STRING_LIT);
         assert_eq!(tokens[15].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[16].kind, SyntaxKind::VARIABLE);
         assert_eq!(tokens[17].kind, SyntaxKind::WHITESPACE);

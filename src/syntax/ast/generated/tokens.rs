@@ -57,17 +57,17 @@ impl AstToken for Comment {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct String {
+pub struct StringLit {
     pub(crate) syntax: SyntaxToken,
 }
-impl std::fmt::Display for String {
+impl std::fmt::Display for StringLit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.syntax, f)
     }
 }
-impl AstToken for String {
+impl AstToken for StringLit {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == STRING
+        kind == STRING_LIT
     }
     fn cast(syntax: SyntaxToken) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {

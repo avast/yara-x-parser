@@ -39,6 +39,14 @@ pub(super) fn rule_body(p: &mut Parser) {
             }
             _ => {
                 p.err_and_bump("expected strings or condition");
+                if p.current() == T![:] {
+                    p.eat(T![:]);
+                    if p.current() == T![variable] && p.nth(1) == T![=] {
+                        strings_body(p)
+                    } else {
+                        condition_body(p);
+                    }
+                }
             }
         }
     }
@@ -66,7 +74,7 @@ const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[T![variable]]);
 
 pub(super) fn strings_body(p: &mut Parser) {
     // add support for meta also
-    while !p.at(EOF) && !p.at(T![strings]) && !p.at(T![condition]) && !p.at(T!['}']) {
+    while !p.at(EOF) && !p.at(T![condition]) && !p.at(T!['}']) {
         let m = p.start();
         if p.at(T![variable]) {
             p.bump(T![variable]);
@@ -84,16 +92,16 @@ pub(super) fn strings_body(p: &mut Parser) {
 fn string(p: &mut Parser) {
     let m = p.start();
     match p.current() {
-        STRING => p.bump(STRING),
+        STRING_LIT => p.bump(STRING_LIT),
         _ => p.err_and_bump("expected a string"),
     }
     // add string modifiers
-    m.complete(p, STRING);
+    m.complete(p, PATTERN);
 }
 
 pub(super) fn condition_body(p: &mut Parser) {
     // add support for meta also
-    while !p.at(EOF) && !p.at(T![strings]) && !p.at(T![condition]) && !p.at(T!['}']) {
+    while !p.at(EOF) && !p.at(T!['}']) {
         let m = p.start();
         if let Some(cm) = expression(p, Some(m), 1) {
             let m = cm.precede(p);

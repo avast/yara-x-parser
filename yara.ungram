@@ -14,10 +14,10 @@ Strings =
         VariableStmt*
 
 VariableStmt =
-    'variable' '=' String
+    'variable' '=' Pattern
 
-String = 
-    'string'
+Pattern = 
+    'string_lit'
 
 Condition =
     'condition' ':'

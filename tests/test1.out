@@ -16,8 +16,8 @@
           - " " WHITESPACE
           - "=" ASSIGN
           - " " WHITESPACE
-          - STRING
-            - "\"foo\"" STRING
+          - PATTERN
+            - "\"foo\"" STRING_LIT
       - "\n\t" WHITESPACE
       - CONDITION
         - "condition" CONDITION_KW

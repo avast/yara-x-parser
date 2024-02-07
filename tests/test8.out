@@ -13,27 +13,19 @@
       - "\n\t" WHITESPACE
       - "//Rule block comment" COMMENT
       - "\n\n\t" WHITESPACE
-      - STRINGS
-        - "//String comment" COMMENT
-        - "\n\t" WHITESPACE
-        - "strings" STRINGS_KW
-        - ":" COLON
-        - "\n\t\t" WHITESPACE
-        - VARIABLE_STMT
-          - "$a" VARIABLE
-          - " " WHITESPACE
-          - "=" ASSIGN
-          - " " WHITESPACE
-          - PATTERN
-            - "\"foo\"" STRING_LIT
-        - "\n\t\t" WHITESPACE
-        - VARIABLE_STMT
-          - "$b" VARIABLE
-          - " " WHITESPACE
-          - "=" ASSIGN
-          - " " WHITESPACE
-          - PATTERN
-            - "\"bar\"" STRING_LIT
+      - "//String comment" COMMENT
+      - "\n\t" WHITESPACE
+      - ERROR
+        - "string" IDENTIFIER
+      - ":" COLON
+      - "\n\t\t" WHITESPACE
+      - VARIABLE_STMT
+        - "$b" VARIABLE
+        - " " WHITESPACE
+        - "=" ASSIGN
+        - " " WHITESPACE
+        - PATTERN
+          - "\"bar\"" STRING_LIT
       - "\n\t" WHITESPACE
       - CONDITION
         - "condition" CONDITION_KW
@@ -41,19 +33,22 @@
         - "\n\t\t" WHITESPACE
         - EXPRESSION_STMT
           - EXPRESSION
-            - LITERAL
-              - "$a" VARIABLE
-            - " " WHITESPACE
-            - "or" OR_KW
-            - "\n\t\t" WHITESPACE
             - EXPRESSION
               - LITERAL
                 - "$b" VARIABLE
               - " " WHITESPACE
               - "and" AND_KW
               - " " WHITESPACE
-              - LITERAL
-                - "true" TRUE_KW
+              - PREFIX_EXPR
+                - "not" NOT_KW
+                - " " WHITESPACE
+                - LITERAL
+                  - "true" TRUE_KW
+            - " " WHITESPACE
+            - "or" OR_KW
+            - " " WHITESPACE
+            - LITERAL
+              - "false" FALSE_KW
       - "\n" WHITESPACE
       - "}" R_BRACE
   - "\n" WHITESPACE

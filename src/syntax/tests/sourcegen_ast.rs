@@ -409,6 +409,7 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             #([#keywords_idents] => { $crate::SyntaxKind::#keywords };)*
             [identifier] => { $crate::SyntaxKind::IDENTIFIER };
             [variable] => { $crate::SyntaxKind::VARIABLE };
+            [string_lit] => { $crate::SyntaxKind::STRING_LIT };
         }
         pub use T;
     };
@@ -463,7 +464,7 @@ impl Field {
 
 fn lower(grammar: &Grammar) -> AstSrc {
     let mut res = AstSrc {
-        tokens: "Whitespace Comment String Number Variable"
+        tokens: "Whitespace Comment StringLit Number Variable"
             .split_ascii_whitespace()
             .map(|it| it.to_string())
             .collect::<Vec<_>>(),
