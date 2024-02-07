@@ -31,10 +31,8 @@ mod lexer;
 mod parser;
 mod syntax;
 
-pub fn parse_file(input: &str) -> Parse<SourceFile> {
-    let parse = SourceFile::parse(input);
-
-    parse
+pub fn parse_file_content(input: &str) -> Parse<SourceFile> {
+    SourceFile::parse(input)
 }
 
 fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
