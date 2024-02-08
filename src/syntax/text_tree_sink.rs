@@ -7,6 +7,8 @@ use crate::{
     syntax::{syntax_error::SyntaxError, syntax_node::GreenNode, syntax_node::SyntaxTreeBuilder},
 };
 
+/// Used to connect parser and specific SyntaxTree representation
+/// It also handles attaching trivia (whitespaces and comments) to the nodes
 pub(crate) struct TextTreeSink<'a> {
     text: &'a str,
     tokens: &'a [Token],
@@ -142,6 +144,7 @@ fn n_attached_trivias<'a>(
     trivias: impl Iterator<Item = (SyntaxKind, &'a str)>,
 ) -> usize {
     match kind {
+        // Nodes that are supported to have attached trivias
         SyntaxKind::RULE | SyntaxKind::BLOCK_EXPR | SyntaxKind::STRINGS | SyntaxKind::CONDITION => {
             let mut res = 0;
             let trivias = trivias.enumerate().peekable();

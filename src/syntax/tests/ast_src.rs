@@ -1,3 +1,5 @@
+//! Defines input for generation of AST and `SyntaxKind`
+
 pub(crate) struct KindsSrc<'a> {
     pub(crate) punct: &'a [(&'a str, &'a str)],
     pub(crate) keywords: &'a [&'a str],

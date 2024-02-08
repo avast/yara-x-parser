@@ -1,3 +1,6 @@
+// Lot of helping functions used mainly for generating code,
+// modifying it and formating it
+
 use std::{
     fs,
     path::{Path, PathBuf},

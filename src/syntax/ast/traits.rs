@@ -1,3 +1,8 @@
+//! Implementation of these traits is in `generated/` folder
+//! So far the only implemented trait is `HasComments` which is used
+//! to iterate over comments in the syntax tree
+//! This can be easily extended to support other traits
+
 use crate::syntax::ast::{self, AstNode};
 use crate::syntax::syntax_node::SyntaxElementChildren;
 

@@ -1,3 +1,9 @@
+//! This module contains lexer for YARA language.
+//! The lexer is implemented using `logos` crate.
+//! The lexer is used to convert the input text into a stream of tokens.
+//!
+//! Logos tokens are converted to `SyntaxKind` which is used in the parser to build the syntax tree.
+
 use crate::{
     parser::syntax_kind::{SyntaxKind, T},
     syntax::syntax_error::SyntaxError,

@@ -1,3 +1,5 @@
+/// This is the hand-written parser and `grammar` of YARA language
+
 mod expressions;
 mod items;
 
@@ -9,6 +11,8 @@ use crate::parser::{
     SyntaxKind::{self, *},
 };
 
+/// Parse a source file
+/// Each YARA file is a SOURCE_FILE that has some content
 pub(crate) fn parse_source_file(p: &mut Parser) {
     let m = p.start();
 
@@ -16,6 +20,7 @@ pub(crate) fn parse_source_file(p: &mut Parser) {
     m.complete(p, SOURCE_FILE);
 }
 
+/// To recover from error, we can parse block of a rule on its own
 fn error_block(p: &mut Parser, message: &str) {
     assert!(p.at(T!['{']));
     let m = p.start();
@@ -24,12 +29,4 @@ fn error_block(p: &mut Parser, message: &str) {
     rule_body(p);
     p.eat(T!['}']);
     m.complete(p, ERROR);
-}
-
-fn name_r(p: &mut Parser<'_>, recovery: TokenSet) {
-    if p.at(IDENTIFIER) {
-        p.bump(IDENTIFIER);
-    } else {
-        p.err_recover("expected a name", recovery);
-    }
 }

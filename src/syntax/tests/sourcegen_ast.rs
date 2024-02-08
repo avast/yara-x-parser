@@ -1,3 +1,9 @@
+//! This module is basically one test that generates `SyntaxKind`
+//! and wrappers around `SyntaxNode` to provide AST layer
+//! It uses `ungrammar` crate to parse `yara.ungram` file and generate AST
+//! It is not a grammar, it does not validate anything. Just generates methods
+//! and types for AST layer
+
 use std::{collections::HashSet, fmt::Write};
 
 use itertools::Itertools;

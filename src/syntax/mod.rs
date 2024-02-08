@@ -1,3 +1,21 @@
+//! Syntax tree representation
+//!
+//! Properties:
+//!    - errors handling
+//!    - full-fidelity representation
+//!    - easy to navigate
+//!    - in future easy to extend with incremental re-parsing
+//!
+//! It is inspired by the Swift's libSyntax and the Rust's rowan.
+//! [Swift]: <https://github.com/apple/swift/blob/13d593df6f359d0cb2fc81cfaac273297c539455/lib/Syntax/README.md>
+//! [Rust-analyzer]: <https://github.com/rust-lang/rust-analyzer>
+//!
+//! It uses modified rowan crate for storing all the information in fast and convinient way.
+//! [Rowan]: <https://github.com/rust-lang/rust-analyzer>
+//! 
+//! More detailed information can be also found in `rust-analyzer` syntax documentation
+//! [Rust-analyzer]: <https://github.com/rust-lang/rust-analyzer/blob/4b7675fcc30d3e2c05eafc68a5724db66b58142c/docs/dev/syntax.md>
+
 pub mod ast;
 pub mod syntax_error;
 pub mod syntax_node;
@@ -23,6 +41,9 @@ macro_rules! format_to {
     };
 }
 
+/// A result of a successful parsing of a source file.
+/// It provides AST and list of errors.
+/// We always produce a syntax tree, even for invalid files.
 pub struct Parse<T> {
     green: GreenNode,
     errors: Arc<Vec<SyntaxError>>,
@@ -88,11 +109,14 @@ impl Parse<SourceFile> {
     }
 }
 
+/// Source file represents single YARA file that can contain multiple rules
+/// So far only subset of YARA is supported
+/// YARA file is at this point represented as a string on input
 pub use crate::syntax::ast::SourceFile;
 
 impl SourceFile {
     pub fn parse(text: &str) -> Parse<SourceFile> {
-        let (green, mut errors) = parse_text(text);
+        let (green, errors) = parse_text(text);
         let root = SyntaxNode::new_root(green.clone());
 
         assert_eq!(root.kind(), SyntaxKind::SOURCE_FILE);
@@ -100,6 +124,7 @@ impl SourceFile {
     }
 }
 
+/// Parses the given string representation of file into a syntax tree.
 fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
     let (tokens, lexer_errors) = tokenize(text);
     let mut token_source = TextTokenSource::new(text, &tokens);

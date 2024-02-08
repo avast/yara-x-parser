@@ -1,3 +1,8 @@
+//! Similary as `operators.rs` it contains various extensions
+//! and methods for `ast::Expr` and `ast::Literal` nodes.
+//! `LiteralKind` type will probably also be changed during integration
+//! It is for now just to showcase its abilities
+
 use crate::{
     syntax::ast::{
         self,

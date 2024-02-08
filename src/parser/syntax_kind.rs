@@ -1,3 +1,9 @@
+//! SyntaxKind is the main enum for the syntax tree.
+//! It represents the kind of a node in the syntax tree
+//! for YARA language
+//!
+//! all the variants are generated and located in `syntax_kind/generated.rs`
+
 mod generated;
 
 #[allow(unreachable_pub)]

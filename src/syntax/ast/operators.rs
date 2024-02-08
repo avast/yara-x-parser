@@ -1,3 +1,7 @@
+//! Implementations of operators for the AST.
+//! This uses own type and it can be reused for both AST and HIR
+//! This will probably be change during parser integration into `YARA-X`
+
 use std::fmt;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]

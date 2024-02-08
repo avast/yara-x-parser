@@ -1,3 +1,8 @@
+/// This module provides a way to process the events from the parser
+/// It is decoupled from the parser
+///
+/// The `TreeSink` trait is used to connect parser and tree builder
+/// Parser produces a stream of `Event`s and they are converted to a real tree
 use std::mem;
 
 use crate::parser::{
@@ -8,13 +13,29 @@ use crate::parser::{
 
 #[derive(Debug)]
 pub(crate) enum Event {
-    Start { kind: SyntaxKind, forward_parent: Option<u32> },
+    /// This event specifies the start of a new node
+    /// It is either abandoned or completed with `Finish` event
+    ///
+    /// All children that are consumed between `Start` and `Finish` are attached to this node
+    Start {
+        kind: SyntaxKind,
+        forward_parent: Option<u32>,
+    },
 
+    /// Complete the current node
     Finish,
 
-    Token { kind: SyntaxKind, n_raw_tokens: u8 },
+    /// Add a new token to the current node
+    /// `n_raw_tokens` is used for consuming multiple tokens at once that should be glued together
+    /// this is not supported in YARA subset, but will be used in the future
+    Token {
+        kind: SyntaxKind,
+        n_raw_tokens: u8,
+    },
 
-    Error { msg: ParseError },
+    Error {
+        msg: ParseError,
+    },
 }
 
 impl Event {
@@ -23,6 +44,7 @@ impl Event {
     }
 }
 
+/// Generate the syntax tree by processing the events
 pub(crate) fn process(sink: &mut dyn TreeSink, mut events: Vec<Event>) {
     let mut forward_parents = Vec::new();
 

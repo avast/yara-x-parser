@@ -4,6 +4,8 @@ use crate::{
 };
 use text_size::{TextRange, TextSize};
 
+/// A source of tokens for the parser.
+/// It takes tokens from a source text and store them into token-offset pairs
 pub(crate) struct TextTokenSource<'t> {
     text: &'t str,
 
@@ -52,6 +54,7 @@ fn mk_token(pos: usize, token_offset_pairs: &[(Token, TextSize)]) -> parser::Tok
     parser::Token { kind, is_jointed_to_next }
 }
 
+/// Generate token-offset pairs
 impl<'t> TextTokenSource<'t> {
     pub(crate) fn new(text: &'t str, raw_tokens: &'t [Token]) -> TextTokenSource<'t> {
         let token_offset_pairs: Vec<_> = raw_tokens

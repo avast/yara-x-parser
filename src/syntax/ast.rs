@@ -1,3 +1,6 @@
+//! AST layer that is on top of the untyped syntax tree.
+//! AST methods are mainly generated using `tests/sourcegen_ast` file
+
 mod generated;
 mod traits;
 mod expr_ext;
@@ -15,6 +18,7 @@ pub use self::{
     traits::HasComments,
 };
 
+/// Zero runtime cost conversion to AST layer
 pub trait AstNode {
     fn can_cast(kind: SyntaxKind) -> bool
     where
@@ -41,6 +45,7 @@ pub trait AstNode {
     }
 }
 
+/// Same as `AstNode` but for tokens
 pub trait AstToken {
     fn can_cast(kind: SyntaxKind) -> bool
     where
@@ -57,6 +62,7 @@ pub trait AstToken {
     }
 }
 
+/// An iterator over `SyntaxNode` children of a particular AST type`
 #[derive(Debug, Clone)]
 pub struct AstChildren<N> {
     inner: SyntaxNodeChildren,

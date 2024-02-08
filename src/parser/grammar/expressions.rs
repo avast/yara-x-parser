@@ -2,6 +2,14 @@ mod atom;
 
 use super::*;
 
+/// Recovery set for `strings` block. This also should be adjusted and tweaked to
+/// better represents recovery set later on
+const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[T![strings]]);
+
+/// Parse a rule body
+/// A rule body consists `{`, rule_body and `}`
+/// This can probably be later simplified to not have both
+/// `rule_body` and `block_expr`.
 pub(crate) fn block_expr(p: &mut Parser) {
     if !p.at(T!['{']) {
         p.error("expected a block expression");
@@ -14,12 +22,16 @@ pub(crate) fn block_expr(p: &mut Parser) {
     m.complete(p, BLOCK_EXPR);
 }
 
+/// Parse a rule body
+/// A rule body consists of `strings` and `condition` blocks
+/// `strings` part is optional but condition is required
+/// but each of them can be defined only once and have to be in order
 pub(super) fn rule_body(p: &mut Parser) {
     let mut has_strings = false;
     let mut has_condition = false;
     while !p.at(EOF) && !p.at(T!['}']) {
         match p.current() {
-            // add metadata later
+            // add metadata support later
             T![strings] => {
                 if has_strings {
                     p.error("only one strings block is allowed");
@@ -38,6 +50,10 @@ pub(super) fn rule_body(p: &mut Parser) {
                 has_condition = true;
             }
             _ => {
+                // It did not contain strings or condition in valid form
+                // but we can still try to parse their body and throw an error for parent
+                // for now it just looks at next 2 tokens to differenciate between valid strings
+                // body or condition body. This should probably be adjusted later
                 p.err_and_bump("expected strings or condition");
                 if p.current() == T![:] {
                     p.eat(T![:]);
@@ -52,6 +68,8 @@ pub(super) fn rule_body(p: &mut Parser) {
     }
 }
 
+/// Parse a `strings` block
+/// It consists of `strings` keyword,`:` token and strings body
 fn strings(p: &mut Parser) {
     assert!(p.at(T![strings]));
     let m = p.start();
@@ -61,6 +79,8 @@ fn strings(p: &mut Parser) {
     m.complete(p, STRINGS);
 }
 
+/// Parse a `condition` block
+/// It consists of `condition` keyword,`:` token and condition body
 fn condition(p: &mut Parser) {
     assert!(p.at(T![condition]));
     let m = p.start();
@@ -70,8 +90,8 @@ fn condition(p: &mut Parser) {
     m.complete(p, CONDITION);
 }
 
-const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[T![variable]]);
-
+/// Parse a `strings` body
+/// It consists of a list of `variable` and `=` token and a string
 pub(super) fn strings_body(p: &mut Parser) {
     // add support for meta also
     while !p.at(EOF) && !p.at(T![condition]) && !p.at(T!['}']) {
@@ -83,13 +103,14 @@ pub(super) fn strings_body(p: &mut Parser) {
         }
         p.expect(T![=]);
         // so far only strings are supported, later add match for hex strings and regex
-        string(p);
+        pattern(p);
         m.complete(p, VARIABLE_STMT);
     }
 }
 
+/// Parse a string. For now string can be only basic plaintext string
 // add support for hex and regex strings later on
-fn string(p: &mut Parser) {
+fn pattern(p: &mut Parser) {
     let m = p.start();
     match p.current() {
         STRING_LIT => p.bump(STRING_LIT),
@@ -99,6 +120,9 @@ fn string(p: &mut Parser) {
     m.complete(p, PATTERN);
 }
 
+/// Parse a `condition` body
+/// It consists of a list of expressions
+/// Pratt parser is used to parse expressions
 pub(super) fn condition_body(p: &mut Parser) {
     // add support for meta also
     while !p.at(EOF) && !p.at(T!['}']) {
@@ -125,6 +149,12 @@ fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     }
 }
 
+/// Parse an expression using a Pratt parser.
+///
+/// Expression can be binary, unary or literal
+/// This is also used to reflect operator precedence and associativity
+/// It is inspired by Pratt parser used in rust-analyter
+/// <https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html>
 fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
     let mut lhs = match lhs(p) {
@@ -153,6 +183,7 @@ fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMark
     Some(lhs)
 }
 
+/// Left hand side of an expression.
 fn lhs(p: &mut Parser) -> Option<CompletedMarker> {
     let m;
     let kind = match p.current() {
