@@ -21,8 +21,9 @@ use rowan_test::{NodeOrToken, WalkEvent};
 use std::fs;
 #[cfg(test)]
 use std::io::Write;
+use std::ops::Range;
 #[cfg(test)]
-use text_size::{TextRange, TextSize};
+use text_size::TextRange;
 
 mod lexer;
 mod parser;
@@ -183,7 +184,7 @@ fn api_walktrough() {
         // Some helpers:
         // for example get token at specific offset. This can be useful
         // to obtain the token at given Error offset, to get its text, length etc.
-        let tkn = expression_stmt_syntax.token_at_offset(TextSize::from(151));
+        let tkn = expression_stmt_syntax.token_at_offset(151.into());
 
         // We can have offset that is between two tokens, so we use `right_biased` method
         // to obtain the token on the right side of the offset if it is between two tokens
@@ -279,20 +280,17 @@ fn api_walktrough() {
         }
         // We can also search a token that produced the error
         // Even though it produces range, ParseErrors only supports text offsets
-        assert_eq!(
-            parse_struct.errors()[1].range(),
-            TextRange::new(TextSize::from(173), TextSize::from(173))
-        );
+        assert_eq!(parse_struct.errors()[1].range(), TextRange::new(173.into(), 173.into()));
 
         // But luckily we can obtain the token at the offset
         // and from it we can get both its text and length
-        let tkn = ast.syntax().token_at_offset(TextSize::from(173)).right_biased().unwrap();
+        let tkn = ast.syntax().token_at_offset(173.into()).right_biased().unwrap();
 
         assert_eq!(tkn.text(), "nor");
         // Error node contains also appropriate nested SyntaxKind
         assert_eq!(tkn.kind(), SyntaxKind::IDENTIFIER);
         // and also the length as TextRange for specific token
-        assert_eq!(tkn.text_range(), TextRange::new(TextSize::from(173), TextSize::from(176)));
+        assert_eq!(tkn.text_range(), TextRange::new(173.into(), 176.into()));
         // or
         assert_eq!(tkn.text().len(), 3);
     }
