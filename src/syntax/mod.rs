@@ -12,7 +12,7 @@
 //!
 //! It uses modified rowan crate for storing all the information in fast and convinient way.
 //! [Rowan]: <https://github.com/rust-lang/rust-analyzer>
-//! 
+//!
 //! More detailed information can be also found in `rust-analyzer` syntax documentation
 //! [Rust-analyzer]: <https://github.com/rust-lang/rust-analyzer/blob/4b7675fcc30d3e2c05eafc68a5724db66b58142c/docs/dev/syntax.md>
 
