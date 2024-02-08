@@ -1,31 +1,31 @@
-- SOURCE_FILE
-  - RULE
-    - "rule" RULE_KW
-    - " " WHITESPACE
-    - "test" IDENTIFIER
-    - "\n" WHITESPACE
-    - BLOCK_EXPR
-      - "{" L_BRACE
-      - "\n\t" WHITESPACE
-      - STRINGS
-        - "strings" STRINGS_KW
-        - ":" COLON
-        - "\n\t\t" WHITESPACE
-        - VARIABLE_STMT
-          - "$a" VARIABLE
-          - " " WHITESPACE
-          - "=" ASSIGN
-          - " " WHITESPACE
-          - PATTERN
-            - "\"foo\"" STRING_LIT
-      - "\n\t" WHITESPACE
-      - CONDITION
-        - "condition" CONDITION_KW
-        - ":" COLON
-        - "\n\t\t" WHITESPACE
-        - EXPRESSION_STMT
-          - LITERAL
-            - "$a" VARIABLE
-      - "\n" WHITESPACE
-      - "}" R_BRACE
-  - "\n" WHITESPACE
+SOURCE_FILE@0..54
+  RULE@0..53
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 "\n"
+    BLOCK_EXPR@10..53
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..13 "\n\t"
+      STRINGS@13..34
+        STRINGS_KW@13..20 "strings"
+        COLON@20..21 ":"
+        WHITESPACE@21..24 "\n\t\t"
+        VARIABLE_STMT@24..34
+          VARIABLE@24..26 "$a"
+          WHITESPACE@26..27 " "
+          ASSIGN@27..28 "="
+          WHITESPACE@28..29 " "
+          PATTERN@29..34
+            STRING_LIT@29..34 "\"foo\""
+      WHITESPACE@34..36 "\n\t"
+      CONDITION@36..51
+        CONDITION_KW@36..45 "condition"
+        COLON@45..46 ":"
+        WHITESPACE@46..49 "\n\t\t"
+        EXPRESSION_STMT@49..51
+          LITERAL@49..51
+            VARIABLE@49..51 "$a"
+      WHITESPACE@51..52 "\n"
+      R_BRACE@52..53 "}"
+  WHITESPACE@53..54 "\n"

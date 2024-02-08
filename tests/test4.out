@@ -1,60 +1,60 @@
-- SOURCE_FILE
-  - "//Global comment" COMMENT
-  - "\n\n" WHITESPACE
-  - RULE
-    - "//Rule comment" COMMENT
-    - "\n" WHITESPACE
-    - "rule" RULE_KW
-    - " " WHITESPACE
-    - "test" IDENTIFIER
-    - "\n" WHITESPACE
-    - BLOCK_EXPR
-      - "{" L_BRACE
-      - "\n\t" WHITESPACE
-      - "//Rule block comment" COMMENT
-      - "\n\n\t" WHITESPACE
-      - STRINGS
-        - "//String comment" COMMENT
-        - "\n\t" WHITESPACE
-        - "strings" STRINGS_KW
-        - ":" COLON
-        - "\n\t\t" WHITESPACE
-        - VARIABLE_STMT
-          - ERROR
-            - "a" IDENTIFIER
-          - " " WHITESPACE
-          - "=" ASSIGN
-          - " " WHITESPACE
-          - PATTERN
-            - "\"foo\"" STRING_LIT
-        - "\n\t\t" WHITESPACE
-        - VARIABLE_STMT
-          - "$b" VARIABLE
-          - " " WHITESPACE
-          - "=" ASSIGN
-          - " " WHITESPACE
-          - PATTERN
-            - "\"bar\"" STRING_LIT
-      - "\n\t" WHITESPACE
-      - CONDITION
-        - "condition" CONDITION_KW
-        - ":" COLON
-        - "\n\t\t" WHITESPACE
-        - EXPRESSION_STMT
-          - EXPRESSION
-            - LITERAL
-              - "$a" VARIABLE
-            - " " WHITESPACE
-            - "or" OR_KW
-            - "\n\t\t" WHITESPACE
-            - EXPRESSION
-              - LITERAL
-                - "$b" VARIABLE
-              - " " WHITESPACE
-              - "and" AND_KW
-              - " " WHITESPACE
-              - LITERAL
-                - "true" TRUE_KW
-      - "\n" WHITESPACE
-      - "}" R_BRACE
-  - "\n" WHITESPACE
+SOURCE_FILE@0..157
+  COMMENT@0..16 "//Global comment"
+  WHITESPACE@16..18 "\n\n"
+  RULE@18..156
+    COMMENT@18..32 "//Rule comment"
+    WHITESPACE@32..33 "\n"
+    RULE_KW@33..37 "rule"
+    WHITESPACE@37..38 " "
+    IDENTIFIER@38..42 "test"
+    WHITESPACE@42..43 "\n"
+    BLOCK_EXPR@43..156
+      L_BRACE@43..44 "{"
+      WHITESPACE@44..46 "\n\t"
+      COMMENT@46..66 "//Rule block comment"
+      WHITESPACE@66..69 "\n\n\t"
+      STRINGS@69..120
+        COMMENT@69..85 "//String comment"
+        WHITESPACE@85..87 "\n\t"
+        STRINGS_KW@87..94 "strings"
+        COLON@94..95 ":"
+        WHITESPACE@95..98 "\n\t\t"
+        VARIABLE_STMT@98..107
+          ERROR@98..99
+            IDENTIFIER@98..99 "a"
+          WHITESPACE@99..100 " "
+          ASSIGN@100..101 "="
+          WHITESPACE@101..102 " "
+          PATTERN@102..107
+            STRING_LIT@102..107 "\"foo\""
+        WHITESPACE@107..110 "\n\t\t"
+        VARIABLE_STMT@110..120
+          VARIABLE@110..112 "$b"
+          WHITESPACE@112..113 " "
+          ASSIGN@113..114 "="
+          WHITESPACE@114..115 " "
+          PATTERN@115..120
+            STRING_LIT@115..120 "\"bar\""
+      WHITESPACE@120..122 "\n\t"
+      CONDITION@122..154
+        CONDITION_KW@122..131 "condition"
+        COLON@131..132 ":"
+        WHITESPACE@132..135 "\n\t\t"
+        EXPRESSION_STMT@135..154
+          EXPRESSION@135..154
+            LITERAL@135..137
+              VARIABLE@135..137 "$a"
+            WHITESPACE@137..138 " "
+            OR_KW@138..140 "or"
+            WHITESPACE@140..143 "\n\t\t"
+            EXPRESSION@143..154
+              LITERAL@143..145
+                VARIABLE@143..145 "$b"
+              WHITESPACE@145..146 " "
+              AND_KW@146..149 "and"
+              WHITESPACE@149..150 " "
+              LITERAL@150..154
+                TRUE_KW@150..154 "true"
+      WHITESPACE@154..155 "\n"
+      R_BRACE@155..156 "}"
+  WHITESPACE@156..157 "\n"

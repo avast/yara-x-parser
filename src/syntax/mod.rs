@@ -10,8 +10,10 @@ pub use rowan_test::GreenNode;
 use std::{marker::PhantomData, sync::Arc};
 
 use crate::{
-    parse_text, parser::SyntaxKind, syntax::ast::AstNode, syntax::syntax_node::SyntaxNode,
-    SyntaxError,
+    lexer::tokenize,
+    parser::{self, SyntaxKind},
+    syntax::{ast::AstNode, syntax_node::SyntaxNode},
+    SyntaxError, TextTokenSource, TextTreeSink,
 };
 
 macro_rules! format_to {
@@ -96,4 +98,16 @@ impl SourceFile {
         assert_eq!(root.kind(), SyntaxKind::SOURCE_FILE);
         Parse { green, errors: Arc::new(errors), _ty: PhantomData }
     }
+}
+
+fn parse_text(text: &str) -> (GreenNode, Vec<SyntaxError>) {
+    let (tokens, lexer_errors) = tokenize(text);
+    let mut token_source = TextTokenSource::new(text, &tokens);
+    let mut tree_sink = TextTreeSink::new(text, &tokens);
+
+    parser::parse(&mut token_source, &mut tree_sink);
+    let (tree, mut parser_errors) = tree_sink.finish();
+    parser_errors.extend(lexer_errors);
+
+    (tree, parser_errors)
 }

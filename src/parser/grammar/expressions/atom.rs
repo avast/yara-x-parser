@@ -26,7 +26,7 @@ pub(super) fn atom_expr(p: &mut Parser) -> Option<CompletedMarker> {
     #[allow(clippy::match_single_binding)]
     match p.current() {
         _ => {
-            p.err_recover("expected expression", EXPR_RECOVERY_SET);
+            p.err_recover("unsupported expression", EXPR_RECOVERY_SET);
             #[allow(clippy::needless_return)]
             return None;
         }
