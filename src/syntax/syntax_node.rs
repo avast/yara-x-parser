@@ -1,15 +1,14 @@
-//! This module defines Concrete Syntax Tree (CST), used by rust-analyzer.
+//! This module represents CST for YARA language
 //!
-//! The CST includes comments and whitespace, provides a single node type,
-//! `SyntaxNode`, and a basic traversal API (parent, children, siblings).
-//!
-//! The *real* implementation is in the (language-agnostic) `rowan` crate, this
-//! module just wraps its API.
+//! THe CST includes trivia such as comments or whitespaces
+//! `SyntaxNode` provides basic API that allows to travers the tree
+//! to find parent, children or siblings
+//! This is just a wrapper around `rowan` crate API
 
 use rowan_test::{GreenNodeBuilder, Language};
 use text_size::TextSize;
 
-use crate::parser::{self, syntaxkind::SyntaxKind};
+use crate::parser::{self, syntax_kind::SyntaxKind};
 use crate::SyntaxError;
 
 pub(crate) use rowan_test::GreenNode;
@@ -62,7 +61,6 @@ impl SyntaxTreeBuilder {
     }
 
     pub fn error(&mut self, error: parser::ParseError, text_pos: TextSize) {
-        self.errors
-            .push(SyntaxError::new_at_offset(error.0, text_pos))
+        self.errors.push(SyntaxError::new_at_offset(error.0, text_pos))
     }
 }

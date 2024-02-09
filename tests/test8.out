@@ -1,0 +1,54 @@
+SOURCE_FILE@0..149
+  COMMENT@0..16 "//Global comment"
+  WHITESPACE@16..18 "\n\n"
+  RULE@18..148
+    COMMENT@18..32 "//Rule comment"
+    WHITESPACE@32..33 "\n"
+    RULE_KW@33..37 "rule"
+    WHITESPACE@37..38 " "
+    IDENTIFIER@38..42 "test"
+    WHITESPACE@42..43 "\n"
+    BLOCK_EXPR@43..148
+      L_BRACE@43..44 "{"
+      WHITESPACE@44..46 "\n\t"
+      COMMENT@46..66 "//Rule block comment"
+      WHITESPACE@66..69 "\n\n\t"
+      COMMENT@69..85 "//String comment"
+      WHITESPACE@85..87 "\n\t"
+      ERROR@87..93
+        IDENTIFIER@87..93 "string"
+      COLON@93..94 ":"
+      WHITESPACE@94..97 "\n\t\t"
+      VARIABLE_STMT@97..107
+        VARIABLE@97..99 "$b"
+        WHITESPACE@99..100 " "
+        ASSIGN@100..101 "="
+        WHITESPACE@101..102 " "
+        PATTERN@102..107
+          STRING_LIT@102..107 "\"bar\""
+      WHITESPACE@107..109 "\n\t"
+      CONDITION@109..146
+        CONDITION_KW@109..118 "condition"
+        COLON@118..119 ":"
+        WHITESPACE@119..122 "\n\t\t"
+        EXPRESSION_STMT@122..146
+          EXPRESSION@122..146
+            EXPRESSION@122..137
+              LITERAL@122..124
+                VARIABLE@122..124 "$b"
+              WHITESPACE@124..125 " "
+              AND_KW@125..128 "and"
+              WHITESPACE@128..129 " "
+              PREFIX_EXPR@129..137
+                NOT_KW@129..132 "not"
+                WHITESPACE@132..133 " "
+                LITERAL@133..137
+                  TRUE_KW@133..137 "true"
+            WHITESPACE@137..138 " "
+            OR_KW@138..140 "or"
+            WHITESPACE@140..141 " "
+            LITERAL@141..146
+              FALSE_KW@141..146 "false"
+      WHITESPACE@146..147 "\n"
+      R_BRACE@147..148 "}"
+  WHITESPACE@148..149 "\n"

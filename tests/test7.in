@@ -10,5 +10,6 @@ rule test
 		$a = "foo"
 		$b = "bar"
 	condition:
-		$b and not true or false
+		$a and
+		$b or true
 }

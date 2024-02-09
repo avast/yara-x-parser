@@ -1,4 +1,13 @@
-use crate::{parser::syntaxkind::SyntaxKind, syntax::syntax_error::SyntaxError};
+//! This module contains lexer for YARA language.
+//! The lexer is implemented using `logos` crate.
+//! The lexer is used to convert the input text into a stream of tokens.
+//!
+//! Logos tokens are converted to `SyntaxKind` which is used in the parser to build the syntax tree.
+
+use crate::{
+    parser::syntax_kind::{SyntaxKind, T},
+    syntax::syntax_error::SyntaxError,
+};
 use logos::Logos;
 use std::fmt;
 use std::num::ParseIntError;
@@ -136,18 +145,12 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
                 SyntaxKind::ERROR
             }
         };
-        tokens.push(Token {
-            kind: syntaxkind,
-            len: token_len,
-        });
+        tokens.push(Token { kind: syntaxkind, len: token_len });
         offset += range.len();
     }
 
     // Add EOF token at the end
-    tokens.push(Token {
-        kind: SyntaxKind::EOF,
-        len: 0.into(),
-    });
+    tokens.push(Token { kind: SyntaxKind::EOF, len: 0.into() });
 
     (tokens, errors)
 }
@@ -155,25 +158,25 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
 // Convert LogosToken to SyntaxKind
 fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     match token {
-        LogosToken::Rule => SyntaxKind::RULE,
-        LogosToken::Strings => SyntaxKind::STRINGS,
-        LogosToken::Condition => SyntaxKind::CONDITION,
-        LogosToken::And => SyntaxKind::AND,
-        LogosToken::Or => SyntaxKind::OR,
-        LogosToken::Not => SyntaxKind::NOT,
+        LogosToken::Rule => SyntaxKind::RULE_KW,
+        LogosToken::Strings => SyntaxKind::STRINGS_KW,
+        LogosToken::Condition => SyntaxKind::CONDITION_KW,
+        LogosToken::And => SyntaxKind::AND_KW,
+        LogosToken::Or => SyntaxKind::OR_KW,
+        LogosToken::Not => SyntaxKind::NOT_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
-        LogosToken::String(_) => SyntaxKind::STRING,
-        LogosToken::Assign => SyntaxKind::ASSIGN,
-        LogosToken::Colon => SyntaxKind::COLON,
-        LogosToken::LBrace => SyntaxKind::LBRACE,
-        LogosToken::RBrace => SyntaxKind::RBRACE,
-        LogosToken::LParen => SyntaxKind::LPAREN,
-        LogosToken::RParen => SyntaxKind::RPAREN,
-        LogosToken::Comma => SyntaxKind::COMMA,
+        LogosToken::String(_) => SyntaxKind::STRING_LIT,
+        LogosToken::Assign => T![=],
+        LogosToken::Colon => T![:],
+        LogosToken::LBrace => T!['{'],
+        LogosToken::RBrace => T!['}'],
+        LogosToken::LParen => T!['('],
+        LogosToken::RParen => T![')'],
+        LogosToken::Comma => T![,],
         LogosToken::Number(_) => SyntaxKind::NUMBER,
-        LogosToken::True => SyntaxKind::TRUE,
-        LogosToken::False => SyntaxKind::FALSE,
+        LogosToken::True => SyntaxKind::TRUE_KW,
+        LogosToken::False => SyntaxKind::FALSE_KW,
         LogosToken::Whitespace => SyntaxKind::WHITESPACE,
         LogosToken::Comment | LogosToken::MultilineComment => SyntaxKind::COMMENT,
     }
@@ -213,18 +216,18 @@ mod tests {
         assert!(errors.is_empty());
         assert_eq!(tokens.len(), 15);
         assert_eq!(tokens[0].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[1].kind, SyntaxKind::RULE);
+        assert_eq!(tokens[1].kind, SyntaxKind::RULE_KW);
         assert_eq!(tokens[2].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[3].kind, SyntaxKind::IDENTIFIER);
         assert_eq!(tokens[4].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[5].kind, SyntaxKind::LBRACE);
+        assert_eq!(tokens[5].kind, SyntaxKind::L_BRACE);
         assert_eq!(tokens[6].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION);
+        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION_KW);
         assert_eq!(tokens[8].kind, SyntaxKind::COLON);
         assert_eq!(tokens[9].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[10].kind, SyntaxKind::VARIABLE);
         assert_eq!(tokens[11].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[12].kind, SyntaxKind::RBRACE);
+        assert_eq!(tokens[12].kind, SyntaxKind::R_BRACE);
         assert_eq!(tokens[13].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[14].kind, SyntaxKind::EOF);
     }
@@ -242,20 +245,20 @@ mod tests {
         assert_eq!(errors.len(), 1);
         assert_eq!(tokens.len(), 25);
         assert_eq!(tokens[0].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[1].kind, SyntaxKind::RULE);
+        assert_eq!(tokens[1].kind, SyntaxKind::RULE_KW);
         assert_eq!(tokens[2].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[3].kind, SyntaxKind::IDENTIFIER);
         assert_eq!(tokens[4].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[5].kind, SyntaxKind::LBRACE);
+        assert_eq!(tokens[5].kind, SyntaxKind::L_BRACE);
         assert_eq!(tokens[6].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION);
+        assert_eq!(tokens[7].kind, SyntaxKind::CONDITION_KW);
         assert_eq!(tokens[8].kind, SyntaxKind::COLON);
         assert_eq!(tokens[9].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[10].kind, SyntaxKind::VARIABLE);
         assert_eq!(tokens[11].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[12].kind, SyntaxKind::ASSIGN);
         assert_eq!(tokens[13].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[14].kind, SyntaxKind::STRING);
+        assert_eq!(tokens[14].kind, SyntaxKind::STRING_LIT);
         assert_eq!(tokens[15].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[16].kind, SyntaxKind::VARIABLE);
         assert_eq!(tokens[17].kind, SyntaxKind::WHITESPACE);
@@ -263,7 +266,7 @@ mod tests {
         assert_eq!(tokens[19].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[20].kind, SyntaxKind::ERROR);
         assert_eq!(tokens[21].kind, SyntaxKind::WHITESPACE);
-        assert_eq!(tokens[22].kind, SyntaxKind::RBRACE);
+        assert_eq!(tokens[22].kind, SyntaxKind::R_BRACE);
         assert_eq!(tokens[23].kind, SyntaxKind::WHITESPACE);
         assert_eq!(tokens[24].kind, SyntaxKind::EOF);
     }

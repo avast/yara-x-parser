@@ -6,8 +6,7 @@ rule test
 	//Rule block comment
 
 	//String comment
-	strings:
-		$a = "foo"
+	string:
 		$b = "bar"
 	condition:
 		$b and not true or false
