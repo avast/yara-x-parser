@@ -41,19 +41,19 @@ SOURCE_FILE@0..158
         WHITESPACE@133..136 "\n\t\t"
         EXPRESSION_STMT@136..155
           EXPRESSION@136..155
-            LITERAL@136..138
-              VARIABLE@136..138 "$a"
-            WHITESPACE@138..139 " "
-            OR_KW@139..141 "or"
-            WHITESPACE@141..144 "\n\t\t"
-            EXPRESSION@144..155
-              LITERAL@144..146
-                VARIABLE@144..146 "$b"
-              WHITESPACE@146..147 " "
-              AND_KW@147..150 "and"
-              WHITESPACE@150..151 " "
-              LITERAL@151..155
-                TRUE_KW@151..155 "true"
+            EXPRESSION@136..147
+              LITERAL@136..138
+                VARIABLE@136..138 "$a"
+              WHITESPACE@138..139 " "
+              AND_KW@139..142 "and"
+              WHITESPACE@142..145 "\n\t\t"
+              LITERAL@145..147
+                VARIABLE@145..147 "$b"
+            WHITESPACE@147..148 " "
+            OR_KW@148..150 "or"
+            WHITESPACE@150..151 " "
+            LITERAL@151..155
+              TRUE_KW@151..155 "true"
       WHITESPACE@155..156 "\n"
       R_BRACE@156..157 "}"
   WHITESPACE@157..158 "\n"

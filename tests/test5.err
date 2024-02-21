@@ -1,1 +1,1 @@
-SyntaxError("expected expression", 144..144)
+SyntaxError("unsupported expression", 144..144)

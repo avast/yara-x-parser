@@ -1,3 +1,7 @@
+//! A bit set for `SyntaxKind`
+//! This can be used to create a new set of tokens
+//! mainly for Error recovery FIRST/FOLLOW sets
+
 use crate::parser::SyntaxKind;
 
 #[derive(Clone, Copy)]

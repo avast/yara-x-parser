@@ -2,6 +2,9 @@ use std::fmt;
 
 use text_size::{TextRange, TextSize};
 
+/// Represents an error that can happen during parsing or lexing
+/// This can be also used in further AST validations to throw another error
+/// Each error has a message and a range
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SyntaxError(String, TextRange);
 

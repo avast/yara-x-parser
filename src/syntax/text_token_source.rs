@@ -4,6 +4,8 @@ use crate::{
 };
 use text_size::{TextRange, TextSize};
 
+/// A source of tokens for the parser.
+/// It takes tokens from a source text and store them into token-offset pairs
 pub(crate) struct TextTokenSource<'t> {
     text: &'t str,
 
@@ -29,6 +31,13 @@ impl<'t> TokenSource for TextTokenSource<'t> {
         let pos = self.curr.1 + 1;
         self.curr = (mk_token(pos, &self.token_offset_pairs), pos);
     }
+
+    fn is_keyword(&self, kw: &str) -> bool {
+        self.token_offset_pairs
+            .get(self.curr.1)
+            .map(|(token, offset)| &self.text[TextRange::at(*offset, token.len)] == kw)
+            .unwrap_or(false)
+    }
 }
 
 fn mk_token(pos: usize, token_offset_pairs: &[(Token, TextSize)]) -> parser::Token {
@@ -42,12 +51,10 @@ fn mk_token(pos: usize, token_offset_pairs: &[(Token, TextSize)]) -> parser::Tok
         ),
         None => (EOF, false),
     };
-    parser::Token {
-        kind,
-        is_jointed_to_next,
-    }
+    parser::Token { kind, is_jointed_to_next }
 }
 
+/// Generate token-offset pairs
 impl<'t> TextTokenSource<'t> {
     pub(crate) fn new(text: &'t str, raw_tokens: &'t [Token]) -> TextTokenSource<'t> {
         let token_offset_pairs: Vec<_> = raw_tokens
@@ -55,11 +62,7 @@ impl<'t> TextTokenSource<'t> {
             .filter_map({
                 let mut len = 0.into();
                 move |token| {
-                    let pair = if token.kind.is_trivia() {
-                        None
-                    } else {
-                        Some((*token, len))
-                    };
+                    let pair = if token.kind.is_trivia() { None } else { Some((*token, len)) };
                     len += token.len;
                     pair
                 }
@@ -67,10 +70,6 @@ impl<'t> TextTokenSource<'t> {
             .collect();
 
         let first = mk_token(0, &token_offset_pairs);
-        TextTokenSource {
-            text,
-            token_offset_pairs,
-            curr: (first, 0),
-        }
+        TextTokenSource { text, token_offset_pairs, curr: (first, 0) }
     }
 }

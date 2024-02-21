@@ -10,7 +10,12 @@ logos = "0.13.0"
 rowan-test = { git = "https://github.com/avast/avast-rowan.git" }
 text-size = "1.1.1"
 drop_bomb = "0.1.5"
+ungrammar = "1.16.1"
+itertools = "0.12.0"
+xshell = "0.1"
 
 [dev-dependencies]
 goldenfile = "1.6.0"
 globwalk = "0.9.1"
+proc-macro2 = "1.0.78"
+quote = "1.0.35"

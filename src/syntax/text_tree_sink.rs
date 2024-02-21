@@ -4,11 +4,11 @@ use text_size::{TextRange, TextSize};
 use crate::{
     lexer::Token,
     parser::{ParseError, SyntaxKind, TreeSink},
-    syntax::{
-        ast, syntax_error::SyntaxError, syntax_node::GreenNode, syntax_node::SyntaxTreeBuilder,
-    },
+    syntax::{syntax_error::SyntaxError, syntax_node::GreenNode, syntax_node::SyntaxTreeBuilder},
 };
 
+/// Used to connect parser and specific SyntaxTree representation
+/// It also handles attaching trivia (whitespaces and comments) to the nodes
 pub(crate) struct TextTreeSink<'a> {
     text: &'a str,
     tokens: &'a [Token],
@@ -54,10 +54,8 @@ impl<'a> TreeSink for TextTreeSink<'a> {
             State::Normal => (),
         }
 
-        let n_trivias = self.tokens[self.token_pos..]
-            .iter()
-            .take_while(|it| it.kind.is_trivia())
-            .count();
+        let n_trivias =
+            self.tokens[self.token_pos..].iter().take_while(|it| it.kind.is_trivia()).count();
         let leading_trivias = &self.tokens[self.token_pos..self.token_pos + n_trivias];
         let mut trivia_end =
             self.text_pos + leading_trivias.iter().map(|it| it.len).sum::<TextSize>();
@@ -146,6 +144,7 @@ fn n_attached_trivias<'a>(
     trivias: impl Iterator<Item = (SyntaxKind, &'a str)>,
 ) -> usize {
     match kind {
+        // Nodes that are supported to have attached trivias
         SyntaxKind::RULE | SyntaxKind::BLOCK_EXPR | SyntaxKind::STRINGS | SyntaxKind::CONDITION => {
             let mut res = 0;
             let trivias = trivias.enumerate().peekable();
