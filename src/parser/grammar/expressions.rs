@@ -4,7 +4,9 @@ use super::*;
 
 /// Recovery set for `strings` block. This also should be adjusted and tweaked to
 /// better represents recovery set later on
-const VARIABLE_RECOVERY_SET: TokenSet = TokenSet::new(&[T![strings]]);
+const STRINGS_RECOVERY_SET: TokenSet = TokenSet::new(&[T![strings]]);
+
+const META_RECOVERY_SET: TokenSet = TokenSet::new(&[T![identifier]]);
 
 /// Parse a rule body
 /// A rule body consists `{`, rule_body and `}`
@@ -29,9 +31,19 @@ pub(crate) fn block_expr(p: &mut Parser) {
 pub(super) fn rule_body(p: &mut Parser) {
     let mut has_strings = false;
     let mut has_condition = false;
+    let mut has_meta = false;
     while !p.at(EOF) && !p.at(T!['}']) {
         match p.current() {
-            // add metadata support later
+            T![meta] => {
+                if has_meta {
+                    p.error("only one meta block is allowed");
+                }
+                if has_condition || has_strings {
+                    p.error("meta block must come before strings and condition blocks");
+                }
+                meta(p);
+                has_meta = true;
+            }
             T![strings] => {
                 if has_strings {
                     p.error("only one strings block is allowed");
@@ -59,13 +71,24 @@ pub(super) fn rule_body(p: &mut Parser) {
                     p.eat(T![:]);
                     if p.current() == T![variable] && p.nth(1) == T![=] {
                         strings_body(p)
-                    } else {
+                    } else if let Some(_) = expression(p, None, 1) {
                         condition_body(p);
                     }
                 }
             }
         }
     }
+}
+
+/// Parse a `meta` block
+/// It consists of `meta` keyword, `:` token and meta body
+fn meta(p: &mut Parser) {
+    assert!(p.at(T![meta]));
+    let m = p.start();
+    p.bump(T![meta]);
+    p.expect(T![:]);
+    meta_body(p);
+    m.complete(p, META);
 }
 
 /// Parse a `strings` block
@@ -90,32 +113,54 @@ fn condition(p: &mut Parser) {
     m.complete(p, CONDITION);
 }
 
+/// Parse a `meta` body
+/// It consists of a list of `variable` and `=` token and a string
+pub(super) fn meta_body(p: &mut Parser) {
+    while !p.at(EOF) && !p.at(T![strings]) && !p.at(T![condition]) && !p.at(T!['}']) {
+        let m = p.start();
+        if p.at(T![identifier]) {
+            p.bump(T![identifier]);
+        } else {
+            p.err_recover("expected an identifier", META_RECOVERY_SET);
+        }
+        p.expect(T![=]);
+        match p.current() {
+            STRING_LIT | TRUE_KW | FALSE_KW | INT_LIT | FLOAT_LIT => {
+                p.bump(p.current());
+            }
+            _ => {
+                p.error("expected a valid metadata value");
+                return;
+            }
+        }
+        m.complete(p, META_STMT);
+    }
+}
+
 /// Parse a `strings` body
 /// It consists of a list of `variable` and `=` token and a string
 pub(super) fn strings_body(p: &mut Parser) {
-    // add support for meta also
     while !p.at(EOF) && !p.at(T![condition]) && !p.at(T!['}']) {
         let m = p.start();
         if p.at(T![variable]) {
             p.bump(T![variable]);
         } else {
-            p.err_recover("expected a variable", VARIABLE_RECOVERY_SET);
+            p.err_recover("expected a variable", STRINGS_RECOVERY_SET);
         }
         p.expect(T![=]);
         // so far only strings are supported, later add match for hex strings and regex
-        pattern(p);
+        match p.current() {
+            STRING_LIT => pattern(p),
+            _ => p.err_and_bump("expected a string"),
+        }
         m.complete(p, VARIABLE_STMT);
     }
 }
 
-/// Parse a string. For now string can be only basic plaintext string
-// add support for hex and regex strings later on
+/// Parse a plaintext string pattern
 fn pattern(p: &mut Parser) {
     let m = p.start();
-    match p.current() {
-        STRING_LIT => p.bump(STRING_LIT),
-        _ => p.err_and_bump("expected a string"),
-    }
+    p.bump(STRING_LIT);
     // add string modifiers
     m.complete(p, PATTERN);
 }
@@ -124,7 +169,6 @@ fn pattern(p: &mut Parser) {
 /// It consists of a list of expressions
 /// Pratt parser is used to parse expressions
 pub(super) fn condition_body(p: &mut Parser) {
-    // add support for meta also
     while !p.at(EOF) && !p.at(T!['}']) {
         let m = p.start();
         if let Some(cm) = expression(p, Some(m), 1) {

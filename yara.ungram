@@ -6,8 +6,20 @@ Rule =
 
 BlockExpr = 
     '{'
-        Strings? Condition
+        Meta? Strings? Condition
     '}'
+
+Meta = 
+    'meta' ':'
+        MetaStmt*
+
+MetaStmt =
+    'identifier' '=' 
+        |  'true'
+        |  'false'
+        |  'string_lit'
+        |  'int_lit'
+        |  'float_lit'
 
 Strings =
     'strings' ':'

@@ -65,7 +65,8 @@ impl ast::Expression {
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum LiteralKind {
     String(ast::StringLit),
-    Number(ast::Number),
+    Int(ast::IntLit),
+    Float(ast::FloatLit),
     Variable(ast::Variable),
     Bool(bool),
 }
@@ -82,8 +83,12 @@ impl ast::Literal {
     pub fn kind(&self) -> LiteralKind {
         let token = self.token();
 
-        if let Some(number) = ast::Number::cast(token.clone()) {
-            return LiteralKind::Number(number);
+        if let Some(number) = ast::IntLit::cast(token.clone()) {
+            return LiteralKind::Int(number);
+        }
+
+        if let Some(number) = ast::FloatLit::cast(token.clone()) {
+            return LiteralKind::Float(number);
         }
 
         if let Some(variable) = ast::Variable::cast(token.clone()) {

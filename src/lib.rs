@@ -4,14 +4,13 @@
 use crate::{
     parser::SyntaxKind,
     syntax::{
-        syntax_error::SyntaxError,
-        syntax_node::{SyntaxNode, SyntaxToken},
-        text_token_source::TextTokenSource,
+        syntax_error::SyntaxError, syntax_node::SyntaxNode, text_token_source::TextTokenSource,
         text_tree_sink::TextTreeSink,
     },
 };
 
 pub use crate::syntax::ast::*;
+pub use crate::syntax::syntax_node::SyntaxToken;
 pub use crate::syntax::SourceFile;
 
 // use only for tests
@@ -21,7 +20,6 @@ use rowan_test::{NodeOrToken, WalkEvent};
 use std::fs;
 #[cfg(test)]
 use std::io::Write;
-use std::ops::Range;
 #[cfg(test)]
 use text_size::TextRange;
 
@@ -37,6 +35,9 @@ fn api_walktrough() {
     // without errors
     let source_code = "
         rule test_rule {
+            meta:
+                author = \"author\"
+                number = -123
             // This is a comment
             strings:
                 $a = \"test\"
@@ -80,6 +81,34 @@ fn api_walktrough() {
             assert_eq!(comment.text(), "This is a comment");
         }
 
+        // We can also obtain the meta part of the rule
+        // it consits of meta keyword and multiple `META_STMT` nodes
+        let meta = block.meta().unwrap();
+
+        // We can obtain the meta token
+        assert!(meta.meta_token().is_some());
+        assert!(meta.meta_token().unwrap().kind() == SyntaxKind::META_KW);
+
+        // and also the `COLON` token
+        assert!(meta.colon_token().is_some());
+
+        // Each meta statement consists of a variable token
+        // an assign token and a literal token
+        for meta_stmt in meta.meta_stmts() {
+            // each meta statement contains a identifier token
+            // an assign token and a literal token
+            let id = meta_stmt.identifier_token().unwrap();
+
+            // For now pattern can be only a string literal
+            assert!(!id.text().is_empty());
+
+            // and also the assign token
+            assert!(meta_stmt.assign_token().is_some());
+
+            // assert that the literal token is either a string or an int
+            assert!(meta_stmt.string_lit_token().is_some() || meta_stmt.int_lit_token().is_some());
+        }
+
         // This block expression consists (for now) of two parts
         // optional strings and required condition part
         // Firstly we can obtain the strings part
@@ -99,7 +128,7 @@ fn api_walktrough() {
         for variable_stmt in strings.variable_stmts() {
             // each variable statement contains a variable token
             // an assign token and a literal token
-            // now I will showm only the pattern token as an example
+            // now I will show only the pattern token as an example
             let pattern = variable_stmt.pattern().unwrap();
 
             // For now pattern can be only a string literal
@@ -184,7 +213,7 @@ fn api_walktrough() {
         // Some helpers:
         // for example get token at specific offset. This can be useful
         // to obtain the token at given Error offset, to get its text, length etc.
-        let tkn = expression_stmt_syntax.token_at_offset(151.into());
+        let tkn = expression_stmt_syntax.token_at_offset(232.into());
 
         // We can have offset that is between two tokens, so we use `right_biased` method
         // to obtain the token on the right side of the offset if it is between two tokens
@@ -284,7 +313,11 @@ fn api_walktrough() {
 
         // But luckily we can obtain the token at the offset
         // and from it we can get both its text and length
-        let tkn = ast.syntax().token_at_offset(173.into()).right_biased().unwrap();
+        let tkn = ast
+            .syntax()
+            .token_at_offset(parse_struct.errors()[1].range().start())
+            .right_biased()
+            .unwrap();
 
         assert_eq!(tkn.text(), "nor");
         // Error node contains also appropriate nested SyntaxKind

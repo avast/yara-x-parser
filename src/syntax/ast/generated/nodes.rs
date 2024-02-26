@@ -44,6 +44,9 @@ impl BlockExpr {
     pub fn l_brace_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['{'])
     }
+    pub fn meta(&self) -> Option<Meta> {
+        support::child(&self.syntax)
+    }
     pub fn strings(&self) -> Option<Strings> {
         support::child(&self.syntax)
     }
@@ -52,6 +55,22 @@ impl BlockExpr {
     }
     pub fn r_brace_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['}'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Meta {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Meta {
+    pub fn meta_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![meta])
+    }
+    pub fn colon_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![:])
+    }
+    pub fn meta_stmts(&self) -> AstChildren<MetaStmt> {
+        support::children(&self.syntax)
     }
 }
 
@@ -86,6 +105,34 @@ impl Condition {
     }
     pub fn expression_stmt(&self) -> Option<ExpressionStmt> {
         support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct MetaStmt {
+    pub(crate) syntax: SyntaxNode,
+}
+impl MetaStmt {
+    pub fn identifier_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![identifier])
+    }
+    pub fn assign_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![=])
+    }
+    pub fn true_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![true])
+    }
+    pub fn false_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![false])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+    pub fn int_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![int_lit])
+    }
+    pub fn float_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![float_lit])
     }
 }
 
@@ -207,6 +254,21 @@ impl AstNode for BlockExpr {
         &self.syntax
     }
 }
+impl AstNode for Meta {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == META
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for Strings {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == STRINGS
@@ -225,6 +287,21 @@ impl AstNode for Strings {
 impl AstNode for Condition {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == CONDITION
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for MetaStmt {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == META_STMT
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -400,12 +477,22 @@ impl std::fmt::Display for BlockExpr {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for Meta {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for Strings {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for Condition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for MetaStmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

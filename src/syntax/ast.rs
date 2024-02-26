@@ -14,7 +14,9 @@ use crate::{
 };
 
 pub use self::{
+    expr_ext::LiteralKind,
     generated::{nodes::*, tokens::*},
+    operators::*,
     traits::HasComments,
 };
 

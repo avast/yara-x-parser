@@ -5,10 +5,12 @@ rule test
 {
 	//Rule block comment
 
+	meta:
+		author = "Author"
+		description = -20.3
 	//String comment
 	strings:
-		$a = "foo"
 		$b = "bar"
 	condition:
-		$b and not true or false
+		$b and not true or true
 }

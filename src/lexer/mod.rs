@@ -10,33 +10,18 @@ use crate::{
 };
 use logos::Logos;
 use std::fmt;
-use std::num::ParseIntError;
 use text_size::{TextRange, TextSize};
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub(crate) enum LexingError {
-    InvalidInteger(String),
     #[default]
     InvalidCharacter,
 }
 
-// Implement Display trait for LexingError
 impl fmt::Display for LexingError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            LexingError::InvalidInteger(msg) => write!(f, "Invalid integer: {}", msg),
             LexingError::InvalidCharacter => write!(f, "Invalid character"),
-        }
-    }
-}
-
-/// Error type returned by calling `lex.slice().parse()` to u8.
-impl From<ParseIntError> for LexingError {
-    fn from(err: ParseIntError) -> Self {
-        use std::num::IntErrorKind::*;
-        match err.kind() {
-            PosOverflow | NegOverflow => LexingError::InvalidInteger("overflow error".to_owned()),
-            _ => LexingError::InvalidInteger("other error".to_owned()),
         }
     }
 }
@@ -58,6 +43,8 @@ pub(crate) enum LogosToken {
     // Keywords
     #[token("rule")]
     Rule,
+    #[token("meta")]
+    Meta,
     #[token("strings")]
     Strings,
     #[token("condition")]
@@ -72,7 +59,7 @@ pub(crate) enum LogosToken {
     #[regex("[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
     // Variables
-    #[regex(r"\$[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Variable(String),
     // Strings
     #[regex(r#""[^"]*""#, |lex| lex.slice().to_string())]
@@ -92,9 +79,12 @@ pub(crate) enum LogosToken {
     RParen,
     #[token(",")]
     Comma,
-    // Numbers
-    #[regex(r"[0-9]+", |lex| lex.slice().parse())]
-    Number(i64),
+    // Integer
+    #[regex(r"-?0x[a-fA-F0-9]+|-?0o[0-7]+|-?[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
+    Integer(String),
+    // Float
+    #[regex(r"-?[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
+    Float(String),
     // Booleans
     #[token("true")]
     True,
@@ -103,7 +93,7 @@ pub(crate) enum LogosToken {
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
-    #[regex(r"[ \t\n\f]+")]
+    #[regex(r"[ \t\n\r]+")]
     Whitespace,
 
     // Comments
@@ -159,6 +149,7 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
 fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     match token {
         LogosToken::Rule => SyntaxKind::RULE_KW,
+        LogosToken::Meta => SyntaxKind::META_KW,
         LogosToken::Strings => SyntaxKind::STRINGS_KW,
         LogosToken::Condition => SyntaxKind::CONDITION_KW,
         LogosToken::And => SyntaxKind::AND_KW,
@@ -174,7 +165,8 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::LParen => T!['('],
         LogosToken::RParen => T![')'],
         LogosToken::Comma => T![,],
-        LogosToken::Number(_) => SyntaxKind::NUMBER,
+        LogosToken::Integer(_) => SyntaxKind::INT_LIT,
+        LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
         LogosToken::True => SyntaxKind::TRUE_KW,
         LogosToken::False => SyntaxKind::FALSE_KW,
         LogosToken::Whitespace => SyntaxKind::WHITESPACE,
@@ -238,7 +230,7 @@ mod tests {
             rule foo {
                 condition:
                     $a = "test"
-                    $b = 1234567890123456789012345678901234567890
+                    $b = §
             }
         "#;
         let (tokens, errors) = tokenize(input);
