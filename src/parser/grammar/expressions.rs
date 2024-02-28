@@ -2,12 +2,6 @@ mod atom;
 
 use super::*;
 
-/// Recovery set for `strings` block. This also should be adjusted and tweaked to
-/// better represents recovery set later on
-const STRINGS_RECOVERY_SET: TokenSet = TokenSet::new(&[T![strings]]);
-
-const META_RECOVERY_SET: TokenSet = TokenSet::new(&[T![identifier]]);
-
 /// Parse a rule body
 /// A rule body consists `{`, rule_body and `}`
 /// This can probably be later simplified to not have both
@@ -32,6 +26,7 @@ pub(super) fn rule_body(p: &mut Parser) {
     let mut has_strings = false;
     let mut has_condition = false;
     let mut has_meta = false;
+
     while !p.at(EOF) && !p.at(T!['}']) {
         match p.current() {
             T![meta] => {
@@ -66,15 +61,7 @@ pub(super) fn rule_body(p: &mut Parser) {
                 // but we can still try to parse their body and throw an error for parent
                 // for now it just looks at next 2 tokens to differenciate between valid strings
                 // body or condition body. This should probably be adjusted later
-                p.err_and_bump("expected strings or condition");
-                if p.current() == T![:] {
-                    p.eat(T![:]);
-                    if p.current() == T![variable] && p.nth(1) == T![=] {
-                        strings_body(p)
-                    } else if let Some(_) = expression(p, None, 1) {
-                        condition_body(p);
-                    }
-                }
+                p.err_and_bump("expected meta, strings or condition keyword");
             }
         }
     }
@@ -121,7 +108,7 @@ pub(super) fn meta_body(p: &mut Parser) {
         if p.at(T![identifier]) {
             p.bump(T![identifier]);
         } else {
-            p.err_recover("expected an identifier", META_RECOVERY_SET);
+            p.err_and_bump("expected an identifier");
         }
         p.expect(T![=]);
         match p.current() {
@@ -145,7 +132,7 @@ pub(super) fn strings_body(p: &mut Parser) {
         if p.at(T![variable]) {
             p.bump(T![variable]);
         } else {
-            p.err_recover("expected a variable", STRINGS_RECOVERY_SET);
+            p.err_and_bump("expected a variable");
         }
         p.expect(T![=]);
         // so far only strings are supported, later add match for hex strings and regex

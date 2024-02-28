@@ -1,7 +1,7 @@
 //Global comment
 
 //Rule comment
-rule test
+rule test : bla test
 {
 	//Rule block comment
 

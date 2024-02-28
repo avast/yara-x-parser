@@ -17,15 +17,17 @@ SOURCE_FILE@0..149
       WHITESPACE@85..87 "\n\t"
       ERROR@87..93
         IDENTIFIER@87..93 "string"
-      COLON@93..94 ":"
+      ERROR@93..94
+        COLON@93..94 ":"
       WHITESPACE@94..97 "\n\t\t"
-      VARIABLE_STMT@97..107
+      ERROR@97..99
         VARIABLE@97..99 "$b"
-        WHITESPACE@99..100 " "
+      WHITESPACE@99..100 " "
+      ERROR@100..101
         ASSIGN@100..101 "="
-        WHITESPACE@101..102 " "
-        PATTERN@102..107
-          STRING_LIT@102..107 "\"bar\""
+      WHITESPACE@101..102 " "
+      ERROR@102..107
+        STRING_LIT@102..107 "\"bar\""
       WHITESPACE@107..109 "\n\t"
       CONDITION@109..146
         CONDITION_KW@109..118 "condition"

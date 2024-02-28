@@ -22,6 +22,7 @@ impl SourceFile {
 pub struct Rule {
     pub(crate) syntax: SyntaxNode,
 }
+impl ast::HasModifier for Rule {}
 impl ast::HasComments for Rule {}
 impl Rule {
     pub fn rule_token(&self) -> Option<SyntaxToken> {
@@ -30,8 +31,37 @@ impl Rule {
     pub fn identifier_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![identifier])
     }
+    pub fn colon_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![:])
+    }
+    pub fn tags(&self) -> AstChildren<Tag> {
+        support::children(&self.syntax)
+    }
     pub fn body(&self) -> Option<BlockExpr> {
         support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Modifier {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Modifier {
+    pub fn private_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![private])
+    }
+    pub fn global_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![global])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Tag {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Tag {
+    pub fn identifier_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![identifier])
     }
 }
 
@@ -209,6 +239,12 @@ pub struct AnyHasComments {
     pub(crate) syntax: SyntaxNode,
 }
 impl ast::HasComments for AnyHasComments {}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct AnyHasModifier {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ast::HasModifier for AnyHasModifier {}
 impl AstNode for SourceFile {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == SOURCE_FILE
@@ -227,6 +263,36 @@ impl AstNode for SourceFile {
 impl AstNode for Rule {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == RULE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Modifier {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == MODIFIER
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Tag {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == TAG
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -457,6 +523,23 @@ impl AstNode for AnyHasComments {
         &self.syntax
     }
 }
+impl AnyHasModifier {
+    #[inline]
+    pub fn new<T: ast::HasModifier>(node: T) -> AnyHasModifier {
+        AnyHasModifier { syntax: node.syntax().clone() }
+    }
+}
+impl AstNode for AnyHasModifier {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        matches!(kind, RULE)
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        Self::can_cast(syntax.kind()).then_some(AnyHasModifier { syntax })
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl std::fmt::Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -468,6 +551,16 @@ impl std::fmt::Display for SourceFile {
     }
 }
 impl std::fmt::Display for Rule {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Modifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Tag {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

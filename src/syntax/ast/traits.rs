@@ -3,11 +3,18 @@
 //! to iterate over comments in the syntax tree
 //! This can be easily extended to support other traits
 
-use crate::syntax::ast::{self, AstNode};
+use crate::syntax::ast::{self, support, AstNode};
 use crate::syntax::syntax_node::SyntaxElementChildren;
 
 use super::AstToken;
 
+pub trait HasModifier: AstNode {
+    fn modifier(&self) -> Vec<String> {
+        support::children::<ast::Modifier>(self.syntax())
+            .map(|m| m.syntax().text().to_string())
+            .collect::<Vec<_>>()
+    }
+}
 pub trait HasComments: AstNode {
     fn comments(&self) -> CommentIter {
         CommentIter { iter: self.syntax().children_with_tokens() }

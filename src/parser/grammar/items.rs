@@ -48,9 +48,15 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
 // In the future, also imports and includes will be supported here
 pub(super) fn opt_rule_import_include(p: &mut Parser, m: Marker) -> Result<(), Marker> {
     // add rule modifiers to match current and lookahead next with p.nth(1) for RULE or ERROR
-    match p.current() {
-        T![rule] => rule(p, m),
-        _ => return Err(m),
+    while p.at_ts(TokenSet::new(&[T![private], T![global]])) {
+        let m = p.start();
+        p.bump_any();
+        m.complete(p, MODIFIER);
+    }
+    if p.at(T![rule]) {
+        rule(p, m);
+    } else {
+        return Err(m);
     }
     Ok(())
 }
@@ -58,6 +64,7 @@ pub(super) fn opt_rule_import_include(p: &mut Parser, m: Marker) -> Result<(), M
 // Parse a rule
 // It consists of rule name [`IDENTIFIER`] and a body [`block_expr`]
 fn rule(p: &mut Parser, m: Marker) {
+    assert!(p.at(T![rule]));
     p.bump(T![rule]);
     if p.at(IDENTIFIER) {
         p.bump(IDENTIFIER);
@@ -65,6 +72,14 @@ fn rule(p: &mut Parser, m: Marker) {
         p.err_recover("expected a name", RULE_RECOVERY_SET);
     }
     // add optional support for rule tags
+    if p.at(T![:]) {
+        p.bump(T![:]);
+        while p.at(IDENTIFIER) {
+            let m = p.start();
+            p.bump(IDENTIFIER);
+            m.complete(p, TAG);
+        }
+    }
     expressions::block_expr(p);
     m.complete(p, RULE);
 }

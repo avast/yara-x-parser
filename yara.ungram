@@ -1,8 +1,14 @@
 SourceFile = Rule*
 
 Rule = 
-    'rule' 'identifier'
-    body:BlockExpr
+    Modifier? 'rule' 'identifier' ':'? Tag*
+        body:BlockExpr
+
+Modifier = 
+    'private' | 'global'
+
+Tag = 
+    'identifier'
 
 BlockExpr = 
     '{'

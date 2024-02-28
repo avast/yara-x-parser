@@ -18,6 +18,7 @@ pub use self::{
     generated::{nodes::*, tokens::*},
     operators::*,
     traits::HasComments,
+    traits::HasModifier,
 };
 
 /// Zero runtime cost conversion to AST layer

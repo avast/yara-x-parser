@@ -43,6 +43,10 @@ pub(crate) enum LogosToken {
     // Keywords
     #[token("rule")]
     Rule,
+    #[token("private")]
+    Private,
+    #[token("global")]
+    Global,
     #[token("meta")]
     Meta,
     #[token("strings")]
@@ -149,6 +153,8 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
 fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     match token {
         LogosToken::Rule => SyntaxKind::RULE_KW,
+        LogosToken::Private => SyntaxKind::PRIVATE_KW,
+        LogosToken::Global => SyntaxKind::GLOBAL_KW,
         LogosToken::Meta => SyntaxKind::META_KW,
         LogosToken::Strings => SyntaxKind::STRINGS_KW,
         LogosToken::Condition => SyntaxKind::CONDITION_KW,
