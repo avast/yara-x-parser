@@ -1,4 +1,8 @@
-SourceFile = Rule*
+SourceFile = 
+    ImportStmt* | Rule*
+
+ImportStmt = 
+    'import' 'string_lit'
 
 Rule = 
     Modifier? 'rule' 'identifier' ':'? Tag*

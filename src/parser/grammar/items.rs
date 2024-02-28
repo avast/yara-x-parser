@@ -17,7 +17,17 @@ pub(super) fn mod_content(p: &mut Parser, stop_on_r_brace: bool) {
 // process either rule, import or include
 pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
     let m = p.start();
-    let m = match opt_rule_import_include(p, m) {
+
+    // Parse imports
+    if p.at(IMPORT_KW) {
+        p.bump(IMPORT_KW);
+        p.expect(STRING_LIT);
+        m.complete(p, IMPORT_STMT);
+        return;
+    }
+
+    // Parse rules
+    let m = match opt_rule(p, m) {
         Ok(()) => {
             return;
         }
@@ -46,7 +56,7 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
 
 // So far in this prototype, we only have one kind of item: a rule.
 // In the future, also imports and includes will be supported here
-pub(super) fn opt_rule_import_include(p: &mut Parser, m: Marker) -> Result<(), Marker> {
+pub(super) fn opt_rule(p: &mut Parser, m: Marker) -> Result<(), Marker> {
     // add rule modifiers to match current and lookahead next with p.nth(1) for RULE or ERROR
     while p.at_ts(TokenSet::new(&[T![private], T![global]])) {
         let m = p.start();

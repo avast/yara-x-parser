@@ -41,6 +41,8 @@ pub(crate) enum LogosToken {
     // will be supported
 
     // Keywords
+    #[token("import")]
+    Import,
     #[token("rule")]
     Rule,
     #[token("private")]
@@ -152,6 +154,7 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
 // Convert LogosToken to SyntaxKind
 fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     match token {
+        LogosToken::Import => SyntaxKind::IMPORT_KW,
         LogosToken::Rule => SyntaxKind::RULE_KW,
         LogosToken::Private => SyntaxKind::PRIVATE_KW,
         LogosToken::Global => SyntaxKind::GLOBAL_KW,

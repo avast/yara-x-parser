@@ -1,0 +1,76 @@
+SOURCE_FILE@0..156
+  IMPORT_STMT@0..13
+    IMPORT_KW@0..6 "import"
+    WHITESPACE@6..7 " "
+    STRING_LIT@7..13 "\"test\""
+  WHITESPACE@13..14 "\n"
+  IMPORT_STMT@14..28
+    IMPORT_KW@14..20 "import"
+    WHITESPACE@20..21 " "
+    STRING_LIT@21..28 "\"test2\""
+  WHITESPACE@28..30 "\n\n"
+  RULE@30..83
+    RULE_KW@30..34 "rule"
+    WHITESPACE@34..35 " "
+    IDENTIFIER@35..39 "test"
+    WHITESPACE@39..40 "\n"
+    BLOCK_EXPR@40..83
+      L_BRACE@40..41 "{"
+      WHITESPACE@41..43 "\n\t"
+      STRINGS@43..64
+        STRINGS_KW@43..50 "strings"
+        COLON@50..51 ":"
+        WHITESPACE@51..54 "\n\t\t"
+        VARIABLE_STMT@54..64
+          VARIABLE@54..56 "$a"
+          WHITESPACE@56..57 " "
+          ASSIGN@57..58 "="
+          WHITESPACE@58..59 " "
+          PATTERN@59..64
+            STRING_LIT@59..64 "\"foo\""
+      WHITESPACE@64..66 "\n\t"
+      CONDITION@66..81
+        CONDITION_KW@66..75 "condition"
+        COLON@75..76 ":"
+        WHITESPACE@76..79 "\n\t\t"
+        EXPRESSION_STMT@79..81
+          LITERAL@79..81
+            VARIABLE@79..81 "$a"
+      WHITESPACE@81..82 "\n"
+      R_BRACE@82..83 "}"
+  WHITESPACE@83..85 "\n\n"
+  RULE@85..139
+    RULE_KW@85..89 "rule"
+    WHITESPACE@89..90 " "
+    IDENTIFIER@90..95 "test2"
+    WHITESPACE@95..96 "\n"
+    BLOCK_EXPR@96..139
+      L_BRACE@96..97 "{"
+      WHITESPACE@97..99 "\n\t"
+      STRINGS@99..120
+        STRINGS_KW@99..106 "strings"
+        COLON@106..107 ":"
+        WHITESPACE@107..110 "\n\t\t"
+        VARIABLE_STMT@110..120
+          VARIABLE@110..112 "$b"
+          WHITESPACE@112..113 " "
+          ASSIGN@113..114 "="
+          WHITESPACE@114..115 " "
+          PATTERN@115..120
+            STRING_LIT@115..120 "\"bar\""
+      WHITESPACE@120..122 "\n\t"
+      CONDITION@122..137
+        CONDITION_KW@122..131 "condition"
+        COLON@131..132 ":"
+        WHITESPACE@132..135 "\n\t\t"
+        EXPRESSION_STMT@135..137
+          LITERAL@135..137
+            VARIABLE@135..137 "$b"
+      WHITESPACE@137..138 "\n"
+      R_BRACE@138..139 "}"
+  WHITESPACE@139..141 "\n\n"
+  IMPORT_STMT@141..155
+    IMPORT_KW@141..147 "import"
+    WHITESPACE@147..148 " "
+    STRING_LIT@148..155 "\"test3\""
+  WHITESPACE@155..156 "\n"

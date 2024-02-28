@@ -13,8 +13,24 @@ pub struct SourceFile {
 }
 impl ast::HasComments for SourceFile {}
 impl SourceFile {
+    pub fn import_stmts(&self) -> AstChildren<ImportStmt> {
+        support::children(&self.syntax)
+    }
     pub fn rules(&self) -> AstChildren<Rule> {
         support::children(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ImportStmt {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ImportStmt {
+    pub fn import_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![import])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
     }
 }
 
@@ -248,6 +264,21 @@ impl ast::HasModifier for AnyHasModifier {}
 impl AstNode for SourceFile {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == SOURCE_FILE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for ImportStmt {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == IMPORT_STMT
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -546,6 +577,11 @@ impl std::fmt::Display for Expr {
     }
 }
 impl std::fmt::Display for SourceFile {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ImportStmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
