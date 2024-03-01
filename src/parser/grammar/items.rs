@@ -26,6 +26,14 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
         return;
     }
 
+    // Parse includes
+    if p.at(INCLUDE_KW) {
+        p.bump(INCLUDE_KW);
+        p.expect(STRING_LIT);
+        m.complete(p, INCLUDE_STMT);
+        return;
+    }
+
     // Parse rules
     let m = match opt_rule(p, m) {
         Ok(()) => {
@@ -54,8 +62,7 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
     }
 }
 
-// So far in this prototype, we only have one kind of item: a rule.
-// In the future, also imports and includes will be supported here
+// Parse rule
 pub(super) fn opt_rule(p: &mut Parser, m: Marker) -> Result<(), Marker> {
     // add rule modifiers to match current and lookahead next with p.nth(1) for RULE or ERROR
     while p.at_ts(TokenSet::new(&[T![private], T![global]])) {

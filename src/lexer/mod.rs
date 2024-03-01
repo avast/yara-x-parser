@@ -43,6 +43,8 @@ pub(crate) enum LogosToken {
     // Keywords
     #[token("import")]
     Import,
+    #[token("include")]
+    Include,
     #[token("rule")]
     Rule,
     #[token("private")]
@@ -68,7 +70,7 @@ pub(crate) enum LogosToken {
     #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Variable(String),
     // Strings
-    #[regex(r#""[^"]*""#, |lex| lex.slice().to_string())]
+    #[regex(r#""([^"\n\\]|\\["\\])*""#, |lex| lex.slice().to_string())]
     String(String),
     // Operators
     #[token("=")]
@@ -155,6 +157,7 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
 fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     match token {
         LogosToken::Import => SyntaxKind::IMPORT_KW,
+        LogosToken::Include => SyntaxKind::INCLUDE_KW,
         LogosToken::Rule => SyntaxKind::RULE_KW,
         LogosToken::Private => SyntaxKind::PRIVATE_KW,
         LogosToken::Global => SyntaxKind::GLOBAL_KW,

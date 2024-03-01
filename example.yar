@@ -1,3 +1,5 @@
+import "macho"
+include "test"
 //Global comment
 
 //Rule comment
@@ -7,7 +9,7 @@ rule test : bla test
 
 	meta:
 		author = "Author"
-		description = -20.3
+		description = 20
 	//String comment
 	strings:
 		$b = "bar"

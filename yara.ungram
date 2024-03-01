@@ -1,5 +1,8 @@
 SourceFile = 
-    ImportStmt* | Rule*
+    ImportStmt* | IncludeStmt* |Rule*
+
+IncludeStmt = 
+    'include' 'string_lit'
 
 ImportStmt = 
     'import' 'string_lit'

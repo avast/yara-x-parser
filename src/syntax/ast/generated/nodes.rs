@@ -16,6 +16,9 @@ impl SourceFile {
     pub fn import_stmts(&self) -> AstChildren<ImportStmt> {
         support::children(&self.syntax)
     }
+    pub fn include_stmts(&self) -> AstChildren<IncludeStmt> {
+        support::children(&self.syntax)
+    }
     pub fn rules(&self) -> AstChildren<Rule> {
         support::children(&self.syntax)
     }
@@ -28,6 +31,19 @@ pub struct ImportStmt {
 impl ImportStmt {
     pub fn import_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![import])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct IncludeStmt {
+    pub(crate) syntax: SyntaxNode,
+}
+impl IncludeStmt {
+    pub fn include_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![include])
     }
     pub fn string_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![string_lit])
@@ -279,6 +295,21 @@ impl AstNode for SourceFile {
 impl AstNode for ImportStmt {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == IMPORT_STMT
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for IncludeStmt {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == INCLUDE_STMT
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -582,6 +613,11 @@ impl std::fmt::Display for SourceFile {
     }
 }
 impl std::fmt::Display for ImportStmt {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for IncludeStmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
