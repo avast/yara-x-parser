@@ -32,6 +32,13 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "global",
         "import",
         "include",
+        "ascii",
+        "wide",
+        "nocase",
+        "fullword",
+        "xor",
+        "base64",
+        "base64wide",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT"],
     tokens: &["IDENTIFIER", "VARIABLE", "WHITESPACE", "COMMENT", "ERROR"],
@@ -53,6 +60,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "INCLUDE_STMT",
         "META_STMT",
         "PATTERN",
+        "PATTERN_MOD",
     ],
 };
 

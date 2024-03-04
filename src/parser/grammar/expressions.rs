@@ -2,6 +2,17 @@ mod atom;
 
 use super::*;
 
+const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
+    T![ascii],
+    T![wide],
+    T![private],
+    T![fullword],
+    T![nocase],
+    T![xor],
+    T![base64],
+    T![base64wide],
+]);
+
 /// Parse a rule body
 /// A rule body consists `{`, rule_body and `}`
 /// This can probably be later simplified to not have both
@@ -129,17 +140,20 @@ pub(super) fn meta_body(p: &mut Parser) {
 pub(super) fn strings_body(p: &mut Parser) {
     while !p.at(EOF) && !p.at(T![condition]) && !p.at(T!['}']) {
         let m = p.start();
+
         if p.at(T![variable]) {
             p.bump(T![variable]);
         } else {
             p.err_and_bump("expected a variable");
         }
         p.expect(T![=]);
+
         // so far only strings are supported, later add match for hex strings and regex
         match p.current() {
             STRING_LIT => pattern(p),
             _ => p.err_and_bump("expected a string"),
         }
+
         m.complete(p, VARIABLE_STMT);
     }
 }
@@ -149,7 +163,19 @@ fn pattern(p: &mut Parser) {
     let m = p.start();
     p.bump(STRING_LIT);
     // add string modifiers
+    if p.at_ts(PATTERN_MODIFIERS_SET) {
+        string_modifiers(p);
+    }
     m.complete(p, PATTERN);
+}
+
+/// Parse string modifiers
+fn string_modifiers(p: &mut Parser) {
+    while p.at_ts(PATTERN_MODIFIERS_SET) {
+        let m = p.start();
+        p.bump_any();
+        m.complete(p, PATTERN_MOD);
+    }
 }
 
 /// Parse a `condition` body

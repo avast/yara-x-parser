@@ -8,7 +8,7 @@ ImportStmt =
     'import' 'string_lit'
 
 Rule = 
-    Modifier? 'rule' 'identifier' ':'? Tag*
+    Modifier* 'rule' 'identifier' ':'? Tag*
         body:BlockExpr
 
 Modifier = 
@@ -42,7 +42,12 @@ VariableStmt =
     'variable' '=' Pattern
 
 Pattern = 
-    'string_lit'
+    (
+        'string_lit' PatternMod*
+    )
+
+PatternMod = 
+    'ascii' | 'wide' | 'nocase' | 'private' | 'fullword' | 'base64wide' | 'base64' | 'xor'
 
 Condition =
     'condition' ':'

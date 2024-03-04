@@ -72,6 +72,23 @@ pub(crate) enum LogosToken {
     // Strings
     #[regex(r#""([^"\n\\]|\\["\\])*""#, |lex| lex.slice().to_string())]
     String(String),
+
+    // Modifiers
+    #[token("ascii")]
+    Ascii,
+    #[token("wide")]
+    Wide,
+    #[token("nocase")]
+    Nocase,
+    #[token("fullword")]
+    Fullword,
+    #[token("xor")]
+    Xor,
+    #[token("base64")]
+    Base64,
+    #[token("base64wide")]
+    Base64Wide,
+
     // Operators
     #[token("=")]
     Assign,
@@ -170,6 +187,13 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,
+        LogosToken::Ascii => SyntaxKind::ASCII_KW,
+        LogosToken::Wide => SyntaxKind::WIDE_KW,
+        LogosToken::Nocase => SyntaxKind::NOCASE_KW,
+        LogosToken::Fullword => SyntaxKind::FULLWORD_KW,
+        LogosToken::Xor => SyntaxKind::XOR_KW,
+        LogosToken::Base64 => SyntaxKind::BASE64_KW,
+        LogosToken::Base64Wide => SyntaxKind::BASE64WIDE_KW,
         LogosToken::Assign => T![=],
         LogosToken::Colon => T![:],
         LogosToken::LBrace => T!['{'],

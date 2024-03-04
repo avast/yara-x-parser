@@ -54,9 +54,11 @@ impl IncludeStmt {
 pub struct Rule {
     pub(crate) syntax: SyntaxNode,
 }
-impl ast::HasModifier for Rule {}
 impl ast::HasComments for Rule {}
 impl Rule {
+    pub fn modifiers(&self) -> AstChildren<Modifier> {
+        support::children(&self.syntax)
+    }
     pub fn rule_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![rule])
     }
@@ -222,6 +224,40 @@ impl Pattern {
     pub fn string_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![string_lit])
     }
+    pub fn pattern_mods(&self) -> AstChildren<PatternMod> {
+        support::children(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct PatternMod {
+    pub(crate) syntax: SyntaxNode,
+}
+impl PatternMod {
+    pub fn ascii_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![ascii])
+    }
+    pub fn wide_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![wide])
+    }
+    pub fn nocase_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![nocase])
+    }
+    pub fn private_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![private])
+    }
+    pub fn fullword_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![fullword])
+    }
+    pub fn base64wide_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![base64wide])
+    }
+    pub fn base64_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![base64])
+    }
+    pub fn xor_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![xor])
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -271,12 +307,6 @@ pub struct AnyHasComments {
     pub(crate) syntax: SyntaxNode,
 }
 impl ast::HasComments for AnyHasComments {}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct AnyHasModifier {
-    pub(crate) syntax: SyntaxNode,
-}
-impl ast::HasModifier for AnyHasModifier {}
 impl AstNode for SourceFile {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == SOURCE_FILE
@@ -472,6 +502,21 @@ impl AstNode for Pattern {
         &self.syntax
     }
 }
+impl AstNode for PatternMod {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == PATTERN_MOD
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for ExpressionStmt {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == EXPRESSION_STMT
@@ -585,23 +630,6 @@ impl AstNode for AnyHasComments {
         &self.syntax
     }
 }
-impl AnyHasModifier {
-    #[inline]
-    pub fn new<T: ast::HasModifier>(node: T) -> AnyHasModifier {
-        AnyHasModifier { syntax: node.syntax().clone() }
-    }
-}
-impl AstNode for AnyHasModifier {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        matches!(kind, RULE)
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        Self::can_cast(syntax.kind()).then_some(AnyHasModifier { syntax })
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
 impl std::fmt::Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -668,6 +696,11 @@ impl std::fmt::Display for VariableStmt {
     }
 }
 impl std::fmt::Display for Pattern {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for PatternMod {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -12,7 +12,7 @@ rule test : bla test
 		description = 20
 	//String comment
 	strings:
-		$b = "bar"
+		$b = "bar" ascii
 	condition:
 		$b and not true or true
 }

@@ -607,41 +607,11 @@ fn lower_comma_list(
 
 //TODO: possible deduplication and enum extraction and struct traits, so far not needed
 fn extract_struct_traits(ast: &mut AstSrc) {
-    let traits: &[(&str, &[&str])] = &[("HasModifier", &["modifier"])];
-
-    for node in &mut ast.nodes {
-        for (name, methods) in traits {
-            extract_struct_trait(node, name, methods);
-        }
-    }
-
     let nodes_with_comments = ["SourceFile", "Rule", "BlockExpr", "Strings", "Condition"];
 
     for node in &mut ast.nodes {
         if nodes_with_comments.contains(&&*node.name) {
             node.traits.push("HasComments".into());
         }
-    }
-}
-
-fn extract_struct_trait(node: &mut AstNodeSrc, trait_name: &str, methods: &[&str]) {
-    let mut to_remove = Vec::new();
-    for (i, field) in node.fields.iter().enumerate() {
-        let method_name = field.method_name().to_string();
-        if methods.iter().any(|&it| it == method_name) {
-            to_remove.push(i);
-        }
-    }
-    if to_remove.len() == methods.len() {
-        node.traits.push(trait_name.to_string());
-        node.remove_field(to_remove);
-    }
-}
-
-impl AstNodeSrc {
-    fn remove_field(&mut self, to_remove: Vec<usize>) {
-        to_remove.into_iter().rev().for_each(|idx| {
-            self.fields.remove(idx);
-        });
     }
 }

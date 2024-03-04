@@ -29,6 +29,13 @@ pub enum SyntaxKind {
     GLOBAL_KW,
     IMPORT_KW,
     INCLUDE_KW,
+    ASCII_KW,
+    WIDE_KW,
+    NOCASE_KW,
+    FULLWORD_KW,
+    XOR_KW,
+    BASE64_KW,
+    BASE64WIDE_KW,
     STRING_LIT,
     INT_LIT,
     FLOAT_LIT,
@@ -54,6 +61,7 @@ pub enum SyntaxKind {
     INCLUDE_STMT,
     META_STMT,
     PATTERN,
+    PATTERN_MOD,
     #[doc(hidden)]
     __LAST,
 }
@@ -75,6 +83,13 @@ impl SyntaxKind {
                 | GLOBAL_KW
                 | IMPORT_KW
                 | INCLUDE_KW
+                | ASCII_KW
+                | WIDE_KW
+                | NOCASE_KW
+                | FULLWORD_KW
+                | XOR_KW
+                | BASE64_KW
+                | BASE64WIDE_KW
         )
     }
     pub fn is_punct(self) -> bool {
@@ -98,6 +113,13 @@ impl SyntaxKind {
             "global" => GLOBAL_KW,
             "import" => IMPORT_KW,
             "include" => INCLUDE_KW,
+            "ascii" => ASCII_KW,
+            "wide" => WIDE_KW,
+            "nocase" => NOCASE_KW,
+            "fullword" => FULLWORD_KW,
+            "xor" => XOR_KW,
+            "base64" => BASE64_KW,
+            "base64wide" => BASE64WIDE_KW,
             _ => return None,
         };
         Some(kw)
@@ -117,5 +139,5 @@ impl SyntaxKind {
     }
 }
 #[macro_export]
-macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [true] => { $ crate :: SyntaxKind :: TRUE_KW } ; [false] => { $ crate :: SyntaxKind :: FALSE_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; }
+macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [true] => { $ crate :: SyntaxKind :: TRUE_KW } ; [false] => { $ crate :: SyntaxKind :: FALSE_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; }
 pub use T;
