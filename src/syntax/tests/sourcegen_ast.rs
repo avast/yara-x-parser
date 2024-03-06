@@ -449,6 +449,7 @@ impl Field {
                     ":" => "colon",
                     "," => "comma",
                     "=" => "assign",
+                    "-" => "hyphen",
                     _ => name,
                 };
                 format_ident!("{}_token", name)

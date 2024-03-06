@@ -104,11 +104,13 @@ pub(crate) enum LogosToken {
     RParen,
     #[token(",")]
     Comma,
+    #[token("-")]
+    Hyphen,
     // Integer
-    #[regex(r"-?0x[a-fA-F0-9]+|-?0o[0-7]+|-?[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
+    #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
     Integer(String),
     // Float
-    #[regex(r"-?[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
+    #[regex(r"[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
     Float(String),
     // Booleans
     #[token("true")]
@@ -201,6 +203,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::LParen => T!['('],
         LogosToken::RParen => T![')'],
         LogosToken::Comma => T![,],
+        LogosToken::Hyphen => T![-],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
         LogosToken::True => SyntaxKind::TRUE_KW,

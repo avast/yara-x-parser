@@ -258,7 +258,51 @@ impl PatternMod {
     pub fn xor_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![xor])
     }
+    pub fn base_alphabet(&self) -> Option<BaseAlphabet> {
+        support::child(&self.syntax)
+    }
+    pub fn xor_range(&self) -> Option<XorRange> {
+        support::child(&self.syntax)
+    }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct BaseAlphabet {
+    pub(crate) syntax: SyntaxNode,
+}
+impl BaseAlphabet {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct XorRange {
+    pub(crate) syntax: SyntaxNode,
+}
+impl XorRange {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn hyphen_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![-])
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Literal {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Literal {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ExpressionStmt {
@@ -288,12 +332,6 @@ impl PrefixExpr {
         support::child(&self.syntax)
     }
 }
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Literal {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Literal {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Expr {
@@ -517,6 +555,51 @@ impl AstNode for PatternMod {
         &self.syntax
     }
 }
+impl AstNode for BaseAlphabet {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == BASE_ALPHABET
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for XorRange {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == XOR_RANGE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Literal {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == LITERAL
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for ExpressionStmt {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == EXPRESSION_STMT
@@ -550,21 +633,6 @@ impl AstNode for Expression {
 impl AstNode for PrefixExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == PREFIX_EXPR
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
-impl AstNode for Literal {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == LITERAL
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -705,6 +773,21 @@ impl std::fmt::Display for PatternMod {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for BaseAlphabet {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for XorRange {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Literal {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for ExpressionStmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -716,11 +799,6 @@ impl std::fmt::Display for Expression {
     }
 }
 impl std::fmt::Display for PrefixExpr {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
-impl std::fmt::Display for Literal {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

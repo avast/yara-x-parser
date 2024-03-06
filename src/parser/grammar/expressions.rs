@@ -173,9 +173,49 @@ fn pattern(p: &mut Parser) {
 fn string_modifiers(p: &mut Parser) {
     while p.at_ts(PATTERN_MODIFIERS_SET) {
         let m = p.start();
-        p.bump_any();
+        if p.current() == T![base64] || p.current() == T![base64wide] {
+            p.bump_any();
+            if p.at(T!['(']) {
+                base64_body(p);
+            }
+        } else if p.current() == T![xor] {
+            p.bump_any();
+            if p.at(T!['(']) {
+                xor_body(p);
+            }
+        } else {
+            p.bump_any();
+        }
         m.complete(p, PATTERN_MOD);
     }
+}
+
+/// Parse a base64 string pattern
+fn base64_body(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    p.expect(STRING_LIT);
+    p.expect(T![')']);
+    m.complete(p, BASE_ALPHABET);
+}
+
+/// Parse a xor range pattern
+fn xor_body(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    // parse LHS of range
+    let n = p.start();
+    p.expect(INT_LIT);
+    n.complete(p, LITERAL);
+    if p.at(HYPHEN) {
+        p.bump(HYPHEN);
+        // Parse RHS of range
+        let o = p.start();
+        p.expect(INT_LIT);
+        o.complete(p, LITERAL);
+    }
+    p.expect(T![')']);
+    m.complete(p, XOR_RANGE);
 }
 
 /// Parse a `condition` body

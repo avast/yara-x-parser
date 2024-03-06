@@ -17,6 +17,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         ("}", "R_BRACE"),
         (",", "COMMA"),
         ("=", "ASSIGN"),
+        ("-", "HYPHEN"),
     ],
     keywords: &[
         "and",
@@ -61,6 +62,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "META_STMT",
         "PATTERN",
         "PATTERN_MOD",
+        "BASE_ALPHABET",
+        "XOR_RANGE",
     ],
 };
 

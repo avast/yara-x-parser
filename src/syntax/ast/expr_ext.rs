@@ -26,6 +26,16 @@ impl ast::PrefixExpr {
     }
 }
 
+impl ast::XorRange {
+    pub fn lhs(&self) -> Option<ast::Literal> {
+        support::children(self.syntax()).next()
+    }
+
+    pub fn rhs(&self) -> Option<ast::Literal> {
+        support::children(self.syntax()).nth(1)
+    }
+}
+
 impl ast::Expression {
     pub fn op_details(&self) -> Option<(SyntaxToken, BinaryOp)> {
         self.syntax().children_with_tokens().filter_map(|it| it.into_token()).find_map(|c| {

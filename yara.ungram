@@ -47,7 +47,27 @@ Pattern =
     )
 
 PatternMod = 
-    'ascii' | 'wide' | 'nocase' | 'private' | 'fullword' | 'base64wide' | 'base64' | 'xor'
+    'ascii'
+|   'wide'
+|   'nocase'
+|   'private'
+|   'fullword'
+|   'base64wide'
+|   'base64'
+|   'xor'
+|   BaseAlphabet?
+|   XorRange?
+
+BaseAlphabet = 
+    '(' 'string_lit' ')'
+
+XorRange = 
+    '(' 
+        (
+            lhs:Literal '-' rhs:Literal
+        |   lhs:Literal
+        )
+    ')'
 
 Condition =
     'condition' ':'
@@ -70,4 +90,4 @@ PrefixExpr =
     Expr
 
 Literal =
-    value:('true' | 'false' | 'variable')
+    value:('true' | 'false' | 'variable' | 'int_lit')

@@ -37,7 +37,7 @@ fn api_walktrough() {
         rule test_rule {
             meta:
                 author = \"author\"
-                number = -123
+                number = 123
             // This is a comment
             strings:
                 $a = \"test\"
