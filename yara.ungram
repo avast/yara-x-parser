@@ -39,12 +39,44 @@ Strings =
         VariableStmt*
 
 VariableStmt =
-    'variable' '=' Pattern
+    'variable' '=' Pattern 
 
 Pattern = 
-    (
         'string_lit' PatternMod*
-    )
+    |   HexPattern PatternMod*
+
+HexPattern =
+    '{' HexToken '}'
+
+HexToken = 
+    (HexByte | HexAlternative) HexTokenTail*
+
+HexTokenTail =
+    HexJump* (HexByte | HexAlternative)
+
+HexByte = 
+    '~'? HexDigit HexDigit
+|   '~'? '?' HexDigit
+|   '~'? HexDigit '?'
+|   '~'? '?' '?'
+
+// If it is valid hex digit has to be checked in compiler
+HexDigit = 
+    ('int_lit' | 'string_lit' | 'hex_wildcard_lit' | 'hex_lit') 
+
+HexAlternative = 
+    '(' HexToken HexPipe* ')'
+
+HexPipe = 
+    '|' HexToken
+
+HexJump =
+    '[' 
+        (
+            lhs:Literal? '-' rhs:Literal?
+        |   lhs:Literal 
+        )
+    ']'
 
 PatternMod = 
     'ascii'

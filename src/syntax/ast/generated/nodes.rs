@@ -227,6 +227,9 @@ impl Pattern {
     pub fn pattern_mods(&self) -> AstChildren<PatternMod> {
         support::children(&self.syntax)
     }
+    pub fn hex_pattern(&self) -> Option<HexPattern> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -267,6 +270,143 @@ impl PatternMod {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexPattern {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexPattern {
+    pub fn l_brace_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['{'])
+    }
+    pub fn hex_token(&self) -> Option<HexToken> {
+        support::child(&self.syntax)
+    }
+    pub fn r_brace_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['}'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexToken {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexToken {
+    pub fn hex_byte(&self) -> Option<HexByte> {
+        support::child(&self.syntax)
+    }
+    pub fn hex_alternative(&self) -> Option<HexAlternative> {
+        support::child(&self.syntax)
+    }
+    pub fn hex_token_tails(&self) -> AstChildren<HexTokenTail> {
+        support::children(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexByte {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexByte {
+    pub fn tilde_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![~])
+    }
+    pub fn hex_digit(&self) -> Option<HexDigit> {
+        support::child(&self.syntax)
+    }
+    pub fn question_mark_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![?])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexAlternative {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexAlternative {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn hex_token(&self) -> Option<HexToken> {
+        support::child(&self.syntax)
+    }
+    pub fn hex_pipes(&self) -> AstChildren<HexPipe> {
+        support::children(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexTokenTail {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexTokenTail {
+    pub fn hex_jumps(&self) -> AstChildren<HexJump> {
+        support::children(&self.syntax)
+    }
+    pub fn hex_byte(&self) -> Option<HexByte> {
+        support::child(&self.syntax)
+    }
+    pub fn hex_alternative(&self) -> Option<HexAlternative> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexJump {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexJump {
+    pub fn l_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['['])
+    }
+    pub fn hyphen_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![-])
+    }
+    pub fn r_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![']'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexDigit {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexDigit {
+    pub fn int_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![int_lit])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+    pub fn hex_wildcard_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![hex_wildcard_lit])
+    }
+    pub fn hex_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![hex_lit])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HexPipe {
+    pub(crate) syntax: SyntaxNode,
+}
+impl HexPipe {
+    pub fn pipe_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![|])
+    }
+    pub fn hex_token(&self) -> Option<HexToken> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Literal {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Literal {}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct BaseAlphabet {
     pub(crate) syntax: SyntaxNode,
 }
@@ -297,12 +437,6 @@ impl XorRange {
         support::token(&self.syntax, T![')'])
     }
 }
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Literal {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Literal {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ExpressionStmt {
@@ -555,6 +689,141 @@ impl AstNode for PatternMod {
         &self.syntax
     }
 }
+impl AstNode for HexPattern {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_PATTERN
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexToken {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_TOKEN
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexByte {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_BYTE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexAlternative {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_ALTERNATIVE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexTokenTail {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_TOKEN_TAIL
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexJump {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_JUMP
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexDigit {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_DIGIT
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for HexPipe {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == HEX_PIPE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Literal {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == LITERAL
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for BaseAlphabet {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == BASE_ALPHABET
@@ -573,21 +842,6 @@ impl AstNode for BaseAlphabet {
 impl AstNode for XorRange {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == XOR_RANGE
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
-impl AstNode for Literal {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == LITERAL
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -773,17 +1027,57 @@ impl std::fmt::Display for PatternMod {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for HexPattern {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexByte {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexAlternative {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexTokenTail {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexJump {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexDigit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for HexPipe {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Literal {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for BaseAlphabet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for XorRange {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
-impl std::fmt::Display for Literal {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

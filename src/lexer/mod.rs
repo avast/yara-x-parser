@@ -64,7 +64,7 @@ pub(crate) enum LogosToken {
     #[token("not")]
     Not,
     // Identifiers
-    #[regex("[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
     // Variables
     #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
@@ -102,16 +102,32 @@ pub(crate) enum LogosToken {
     LParen,
     #[token(")")]
     RParen,
+    #[token("[")]
+    LBracket,
+    #[token("]")]
+    RBracket,
     #[token(",")]
     Comma,
     #[token("-")]
     Hyphen,
+    #[token("|")]
+    Pipe,
+    #[token("~")]
+    Tilde,
+    #[token("?")]
+    QuestionMark,
     // Integer
     #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
     Integer(String),
     // Float
     #[regex(r"[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
     Float(String),
+    // Hexadecimal byte literal with wildcard
+    #[regex(r"(\?[a-fA-F0-9]|[a-fA-F0-9]\?|\?\?)", |lex| lex.slice().to_string())]
+    WildcardHexByteLit(String),
+    // Hexadecimal byte that starts with a number
+    #[regex(r"[0-9][a-fA-F]", |lex| lex.slice().to_string())]
+    HexByteStartsWithNumber(String),
     // Booleans
     #[token("true")]
     True,
@@ -202,10 +218,17 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::RBrace => T!['}'],
         LogosToken::LParen => T!['('],
         LogosToken::RParen => T![')'],
+        LogosToken::LBracket => T!['['],
+        LogosToken::RBracket => T![']'],
         LogosToken::Comma => T![,],
         LogosToken::Hyphen => T![-],
+        LogosToken::Pipe => T![|],
+        LogosToken::Tilde => T![~],
+        LogosToken::QuestionMark => T![?],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
+        LogosToken::WildcardHexByteLit(_) => SyntaxKind::HEX_WILDCARD_LIT,
+        LogosToken::HexByteStartsWithNumber(_) => SyntaxKind::HEX_LIT,
         LogosToken::True => SyntaxKind::TRUE_KW,
         LogosToken::False => SyntaxKind::FALSE_KW,
         LogosToken::Whitespace => SyntaxKind::WHITESPACE,

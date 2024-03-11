@@ -418,6 +418,8 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             [string_lit] => { $crate::SyntaxKind::STRING_LIT };
             [int_lit] => { $crate::SyntaxKind::INT_LIT };
             [float_lit] => { $crate::SyntaxKind::FLOAT_LIT };
+            [hex_wildcard_lit] => { $crate::SyntaxKind::HEX_WILDCARD_LIT };
+            [hex_lit] => { $crate::SyntaxKind::HEX_LIT };
         }
         pub use T;
     };
@@ -446,10 +448,15 @@ impl Field {
                     "'}'" => "r_brace",
                     "'('" => "l_paren",
                     "')'" => "r_paren",
+                    "'['" => "l_brack",
+                    "']'" => "r_brack",
                     ":" => "colon",
                     "," => "comma",
                     "=" => "assign",
                     "-" => "hyphen",
+                    "|" => "pipe",
+                    "~" => "tilde",
+                    "?" => "question_mark",
                     _ => name,
                 };
                 format_ident!("{}_token", name)
@@ -498,6 +505,7 @@ fn lower(grammar: &Grammar) -> AstSrc {
         }
     }
 
+    deduplicate_fields(&mut res);
     extract_struct_traits(&mut res);
     res
 }
@@ -613,6 +621,23 @@ fn extract_struct_traits(ast: &mut AstSrc) {
     for node in &mut ast.nodes {
         if nodes_with_comments.contains(&&*node.name) {
             node.traits.push("HasComments".into());
+        }
+    }
+}
+
+fn deduplicate_fields(ast: &mut AstSrc) {
+    for node in &mut ast.nodes {
+        let mut i = 0;
+        'outer: while i < node.fields.len() {
+            for j in 0..i {
+                let f1 = &node.fields[i];
+                let f2 = &node.fields[j];
+                if f1 == f2 {
+                    node.fields.remove(i);
+                    continue 'outer;
+                }
+            }
+            i += 1;
         }
     }
 }

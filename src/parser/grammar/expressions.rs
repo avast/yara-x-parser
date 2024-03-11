@@ -13,6 +13,9 @@ const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
     T![base64wide],
 ]);
 
+const HEX_BYTE_SET: TokenSet =
+    TokenSet::new(&[T![hex_lit], T![hex_wildcard_lit], T![int_lit], T![identifier], T![~]]);
+
 /// Parse a rule body
 /// A rule body consists `{`, rule_body and `}`
 /// This can probably be later simplified to not have both
@@ -149,24 +152,99 @@ pub(super) fn strings_body(p: &mut Parser) {
         p.expect(T![=]);
 
         // so far only strings are supported, later add match for hex strings and regex
+        let n = p.start();
         match p.current() {
-            STRING_LIT => pattern(p),
+            STRING_LIT => p.bump(STRING_LIT),
+            L_BRACE => hex_pattern(p),
             _ => p.err_and_bump("expected a string"),
         }
+        if p.at_ts(PATTERN_MODIFIERS_SET) {
+            string_modifiers(p);
+        }
+        n.complete(p, PATTERN);
 
         m.complete(p, VARIABLE_STMT);
     }
 }
 
-/// Parse a plaintext string pattern
-fn pattern(p: &mut Parser) {
+/// Parse a hex string pattern
+fn hex_pattern(p: &mut Parser) {
     let m = p.start();
-    p.bump(STRING_LIT);
-    // add string modifiers
-    if p.at_ts(PATTERN_MODIFIERS_SET) {
-        string_modifiers(p);
+    p.expect(T!['{']);
+    if !p.at(T!['}']) {
+        hex_tokens(p);
     }
-    m.complete(p, PATTERN);
+    p.expect(T!['}']);
+    m.complete(p, HEX_PATTERN);
+}
+
+/// Parse a hex tokens
+fn hex_tokens(p: &mut Parser) {
+    let m = p.start();
+    hex_byte_or_alternative(p);
+    while !p.at(EOF) && !p.at(T!['}']) && !p.at(T![|]) && !p.at(T![')']) {
+        let n = p.start();
+        hex_jump(p);
+        hex_byte_or_alternative(p);
+        n.complete(p, HEX_TOKEN_TAIL);
+    }
+    m.complete(p, HEX_TOKEN);
+}
+
+/// Parse a hex byte or alternative
+fn hex_byte_or_alternative(p: &mut Parser) {
+    if p.at_ts(HEX_BYTE_SET) {
+        hex_byte(p);
+    } else if p.at(T!['(']) {
+        hex_alternative(p);
+    } else {
+        p.err_and_bump("expected a hex byte or alternative");
+    }
+}
+
+/// Parse a hex byte
+/// It can be a hex literal, wildcard, integer, identifier or tilde
+fn hex_byte(p: &mut Parser) {
+    let m = p.start();
+    if p.at(TILDE) {
+        p.bump(TILDE);
+    }
+    assert!(p.at_ts(TokenSet::new(&[
+        T![hex_lit],
+        T![hex_wildcard_lit],
+        T![int_lit],
+        T![identifier]
+    ])));
+    p.bump_any();
+    m.complete(p, HEX_BYTE);
+}
+
+/// Parse a hex jump
+/// It consists of an integer range
+fn hex_jump(p: &mut Parser) {
+    while p.at(T!['[']) {
+        let m = p.start();
+        p.expect(T!['[']);
+        int_range(p);
+        p.expect(T![']']);
+        m.complete(p, HEX_JUMP);
+    }
+}
+
+/// Parse a hex alternative
+/// It consists of hex tokens separated by `|`
+fn hex_alternative(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    hex_tokens(p);
+    while p.at(T![|]) {
+        let n = p.start();
+        p.bump(T![|]);
+        hex_tokens(p);
+        n.complete(p, HEX_PIPE);
+    }
+    p.expect(T![')']);
+    m.complete(p, HEX_ALTERNATIVE);
 }
 
 /// Parse string modifiers
@@ -203,19 +281,25 @@ fn base64_body(p: &mut Parser) {
 fn xor_body(p: &mut Parser) {
     let m = p.start();
     p.expect(T!['(']);
+    int_range(p);
+    p.expect(T![')']);
+    m.complete(p, XOR_RANGE);
+}
+
+/// Parse an integer range
+/// used in xor and hex jumps
+fn int_range(p: &mut Parser) {
     // parse LHS of range
-    let n = p.start();
+    let m = p.start();
     p.expect(INT_LIT);
-    n.complete(p, LITERAL);
+    m.complete(p, LITERAL);
     if p.at(HYPHEN) {
         p.bump(HYPHEN);
         // Parse RHS of range
-        let o = p.start();
+        let n = p.start();
         p.expect(INT_LIT);
-        o.complete(p, LITERAL);
+        n.complete(p, LITERAL);
     }
-    p.expect(T![')']);
-    m.complete(p, XOR_RANGE);
 }
 
 /// Parse a `condition` body
