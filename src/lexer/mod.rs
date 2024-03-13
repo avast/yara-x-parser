@@ -63,6 +63,12 @@ pub(crate) enum LogosToken {
     Or,
     #[token("not")]
     Not,
+    // Booleans
+    #[regex(r"true|false", |lex| lex.slice().to_string())]
+    Bool(String),
+    // Hexadecimal string
+    #[regex(r"\{[0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
+    HexString(String),
     // Identifiers
     #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
@@ -122,17 +128,6 @@ pub(crate) enum LogosToken {
     // Float
     #[regex(r"[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
     Float(String),
-    // Hexadecimal byte literal with wildcard
-    #[regex(r"(\?[a-fA-F0-9]|[a-fA-F0-9]\?|\?\?)", |lex| lex.slice().to_string())]
-    WildcardHexByteLit(String),
-    // Hexadecimal byte that starts with a number
-    #[regex(r"[0-9][a-fA-F]", |lex| lex.slice().to_string())]
-    HexByteStartsWithNumber(String),
-    // Booleans
-    #[token("true")]
-    True,
-    #[token("false")]
-    False,
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
@@ -172,7 +167,17 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
         let token_len = range.len().try_into().unwrap();
         let token_range = TextRange::at(offset.try_into().unwrap(), token_len);
         let syntaxkind = match token {
-            Ok(token) => logos_tokenkind_to_syntaxkind(token),
+            Ok(token) => {
+                if let LogosToken::HexString(hex_string) = token {
+                    let detailed_tokens = process_hex_string_token(hex_string);
+                    for (kind, len) in detailed_tokens {
+                        tokens.push(Token { kind, len: TextSize::from(len as u32) });
+                    }
+                    continue;
+                } else {
+                    logos_tokenkind_to_syntaxkind(token)
+                }
+            }
             Err(err) => {
                 errors.push(SyntaxError::new(err.to_string(), token_range));
                 SyntaxKind::ERROR
@@ -227,13 +232,87 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::QuestionMark => T![?],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
-        LogosToken::WildcardHexByteLit(_) => SyntaxKind::HEX_WILDCARD_LIT,
-        LogosToken::HexByteStartsWithNumber(_) => SyntaxKind::HEX_LIT,
-        LogosToken::True => SyntaxKind::TRUE_KW,
-        LogosToken::False => SyntaxKind::FALSE_KW,
+        LogosToken::Bool(_) => SyntaxKind::BOOL_LIT,
         LogosToken::Whitespace => SyntaxKind::WHITESPACE,
         LogosToken::Comment | LogosToken::MultilineComment => SyntaxKind::COMMENT,
+        LogosToken::HexString(_) => {
+            unreachable!("This should be handled in process_hex_string_token")
+        }
     }
+}
+
+// Process hexadecimal string token to generate detailed tokens
+fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
+    let mut tokens = Vec::new();
+    let mut chars = hex_string.chars().peekable();
+    while let Some(ch) = chars.next() {
+        match ch {
+            ' ' => tokens.push((SyntaxKind::WHITESPACE, 1)),
+            '-' => tokens.push((SyntaxKind::HYPHEN, 1)),
+            '{' => tokens.push((SyntaxKind::L_BRACE, 1)),
+            '}' => tokens.push((SyntaxKind::R_BRACE, 1)),
+            '(' => tokens.push((SyntaxKind::L_PAREN, 1)),
+            ')' => tokens.push((SyntaxKind::R_PAREN, 1)),
+            '[' => {
+                tokens.push((SyntaxKind::L_BRACKET, 1));
+                let mut num_str = String::new();
+                while let Some(&peeked) = chars.peek() {
+                    if peeked.is_digit(10) {
+                        num_str.push(chars.next().unwrap());
+                    } else if peeked == '-' {
+                        if !num_str.is_empty() {
+                            tokens.push((SyntaxKind::INT_LIT, num_str.len()));
+                            num_str.clear();
+                        }
+                        tokens.push((SyntaxKind::HYPHEN, 1));
+                        chars.next();
+                    } else if peeked == ']' {
+                        if !num_str.is_empty() {
+                            tokens.push((SyntaxKind::INT_LIT, num_str.len()));
+                            num_str.clear();
+                        }
+                        tokens.push((SyntaxKind::R_BRACKET, 1));
+                        chars.next();
+                    } else {
+                        break;
+                    }
+                }
+            }
+            ']' => tokens.push((SyntaxKind::R_BRACKET, 1)),
+            '|' => tokens.push((SyntaxKind::PIPE, 1)),
+            '~' => {
+                // Consume the next two characters to form the hex byte
+                let mut len = 1;
+                for _ in 0..2 {
+                    if let Some(&peeked) = chars.peek() {
+                        if peeked.is_digit(16) || peeked == '?' {
+                            chars.next();
+                            len += 1;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                tokens.push((SyntaxKind::HEX_LIT, len));
+            }
+            _ => {
+                // If it's a hexadecimal character or '?', add as HexByte
+                if ch.is_digit(16) || ch == '?' {
+                    let mut len = 1;
+                    if let Some(&peeked) = chars.peek() {
+                        if peeked.is_digit(16) || peeked == '?' {
+                            chars.next();
+                            len += 1;
+                        }
+                    }
+                    tokens.push((SyntaxKind::HEX_LIT, len));
+                }
+            }
+        }
+    }
+    tokens
 }
 
 #[cfg(test)]

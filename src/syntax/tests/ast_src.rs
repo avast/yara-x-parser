@@ -28,8 +28,6 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "and",
         "or",
         "not",
-        "true",
-        "false",
         "rule",
         "strings",
         "condition",
@@ -46,7 +44,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "base64",
         "base64wide",
     ],
-    literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_WILDCARD_LIT", "HEX_LIT"],
+    literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT"],
     tokens: &["IDENTIFIER", "VARIABLE", "WHITESPACE", "COMMENT", "ERROR"],
     nodes: &[
         "RULE",
@@ -76,7 +74,6 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "HEX_ALTERNATIVE",
         "HEX_JUMP",
         "HEX_PIPE",
-        "HEX_DIGIT",
     ],
 };
 

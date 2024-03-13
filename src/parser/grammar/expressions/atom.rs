@@ -1,12 +1,12 @@
 use super::*;
 
 /// Recover set for expressions, FIRST set is used
-const EXPR_RECOVERY_SET: TokenSet = TokenSet::new(&[T![variable], T![true], T![false], T![not]]);
+const EXPR_RECOVERY_SET: TokenSet = TokenSet::new(&[T![variable], T![bool_lit], T![not]]);
 
 // So far the only literals we support are true, false and variables
 // numbers will be added later
 pub(crate) const LITERAL_FIRST: TokenSet =
-    TokenSet::new(&[T![true], T![false], T![variable], T![string_lit], INT_LIT, FLOAT_LIT]);
+    TokenSet::new(&[T![bool_lit], T![variable], T![string_lit], T![int_lit], T![float_lit]]);
 
 /// Parse a literal
 /// Literal right now is only: true, false, variable, string_lit or number

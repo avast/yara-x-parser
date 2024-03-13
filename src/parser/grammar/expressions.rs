@@ -13,9 +13,6 @@ const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
     T![base64wide],
 ]);
 
-const HEX_BYTE_SET: TokenSet =
-    TokenSet::new(&[T![hex_lit], T![hex_wildcard_lit], T![int_lit], T![identifier], T![~]]);
-
 /// Parse a rule body
 /// A rule body consists `{`, rule_body and `}`
 /// This can probably be later simplified to not have both
@@ -126,7 +123,7 @@ pub(super) fn meta_body(p: &mut Parser) {
         }
         p.expect(T![=]);
         match p.current() {
-            STRING_LIT | TRUE_KW | FALSE_KW | INT_LIT | FLOAT_LIT => {
+            STRING_LIT | BOOL_LIT | INT_LIT | FLOAT_LIT => {
                 p.bump(p.current());
             }
             _ => {
@@ -156,7 +153,13 @@ pub(super) fn strings_body(p: &mut Parser) {
         match p.current() {
             STRING_LIT => p.bump(STRING_LIT),
             L_BRACE => hex_pattern(p),
-            _ => p.err_and_bump("expected a string"),
+            _ => {
+                p.err_and_bump("expected a valid string");
+                while !p.at(T!['}']) {
+                    p.bump_any();
+                }
+                p.bump_any();
+            }
         }
         if p.at_ts(PATTERN_MODIFIERS_SET) {
             string_modifiers(p);
@@ -193,7 +196,7 @@ fn hex_tokens(p: &mut Parser) {
 
 /// Parse a hex byte or alternative
 fn hex_byte_or_alternative(p: &mut Parser) {
-    if p.at_ts(HEX_BYTE_SET) {
+    if p.at(HEX_LIT) {
         hex_byte(p);
     } else if p.at(T!['(']) {
         hex_alternative(p);
@@ -206,16 +209,7 @@ fn hex_byte_or_alternative(p: &mut Parser) {
 /// It can be a hex literal, wildcard, integer, identifier or tilde
 fn hex_byte(p: &mut Parser) {
     let m = p.start();
-    if p.at(TILDE) {
-        p.bump(TILDE);
-    }
-    assert!(p.at_ts(TokenSet::new(&[
-        T![hex_lit],
-        T![hex_wildcard_lit],
-        T![int_lit],
-        T![identifier]
-    ])));
-    p.bump_any();
+    p.bump(HEX_LIT);
     m.complete(p, HEX_BYTE);
 }
 

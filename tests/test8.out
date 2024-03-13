@@ -45,12 +45,12 @@ SOURCE_FILE@0..149
                 NOT_KW@129..132 "not"
                 WHITESPACE@132..133 " "
                 LITERAL@133..137
-                  TRUE_KW@133..137 "true"
+                  BOOL_LIT@133..137 "true"
             WHITESPACE@137..138 " "
             OR_KW@138..140 "or"
             WHITESPACE@140..141 " "
             LITERAL@141..146
-              FALSE_KW@141..146 "false"
+              BOOL_LIT@141..146 "false"
       WHITESPACE@146..147 "\n"
       R_BRACE@147..148 "}"
   WHITESPACE@148..149 "\n"

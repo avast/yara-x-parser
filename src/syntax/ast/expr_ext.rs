@@ -88,7 +88,7 @@ pub enum LiteralKind {
     Int(ast::IntLit),
     Float(ast::FloatLit),
     Variable(ast::Variable),
-    Bool(bool),
+    Bool(ast::BoolLit),
 }
 
 impl ast::Literal {
@@ -105,24 +105,16 @@ impl ast::Literal {
 
         if let Some(number) = ast::IntLit::cast(token.clone()) {
             return LiteralKind::Int(number);
-        }
-
-        if let Some(number) = ast::FloatLit::cast(token.clone()) {
+        } else if let Some(number) = ast::FloatLit::cast(token.clone()) {
             return LiteralKind::Float(number);
-        }
-
-        if let Some(variable) = ast::Variable::cast(token.clone()) {
+        } else if let Some(variable) = ast::Variable::cast(token.clone()) {
             return LiteralKind::Variable(variable);
-        }
-
-        if let Some(string) = ast::StringLit::cast(token.clone()) {
+        } else if let Some(string) = ast::StringLit::cast(token.clone()) {
             return LiteralKind::String(string);
-        }
-
-        match token.kind() {
-            T![true] => LiteralKind::Bool(true),
-            T![false] => LiteralKind::Bool(false),
-            _ => unreachable!(),
+        } else if let Some(boolean) = ast::BoolLit::cast(token.clone()) {
+            return LiteralKind::Bool(boolean);
+        } else {
+            unreachable!("Unknown literal kind")
         }
     }
 }

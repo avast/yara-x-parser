@@ -53,7 +53,7 @@ SOURCE_FILE@0..157
             AND_KW@146..149 "and"
             WHITESPACE@149..150 " "
             LITERAL@150..154
-              TRUE_KW@150..154 "true"
+              BOOL_LIT@150..154 "true"
       WHITESPACE@154..155 "\n"
       R_BRACE@155..156 "}"
   WHITESPACE@156..157 "\n"

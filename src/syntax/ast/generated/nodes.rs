@@ -183,11 +183,8 @@ impl MetaStmt {
     pub fn assign_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![=])
     }
-    pub fn true_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![true])
-    }
-    pub fn false_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![false])
+    pub fn bool_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![bool_lit])
     }
     pub fn string_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![string_lit])
@@ -306,14 +303,8 @@ pub struct HexByte {
     pub(crate) syntax: SyntaxNode,
 }
 impl HexByte {
-    pub fn tilde_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![~])
-    }
-    pub fn hex_digit(&self) -> Option<HexDigit> {
-        support::child(&self.syntax)
-    }
-    pub fn question_mark_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![?])
+    pub fn hex_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![hex_lit])
     }
 }
 
@@ -365,25 +356,6 @@ impl HexJump {
     }
     pub fn r_brack_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![']'])
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct HexDigit {
-    pub(crate) syntax: SyntaxNode,
-}
-impl HexDigit {
-    pub fn int_lit_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![int_lit])
-    }
-    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![string_lit])
-    }
-    pub fn hex_wildcard_lit_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![hex_wildcard_lit])
-    }
-    pub fn hex_lit_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![hex_lit])
     }
 }
 
@@ -779,21 +751,6 @@ impl AstNode for HexJump {
         &self.syntax
     }
 }
-impl AstNode for HexDigit {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == HEX_DIGIT
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
 impl AstNode for HexPipe {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == HEX_PIPE
@@ -1053,11 +1010,6 @@ impl std::fmt::Display for HexTokenTail {
     }
 }
 impl std::fmt::Display for HexJump {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
-impl std::fmt::Display for HexDigit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -28,8 +28,7 @@ Meta =
 
 MetaStmt =
     'identifier' '=' 
-        |  'true'
-        |  'false'
+        |  'bool_lit'
         |  'string_lit'
         |  'int_lit'
         |  'float_lit'
@@ -55,14 +54,7 @@ HexTokenTail =
     HexJump* (HexByte | HexAlternative)
 
 HexByte = 
-    '~'? HexDigit HexDigit
-|   '~'? '?' HexDigit
-|   '~'? HexDigit '?'
-|   '~'? '?' '?'
-
-// If it is valid hex digit has to be checked in compiler
-HexDigit = 
-    ('int_lit' | 'string_lit' | 'hex_wildcard_lit' | 'hex_lit') 
+    'hex_lit'
 
 HexAlternative = 
     '(' HexToken HexPipe* ')'
@@ -122,4 +114,4 @@ PrefixExpr =
     Expr
 
 Literal =
-    value:('true' | 'false' | 'variable' | 'int_lit')
+    value:('bool_lit' | 'variable' | 'int_lit')

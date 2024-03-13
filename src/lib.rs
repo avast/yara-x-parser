@@ -181,13 +181,13 @@ fn api_walktrough() {
         assert!(rhs_prefix.op_token().is_some());
         assert!(rhs_prefix.op_token().unwrap().kind() == SyntaxKind::NOT_KW);
 
-        // and the `LITERAL` node which is a `TRUE_KW` token
+        // and the `LITERAL` node which is a `BOOL_LIT` token
         let rhs_body = rhs_prefix.expr().unwrap();
         let rhs_literal = match &rhs_body {
             Expr::Literal(l) => l,
             _ => unreachable!(),
         };
-        assert!(rhs_literal.token().kind() == SyntaxKind::TRUE_KW);
+        assert!(rhs_literal.token().kind() == SyntaxKind::BOOL_LIT);
         assert_eq!(rhs_literal.token().text(), "true");
 
         // Last but not least, in any point we can obtain the syntax node

@@ -22,7 +22,7 @@ SOURCE_FILE@0..107
               WHITESPACE@30..31 " "
               HEX_TOKEN@31..85
                 HEX_BYTE@31..33
-                  IDENTIFIER@31..33 "F4"
+                  HEX_LIT@31..33 "F4"
                 WHITESPACE@33..34 " "
                 HEX_TOKEN_TAIL@34..42
                   HEX_JUMP@34..39
@@ -35,11 +35,11 @@ SOURCE_FILE@0..107
                     R_BRACKET@38..39 "]"
                   WHITESPACE@39..40 " "
                   HEX_BYTE@40..42
-                    IDENTIFIER@40..42 "A4"
+                    HEX_LIT@40..42 "A4"
                 WHITESPACE@42..43 " "
                 HEX_TOKEN_TAIL@43..45
                   HEX_BYTE@43..45
-                    IDENTIFIER@43..45 "B4"
+                    HEX_LIT@43..45 "B4"
                 WHITESPACE@45..46 " "
                 HEX_TOKEN_TAIL@46..81
                   HEX_ALTERNATIVE@46..81
@@ -47,25 +47,25 @@ SOURCE_FILE@0..107
                     WHITESPACE@47..48 " "
                     HEX_TOKEN@48..63
                       HEX_BYTE@48..50
-                        INT_LIT@48..50 "62"
+                        HEX_LIT@48..50 "62"
                       WHITESPACE@50..51 " "
                       HEX_TOKEN_TAIL@51..63
                         HEX_ALTERNATIVE@51..63
                           L_PAREN@51..52 "("
                           HEX_TOKEN@52..57
                             HEX_BYTE@52..54
-                              INT_LIT@52..54 "45"
+                              HEX_LIT@52..54 "45"
                             WHITESPACE@54..55 " "
                             HEX_TOKEN_TAIL@55..57
                               HEX_BYTE@55..57
-                                INT_LIT@55..57 "54"
+                                HEX_LIT@55..57 "54"
                           WHITESPACE@57..58 " "
                           HEX_PIPE@58..62
                             PIPE@58..59 "|"
                             WHITESPACE@59..60 " "
                             HEX_TOKEN@60..62
                               HEX_BYTE@60..62
-                                INT_LIT@60..62 "48"
+                                HEX_LIT@60..62 "48"
                           R_PAREN@62..63 ")"
                     WHITESPACE@63..64 " "
                     HEX_PIPE@64..68
@@ -73,29 +73,28 @@ SOURCE_FILE@0..107
                       WHITESPACE@65..66 " "
                       HEX_TOKEN@66..68
                         HEX_BYTE@66..68
-                          INT_LIT@66..68 "56"
+                          HEX_LIT@66..68 "56"
                     WHITESPACE@68..69 " "
                     HEX_PIPE@69..79
                       PIPE@69..70 "|"
                       WHITESPACE@70..71 " "
                       HEX_TOKEN@71..79
                         HEX_BYTE@71..73
-                          INT_LIT@71..73 "45"
+                          HEX_LIT@71..73 "45"
                         WHITESPACE@73..74 " "
                         HEX_TOKEN_TAIL@74..76
                           HEX_BYTE@74..76
-                            HEX_WILDCARD_LIT@74..76 "??"
+                            HEX_LIT@74..76 "??"
                         WHITESPACE@76..77 " "
                         HEX_TOKEN_TAIL@77..79
                           HEX_BYTE@77..79
-                            INT_LIT@77..79 "67"
+                            HEX_LIT@77..79 "67"
                     WHITESPACE@79..80 " "
                     R_PAREN@80..81 ")"
                 WHITESPACE@81..82 " "
                 HEX_TOKEN_TAIL@82..85
                   HEX_BYTE@82..85
-                    TILDE@82..83 "~"
-                    INT_LIT@83..85 "45"
+                    HEX_LIT@82..85 "~45"
               WHITESPACE@85..86 " "
               R_BRACE@86..87 "}"
       WHITESPACE@87..89 "\n\t"

@@ -418,7 +418,7 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             [string_lit] => { $crate::SyntaxKind::STRING_LIT };
             [int_lit] => { $crate::SyntaxKind::INT_LIT };
             [float_lit] => { $crate::SyntaxKind::FLOAT_LIT };
-            [hex_wildcard_lit] => { $crate::SyntaxKind::HEX_WILDCARD_LIT };
+            [bool_lit] => { $crate::SyntaxKind::BOOL_LIT };
             [hex_lit] => { $crate::SyntaxKind::HEX_LIT };
         }
         pub use T;
@@ -480,7 +480,7 @@ impl Field {
 
 fn lower(grammar: &Grammar) -> AstSrc {
     let mut res = AstSrc {
-        tokens: "Whitespace Comment StringLit IntLit FloatLit Variable"
+        tokens: "Whitespace Comment StringLit IntLit BoolLit FloatLit Variable"
             .split_ascii_whitespace()
             .map(|it| it.to_string())
             .collect::<Vec<_>>(),
