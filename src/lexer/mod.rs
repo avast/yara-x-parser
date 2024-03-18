@@ -63,21 +63,31 @@ pub(crate) enum LogosToken {
     Or,
     #[token("not")]
     Not,
-    // Booleans
     #[regex(r"true|false", |lex| lex.slice().to_string())]
     Bool(String),
+
+    // Patterns
+    #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
+    Regexp(String),
     // Hexadecimal string
     #[regex(r"\{[0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
     HexString(String),
+    // Strings
+    #[regex(r#""([^"\n\\]|\\["\\])*""#, |lex| lex.slice().to_string())]
+    String(String),
+
     // Identifiers
     #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
     // Variables
     #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Variable(String),
-    // Strings
-    #[regex(r#""([^"\n\\]|\\["\\])*""#, |lex| lex.slice().to_string())]
-    String(String),
+    // Integer
+    #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
+    Integer(String),
+    // Float
+    #[regex(r"[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
+    Float(String),
 
     // Modifiers
     #[token("ascii")]
@@ -95,7 +105,7 @@ pub(crate) enum LogosToken {
     #[token("base64wide")]
     Base64Wide,
 
-    // Operators
+    // Chars
     #[token("=")]
     Assign,
     #[token(":")]
@@ -122,18 +132,11 @@ pub(crate) enum LogosToken {
     Tilde,
     #[token("?")]
     QuestionMark,
-    // Integer
-    #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
-    Integer(String),
-    // Float
-    #[regex(r"[0-9]+\.[0-9]+", |lex| lex.slice().to_string())]
-    Float(String),
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
     #[regex(r"[ \t\n\r]+")]
     Whitespace,
-
     // Comments
     #[regex(r"//.*")]
     Comment,
@@ -170,6 +173,12 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
             Ok(token) => {
                 if let LogosToken::HexString(hex_string) = token {
                     let detailed_tokens = process_hex_string_token(hex_string);
+                    for (kind, len) in detailed_tokens {
+                        tokens.push(Token { kind, len: TextSize::from(len as u32) });
+                    }
+                    continue;
+                } else if let LogosToken::Regexp(regex) = token {
+                    let detailed_tokens = process_regex_string_token(regex);
                     for (kind, len) in detailed_tokens {
                         tokens.push(Token { kind, len: TextSize::from(len as u32) });
                     }
@@ -238,7 +247,43 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::HexString(_) => {
             unreachable!("This should be handled in process_hex_string_token")
         }
+        LogosToken::Regexp(_) => {
+            unreachable!("This should be handled in process_regex_string_token")
+        }
     }
+}
+
+fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
+    let mut tokens = Vec::new();
+    let mut chars = regex.chars().peekable();
+
+    // Consume the first '/' character
+    chars.next();
+    tokens.push((SyntaxKind::SLASH, 1));
+
+    // now store whole regex as a single token until next '/'
+    let mut regex_str = String::new();
+    while let Some(ch) = chars.next() {
+        if ch == '/' {
+            tokens.push((SyntaxKind::REGEX_LIT, regex_str.len()));
+            tokens.push((SyntaxKind::SLASH, 1));
+            break;
+        } else {
+            regex_str.push(ch);
+        }
+    }
+
+    // rest is handled as modifier token for each modifier
+    // only valid modifiers are: 'i' for case insensitive and 's' for dot matches all
+    while let Some(ch) = chars.next() {
+        match ch {
+            'i' => tokens.push((SyntaxKind::CASE_INSENSITIVE, 1)),
+            's' => tokens.push((SyntaxKind::DOT_MATCHES_ALL, 1)),
+            _ => {}
+        }
+    }
+
+    tokens
 }
 
 // Process hexadecimal string token to generate detailed tokens

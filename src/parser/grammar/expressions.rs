@@ -153,6 +153,7 @@ pub(super) fn strings_body(p: &mut Parser) {
         match p.current() {
             STRING_LIT => p.bump(STRING_LIT),
             L_BRACE => hex_pattern(p),
+            SLASH => regex_pattern(p),
             _ => {
                 p.err_and_bump("expected a valid string");
                 while !p.at(T!['}']) {
@@ -168,6 +169,24 @@ pub(super) fn strings_body(p: &mut Parser) {
 
         m.complete(p, VARIABLE_STMT);
     }
+}
+
+/// Parse a regex pattern
+fn regex_pattern(p: &mut Parser) {
+    let m = p.start();
+
+    // Parse a regex pattern that starts with `/` and ends with `/`
+    p.expect(SLASH);
+    p.expect(REGEX_LIT);
+    p.expect(SLASH);
+
+    // after regex pattern there can be some regex specific modifiers
+    while p.at(CASE_INSENSITIVE) || p.at(DOT_MATCHES_ALL) {
+        let n = p.start();
+        p.bump_any();
+        n.complete(p, REGEX_MOD);
+    }
+    m.complete(p, REGEX_PATTERN);
 }
 
 /// Parse a hex string pattern

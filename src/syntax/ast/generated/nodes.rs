@@ -227,6 +227,9 @@ impl Pattern {
     pub fn hex_pattern(&self) -> Option<HexPattern> {
         support::child(&self.syntax)
     }
+    pub fn regex_pattern(&self) -> Option<RegexPattern> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -279,6 +282,32 @@ impl HexPattern {
     }
     pub fn r_brace_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['}'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct RegexPattern {
+    pub(crate) syntax: SyntaxNode,
+}
+impl RegexPattern {
+    pub fn regex_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![regex_lit])
+    }
+    pub fn regex_mods(&self) -> AstChildren<RegexMod> {
+        support::children(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct RegexMod {
+    pub(crate) syntax: SyntaxNode,
+}
+impl RegexMod {
+    pub fn case_insensitive_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![case_insensitive])
+    }
+    pub fn dot_matches_all_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![dot_matches_all])
     }
 }
 
@@ -676,6 +705,36 @@ impl AstNode for HexPattern {
         &self.syntax
     }
 }
+impl AstNode for RegexPattern {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == REGEX_PATTERN
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for RegexMod {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == REGEX_MOD
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for HexToken {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == HEX_TOKEN
@@ -985,6 +1044,16 @@ impl std::fmt::Display for PatternMod {
     }
 }
 impl std::fmt::Display for HexPattern {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for RegexPattern {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for RegexMod {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -420,6 +420,9 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             [float_lit] => { $crate::SyntaxKind::FLOAT_LIT };
             [bool_lit] => { $crate::SyntaxKind::BOOL_LIT };
             [hex_lit] => { $crate::SyntaxKind::HEX_LIT };
+            [regex_lit] => { $crate::SyntaxKind::REGEX_LIT };
+            [dot_matches_all] => { $crate::SyntaxKind::DOT_MATCHES_ALL };
+            [case_insensitive] => { $crate::SyntaxKind::CASE_INSENSITIVE };
         }
         pub use T;
     };

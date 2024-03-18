@@ -43,6 +43,13 @@ VariableStmt =
 Pattern = 
         'string_lit' PatternMod*
     |   HexPattern PatternMod*
+    |   RegexPattern PatternMod*
+
+RegexPattern = 
+    'regex_lit' RegexMod*
+
+RegexMod =
+    'case_insensitive' | 'dot_matches_all'
 
 HexPattern =
     '{' HexToken '}'
