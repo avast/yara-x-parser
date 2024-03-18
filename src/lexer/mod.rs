@@ -263,7 +263,7 @@ fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
 
     // now store whole regex as a single token until next '/'
     let mut regex_str = String::new();
-    while let Some(ch) = chars.next() {
+    for ch in chars.by_ref() {
         if ch == '/' {
             tokens.push((SyntaxKind::REGEX_LIT, regex_str.len()));
             tokens.push((SyntaxKind::SLASH, 1));
@@ -275,7 +275,7 @@ fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
 
     // rest is handled as modifier token for each modifier
     // only valid modifiers are: 'i' for case insensitive and 's' for dot matches all
-    while let Some(ch) = chars.next() {
+    for ch in chars.by_ref() {
         match ch {
             'i' => tokens.push((SyntaxKind::CASE_INSENSITIVE, 1)),
             's' => tokens.push((SyntaxKind::DOT_MATCHES_ALL, 1)),
@@ -302,7 +302,7 @@ fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
                 tokens.push((SyntaxKind::L_BRACKET, 1));
                 let mut num_str = String::new();
                 while let Some(&peeked) = chars.peek() {
-                    if peeked.is_digit(10) {
+                    if peeked.is_ascii_digit() {
                         num_str.push(chars.next().unwrap());
                     } else if peeked == '-' {
                         if !num_str.is_empty() {
@@ -330,7 +330,7 @@ fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
                 let mut len = 1;
                 for _ in 0..2 {
                     if let Some(&peeked) = chars.peek() {
-                        if peeked.is_digit(16) || peeked == '?' {
+                        if peeked.is_ascii_hexdigit() || peeked == '?' {
                             chars.next();
                             len += 1;
                         } else {
@@ -344,10 +344,10 @@ fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
             }
             _ => {
                 // If it's a hexadecimal character or '?', add as HexByte
-                if ch.is_digit(16) || ch == '?' {
+                if ch.is_ascii_hexdigit() || ch == '?' {
                     let mut len = 1;
                     if let Some(&peeked) = chars.peek() {
-                        if peeked.is_digit(16) || peeked == '?' {
+                        if peeked.is_ascii_hexdigit() || peeked == '?' {
                             chars.next();
                             len += 1;
                         }

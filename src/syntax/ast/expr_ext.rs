@@ -104,15 +104,15 @@ impl ast::Literal {
         let token = self.token();
 
         if let Some(number) = ast::IntLit::cast(token.clone()) {
-            return LiteralKind::Int(number);
+            LiteralKind::Int(number)
         } else if let Some(number) = ast::FloatLit::cast(token.clone()) {
-            return LiteralKind::Float(number);
+            LiteralKind::Float(number)
         } else if let Some(variable) = ast::Variable::cast(token.clone()) {
-            return LiteralKind::Variable(variable);
+            LiteralKind::Variable(variable)
         } else if let Some(string) = ast::StringLit::cast(token.clone()) {
-            return LiteralKind::String(string);
+            LiteralKind::String(string)
         } else if let Some(boolean) = ast::BoolLit::cast(token.clone()) {
-            return LiteralKind::Bool(boolean);
+            LiteralKind::Bool(boolean)
         } else {
             unreachable!("Unknown literal kind")
         }
