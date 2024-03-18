@@ -38,7 +38,7 @@ Strings =
         VariableStmt*
 
 VariableStmt =
-    'variable' '=' Pattern 
+    'variable' '=' Pattern
 
 Pattern = 
         'string_lit' PatternMod*

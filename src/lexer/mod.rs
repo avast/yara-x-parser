@@ -263,13 +263,15 @@ fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
 
     // now store whole regex as a single token until next '/'
     let mut regex_str = String::new();
+    let mut prev_char = None;
     for ch in chars.by_ref() {
-        if ch == '/' {
+        if ch == '/' && prev_char != Some('\\') {
             tokens.push((SyntaxKind::REGEX_LIT, regex_str.len()));
             tokens.push((SyntaxKind::SLASH, 1));
             break;
         } else {
             regex_str.push(ch);
+            prev_char = Some(ch);
         }
     }
 
