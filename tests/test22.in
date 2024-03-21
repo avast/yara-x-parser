@@ -1,0 +1,9 @@
+//Rule comment
+rule test
+{
+	strings:
+		$a = "foo"
+		$b = "bar"
+	condition:
+		$a or 9 + 9 == 18 and not true or $b and 1.1 << 2 contains "bar"
+}

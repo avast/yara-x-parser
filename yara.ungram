@@ -112,14 +112,24 @@ BooleanExpr =
 BooleanTerm = 
     'variable'
 |   Expr
-|   Expr ('+' | '-' | '*' | '%' | '&' | '|' | '^' | '<<' | '>>' | '~' | '.' ) Expr
+|   Expr 
+        (
+            '==' | '!=' | '<' | '<=' | '>' | '>=' |
+            'contains' | 'icontains' | 'startswith' | 'istartswith' | 'endswith' | 'iendswith' | 'iequals' | 'matches'
+        )
+    Expr
 |   'bool_lit'
 |   'not' BooleanTerm
 |   '(' BooleanExpr ')'
 
 Expr = 
     Term
-|   Term '|' Expr
+|   Term 
+        (
+            '+' | '-' | '*' | '%' |
+            '&' | '|' | '^' | '<<' | '>>' | '~' | '.' 
+        )
+    Expr
 
 Term = 
     PrimaryExpr

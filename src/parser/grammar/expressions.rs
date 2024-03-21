@@ -326,23 +326,14 @@ enum Associativity {
 /// Binding powers of operators for a Pratt parser.
 fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
-        // add support for other operators
         T![and] => (4, T![and], Associativity::Left),
         T![or] => (2, T![or], Associativity::Left),
         _ => (0, ERROR, Associativity::Left),
     }
 }
 
-fn invalid_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
-    match p.current() {
-        // add support for other operators
-        _ => (0, ERROR, Associativity::Left),
-    }
-}
-
 fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
-        // add support for other operators
         T![|] => (10, T![|], Associativity::Left),
         T![^] => (12, T![^], Associativity::Left),
         T![&] => (14, T![&], Associativity::Left),
@@ -353,6 +344,26 @@ fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
         T![*] => (20, T![*], Associativity::Left),
         T![%] => (20, T![%], Associativity::Left),
         T![.] => (22, T![.], Associativity::Left),
+        _ => (0, ERROR, Associativity::Left),
+    }
+}
+
+fn expr_stmt_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
+    match p.current() {
+        T![==] => (6, T![==], Associativity::Left),
+        T![!=] => (6, T![!=], Associativity::Left),
+        T![contains] => (6, T![contains], Associativity::Left),
+        T![icontains] => (6, T![icontains], Associativity::Left),
+        T![startswith] => (6, T![startswith], Associativity::Left),
+        T![istartswith] => (6, T![istartswith], Associativity::Left),
+        T![endswith] => (6, T![endswith], Associativity::Left),
+        T![iendswith] => (6, T![iendswith], Associativity::Left),
+        T![iequals] => (6, T![iequals], Associativity::Left),
+        T![matches] => (6, T![matches], Associativity::Left),
+        T![<] => (8, T![<], Associativity::Left),
+        T![<=] => (8, T![<=], Associativity::Left),
+        T![>] => (8, T![>], Associativity::Left),
+        T![>=] => (8, T![>=], Associativity::Left),
         _ => (0, ERROR, Associativity::Left),
     }
 }
@@ -422,7 +433,7 @@ fn expr_stmt(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarke
     };
 
     loop {
-        let (op_bp, op, associativity) = invalid_op(p);
+        let (op_bp, op, associativity) = expr_stmt_op(p);
         if op_bp < bp {
             break;
         }

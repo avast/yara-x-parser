@@ -65,6 +65,22 @@ pub(crate) enum LogosToken {
     Not,
     #[regex(r"true|false", |lex| lex.slice().to_string())]
     Bool(String),
+    #[token("contains")]
+    Contains,
+    #[token("icontains")]
+    IContains,
+    #[token("startswith")]
+    StartsWith,
+    #[token("istartswith")]
+    IStartsWith,
+    #[token("endswith")]
+    EndsWith,
+    #[token("iendswith")]
+    IEndsWith,
+    #[token("iequals")]
+    IEquals,
+    #[token("matches")]
+    Matches,
 
     // Patterns
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
@@ -148,6 +164,18 @@ pub(crate) enum LogosToken {
     Caret,
     #[token(".")]
     Dot,
+    #[token("==")]
+    Equal,
+    #[token("!=")]
+    NotEqual,
+    #[token("<")]
+    LessThan,
+    #[token("<=")]
+    LessThanEqual,
+    #[token(">")]
+    GreaterThan,
+    #[token(">=")]
+    GreaterThanEqual,
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
@@ -232,6 +260,14 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::And => SyntaxKind::AND_KW,
         LogosToken::Or => SyntaxKind::OR_KW,
         LogosToken::Not => SyntaxKind::NOT_KW,
+        LogosToken::Contains => SyntaxKind::CONTAINS_KW,
+        LogosToken::IContains => SyntaxKind::ICONTAINS_KW,
+        LogosToken::StartsWith => SyntaxKind::STARTSWITH_KW,
+        LogosToken::IStartsWith => SyntaxKind::ISTARTSWITH_KW,
+        LogosToken::EndsWith => SyntaxKind::ENDSWITH_KW,
+        LogosToken::IEndsWith => SyntaxKind::IENDSWITH_KW,
+        LogosToken::IEquals => SyntaxKind::IEQUALS_KW,
+        LogosToken::Matches => SyntaxKind::MATCHES_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,
@@ -263,6 +299,12 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Ampersand => T![&],
         LogosToken::Caret => T![^],
         LogosToken::Dot => T![.],
+        LogosToken::Equal => T![==],
+        LogosToken::NotEqual => T![!=],
+        LogosToken::LessThan => T![<],
+        LogosToken::LessThanEqual => T![<=],
+        LogosToken::GreaterThan => T![>],
+        LogosToken::GreaterThanEqual => T![>=],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
         LogosToken::Bool(_) => SyntaxKind::BOOL_LIT,

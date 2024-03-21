@@ -31,6 +31,12 @@ pub enum SyntaxKind {
     AMPERSAND,
     CARET,
     DOT,
+    EQ,
+    NE,
+    LT,
+    LE,
+    GT,
+    GE,
     AND_KW,
     OR_KW,
     NOT_KW,
@@ -49,6 +55,14 @@ pub enum SyntaxKind {
     XOR_KW,
     BASE64_KW,
     BASE64WIDE_KW,
+    CONTAINS_KW,
+    ICONTAINS_KW,
+    STARTSWITH_KW,
+    ISTARTSWITH_KW,
+    ENDSWITH_KW,
+    IENDSWITH_KW,
+    IEQUALS_KW,
+    MATCHES_KW,
     STRING_LIT,
     INT_LIT,
     FLOAT_LIT,
@@ -121,6 +135,14 @@ impl SyntaxKind {
                 | XOR_KW
                 | BASE64_KW
                 | BASE64WIDE_KW
+                | CONTAINS_KW
+                | ICONTAINS_KW
+                | STARTSWITH_KW
+                | ISTARTSWITH_KW
+                | ENDSWITH_KW
+                | IENDSWITH_KW
+                | IEQUALS_KW
+                | MATCHES_KW
         )
     }
     pub fn is_punct(self) -> bool {
@@ -148,6 +170,12 @@ impl SyntaxKind {
                 | AMPERSAND
                 | CARET
                 | DOT
+                | EQ
+                | NE
+                | LT
+                | LE
+                | GT
+                | GE
         )
     }
     pub fn is_literal(self) -> bool {
@@ -173,6 +201,14 @@ impl SyntaxKind {
             "xor" => XOR_KW,
             "base64" => BASE64_KW,
             "base64wide" => BASE64WIDE_KW,
+            "contains" => CONTAINS_KW,
+            "icontains" => ICONTAINS_KW,
+            "startswith" => STARTSWITH_KW,
+            "istartswith" => ISTARTSWITH_KW,
+            "endswith" => ENDSWITH_KW,
+            "iendswith" => IENDSWITH_KW,
+            "iequals" => IEQUALS_KW,
+            "matches" => MATCHES_KW,
             _ => return None,
         };
         Some(kw)
@@ -199,11 +235,13 @@ impl SyntaxKind {
             '&' => AMPERSAND,
             '^' => CARET,
             '.' => DOT,
+            '<' => LT,
+            '>' => GT,
             _ => return None,
         };
         Some(tok)
     }
 }
 #[macro_export]
-macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; ['['] => { $ crate :: SyntaxKind :: L_BRACKET } ; [']'] => { $ crate :: SyntaxKind :: R_BRACKET } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [-] => { $ crate :: SyntaxKind :: HYPHEN } ; [?] => { $ crate :: SyntaxKind :: QUESTION_MARK } ; [~] => { $ crate :: SyntaxKind :: TILDE } ; [|] => { $ crate :: SyntaxKind :: PIPE } ; [/] => { $ crate :: SyntaxKind :: SLASH } ; [+] => { $ crate :: SyntaxKind :: PLUS } ; [*] => { $ crate :: SyntaxKind :: STAR } ; [%] => { $ crate :: SyntaxKind :: PERCENTAGE } ; [<<] => { $ crate :: SyntaxKind :: SHL } ; [>>] => { $ crate :: SyntaxKind :: SHR } ; [&] => { $ crate :: SyntaxKind :: AMPERSAND } ; [^] => { $ crate :: SyntaxKind :: CARET } ; [.] => { $ crate :: SyntaxKind :: DOT } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; [bool_lit] => { $ crate :: SyntaxKind :: BOOL_LIT } ; [hex_lit] => { $ crate :: SyntaxKind :: HEX_LIT } ; [regex_lit] => { $ crate :: SyntaxKind :: REGEX_LIT } ; [dot_matches_all] => { $ crate :: SyntaxKind :: DOT_MATCHES_ALL } ; [case_insensitive] => { $ crate :: SyntaxKind :: CASE_INSENSITIVE } ; }
+macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; ['['] => { $ crate :: SyntaxKind :: L_BRACKET } ; [']'] => { $ crate :: SyntaxKind :: R_BRACKET } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [-] => { $ crate :: SyntaxKind :: HYPHEN } ; [?] => { $ crate :: SyntaxKind :: QUESTION_MARK } ; [~] => { $ crate :: SyntaxKind :: TILDE } ; [|] => { $ crate :: SyntaxKind :: PIPE } ; [/] => { $ crate :: SyntaxKind :: SLASH } ; [+] => { $ crate :: SyntaxKind :: PLUS } ; [*] => { $ crate :: SyntaxKind :: STAR } ; [%] => { $ crate :: SyntaxKind :: PERCENTAGE } ; [<<] => { $ crate :: SyntaxKind :: SHL } ; [>>] => { $ crate :: SyntaxKind :: SHR } ; [&] => { $ crate :: SyntaxKind :: AMPERSAND } ; [^] => { $ crate :: SyntaxKind :: CARET } ; [.] => { $ crate :: SyntaxKind :: DOT } ; [==] => { $ crate :: SyntaxKind :: EQ } ; [!=] => { $ crate :: SyntaxKind :: NE } ; [<] => { $ crate :: SyntaxKind :: LT } ; [<=] => { $ crate :: SyntaxKind :: LE } ; [>] => { $ crate :: SyntaxKind :: GT } ; [>=] => { $ crate :: SyntaxKind :: GE } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [contains] => { $ crate :: SyntaxKind :: CONTAINS_KW } ; [icontains] => { $ crate :: SyntaxKind :: ICONTAINS_KW } ; [startswith] => { $ crate :: SyntaxKind :: STARTSWITH_KW } ; [istartswith] => { $ crate :: SyntaxKind :: ISTARTSWITH_KW } ; [endswith] => { $ crate :: SyntaxKind :: ENDSWITH_KW } ; [iendswith] => { $ crate :: SyntaxKind :: IENDSWITH_KW } ; [iequals] => { $ crate :: SyntaxKind :: IEQUALS_KW } ; [matches] => { $ crate :: SyntaxKind :: MATCHES_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; [bool_lit] => { $ crate :: SyntaxKind :: BOOL_LIT } ; [hex_lit] => { $ crate :: SyntaxKind :: HEX_LIT } ; [regex_lit] => { $ crate :: SyntaxKind :: REGEX_LIT } ; [dot_matches_all] => { $ crate :: SyntaxKind :: DOT_MATCHES_ALL } ; [case_insensitive] => { $ crate :: SyntaxKind :: CASE_INSENSITIVE } ; }
 pub use T;

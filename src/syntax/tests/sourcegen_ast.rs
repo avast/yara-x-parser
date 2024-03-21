@@ -468,6 +468,12 @@ impl Field {
                     "&" => "ampersand",
                     "^" => "caret",
                     "." => "dot",
+                    "==" => "eq",
+                    "!=" => "ne",
+                    "<" => "lt",
+                    "<=" => "le",
+                    ">" => "gt",
+                    ">=" => "ge",
                     _ => name,
                 };
                 format_ident!("{}_token", name)

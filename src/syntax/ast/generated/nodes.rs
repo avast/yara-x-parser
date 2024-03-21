@@ -463,6 +463,76 @@ impl BooleanTerm {
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
     }
+    pub fn eq_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![==])
+    }
+    pub fn ne_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![!=])
+    }
+    pub fn lt_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![<])
+    }
+    pub fn le_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![<=])
+    }
+    pub fn gt_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![>])
+    }
+    pub fn ge_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![>=])
+    }
+    pub fn contains_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![contains])
+    }
+    pub fn icontains_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![icontains])
+    }
+    pub fn startswith_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![startswith])
+    }
+    pub fn istartswith_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![istartswith])
+    }
+    pub fn endswith_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![endswith])
+    }
+    pub fn iendswith_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![iendswith])
+    }
+    pub fn iequals_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![iequals])
+    }
+    pub fn matches_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![matches])
+    }
+    pub fn bool_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![bool_lit])
+    }
+    pub fn not_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![not])
+    }
+    pub fn boolean_term(&self) -> Option<BooleanTerm> {
+        support::child(&self.syntax)
+    }
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Expr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Expr {
+    pub fn term(&self) -> Option<Term> {
+        support::child(&self.syntax)
+    }
     pub fn plus_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![+])
     }
@@ -495,37 +565,6 @@ impl BooleanTerm {
     }
     pub fn dot_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![.])
-    }
-    pub fn bool_lit_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![bool_lit])
-    }
-    pub fn not_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![not])
-    }
-    pub fn boolean_term(&self) -> Option<BooleanTerm> {
-        support::child(&self.syntax)
-    }
-    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T!['('])
-    }
-    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
-        support::child(&self.syntax)
-    }
-    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![')'])
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Expr {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Expr {
-    pub fn term(&self) -> Option<Term> {
-        support::child(&self.syntax)
-    }
-    pub fn pipe_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![|])
     }
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
