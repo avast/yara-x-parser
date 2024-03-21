@@ -607,6 +607,9 @@ impl PrimaryExpr {
     pub fn entrypoint_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![entrypoint])
     }
+    pub fn regex_pattern(&self) -> Option<RegexPattern> {
+        support::child(&self.syntax)
+    }
     pub fn hyphen_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![-])
     }

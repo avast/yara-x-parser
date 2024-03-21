@@ -144,5 +144,6 @@ PrimaryExpr =
 |   'string_lit'
 |   'filesize'
 |   'entrypoint'
+|   RegexPattern
 |   '-' Term
 |   '(' Expr ')'
