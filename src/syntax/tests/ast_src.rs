@@ -67,6 +67,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "iequals",
         "matches",
         "defined",
+        "filesize",
+        "entrypoint",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT", "REGEX_LIT"],
     tokens: &[

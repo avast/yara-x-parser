@@ -501,6 +501,12 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
         T![identifier] => {
             p.bump(T![identifier]);
         }
+        T![filesize] => {
+            p.bump(T![filesize]);
+        }
+        T![entrypoint] => {
+            p.bump(T![entrypoint]);
+        }
         T![-] => {
             p.bump(T![-]);
             term(p);

@@ -601,6 +601,12 @@ impl PrimaryExpr {
     pub fn string_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![string_lit])
     }
+    pub fn filesize_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![filesize])
+    }
+    pub fn entrypoint_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![entrypoint])
+    }
     pub fn hyphen_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![-])
     }

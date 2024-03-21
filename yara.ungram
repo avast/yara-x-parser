@@ -142,5 +142,7 @@ PrimaryExpr =
     'float_lit'
 |   'int_lit'
 |   'string_lit'
+|   'filesize'
+|   'entrypoint'
 |   '-' Term
 |   '(' Expr ')'
