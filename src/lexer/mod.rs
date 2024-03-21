@@ -155,9 +155,9 @@ pub(crate) enum LogosToken {
     #[token("%")]
     Percent,
     #[token("<<")]
-    SHL,
+    ShiftLeft,
     #[token(">>")]
-    SHR,
+    ShiftRight,
     #[token("&")]
     Ampersand,
     #[token("^")]
@@ -294,8 +294,8 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Plus => T![+],
         LogosToken::Star => T![*],
         LogosToken::Percent => T![%],
-        LogosToken::SHL => T![<<],
-        LogosToken::SHR => T![>>],
+        LogosToken::ShiftLeft => T![<<],
+        LogosToken::ShiftRight => T![>>],
         LogosToken::Ampersand => T![&],
         LogosToken::Caret => T![^],
         LogosToken::Dot => T![.],
