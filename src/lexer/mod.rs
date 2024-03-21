@@ -81,6 +81,8 @@ pub(crate) enum LogosToken {
     IEquals,
     #[token("matches")]
     Matches,
+    #[token("defined")]
+    Defined,
 
     // Patterns
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
@@ -270,6 +272,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::IEndsWith => SyntaxKind::IENDSWITH_KW,
         LogosToken::IEquals => SyntaxKind::IEQUALS_KW,
         LogosToken::Matches => SyntaxKind::MATCHES_KW,
+        LogosToken::Defined => SyntaxKind::DEFINED_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,

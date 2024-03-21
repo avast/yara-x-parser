@@ -444,11 +444,11 @@ impl BooleanExpr {
     pub fn and_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![and])
     }
-    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
-        support::child(&self.syntax)
-    }
     pub fn or_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![or])
+    }
+    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
+        support::child(&self.syntax)
     }
 }
 
@@ -513,6 +513,9 @@ impl BooleanTerm {
     }
     pub fn boolean_term(&self) -> Option<BooleanTerm> {
         support::child(&self.syntax)
+    }
+    pub fn defined_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![defined])
     }
     pub fn l_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['('])

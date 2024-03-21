@@ -106,8 +106,11 @@ Condition =
 
 BooleanExpr = 
     BooleanTerm
-|   BooleanTerm 'and' BooleanExpr
-|   BooleanTerm 'or' BooleanExpr
+|   BooleanTerm
+        (
+            'and'| 'or'
+        )
+    BooleanExpr
 
 BooleanTerm = 
     'variable'
@@ -120,6 +123,7 @@ BooleanTerm =
     Expr
 |   'bool_lit'
 |   'not' BooleanTerm
+|   'defined' BooleanTerm
 |   '(' BooleanExpr ')'
 
 Expr = 

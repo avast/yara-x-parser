@@ -66,6 +66,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "iendswith",
         "iequals",
         "matches",
+        "defined",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT", "REGEX_LIT"],
     tokens: &[

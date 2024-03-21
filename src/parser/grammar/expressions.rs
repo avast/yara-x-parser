@@ -416,6 +416,9 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
         p.bump(T![variable]);
     } else if p.at(T![bool_lit]) {
         p.bump(T![bool_lit]);
+    } else if p.at(T![defined]) {
+        p.bump(T![defined]);
+        boolean_term(p);
     } else {
         expr_stmt(p, None, 1);
     }
