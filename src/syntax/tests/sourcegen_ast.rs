@@ -460,6 +460,14 @@ impl Field {
                     "|" => "pipe",
                     "~" => "tilde",
                     "?" => "question_mark",
+                    "+" => "plus",
+                    "*" => "star",
+                    "%" => "percentage",
+                    "<<" => "shl",
+                    ">>" => "shr",
+                    "&" => "ampersand",
+                    "^" => "caret",
+                    "." => "dot",
                     _ => name,
                 };
                 format_ident!("{}_token", name)

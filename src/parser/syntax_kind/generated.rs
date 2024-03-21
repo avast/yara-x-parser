@@ -23,6 +23,14 @@ pub enum SyntaxKind {
     TILDE,
     PIPE,
     SLASH,
+    PLUS,
+    STAR,
+    PERCENTAGE,
+    SHL,
+    SHR,
+    AMPERSAND,
+    CARET,
+    DOT,
     AND_KW,
     OR_KW,
     NOT_KW,
@@ -63,7 +71,6 @@ pub enum SyntaxKind {
     SOURCE_FILE,
     BLOCK_EXPR,
     PREFIX_EXPR,
-    LITERAL,
     EXPRESSION,
     EXPRESSION_STMT,
     VARIABLE_STMT,
@@ -83,6 +90,11 @@ pub enum SyntaxKind {
     HEX_PIPE,
     REGEX_PATTERN,
     REGEX_MOD,
+    BOOLEAN_TERM,
+    BOOLEAN_EXPR,
+    EXPR,
+    TERM,
+    PRIMARY_EXPR,
     #[doc(hidden)]
     __LAST,
 }
@@ -128,6 +140,14 @@ impl SyntaxKind {
                 | TILDE
                 | PIPE
                 | SLASH
+                | PLUS
+                | STAR
+                | PERCENTAGE
+                | SHL
+                | SHR
+                | AMPERSAND
+                | CARET
+                | DOT
         )
     }
     pub fn is_literal(self) -> bool {
@@ -173,11 +193,17 @@ impl SyntaxKind {
             '~' => TILDE,
             '|' => PIPE,
             '/' => SLASH,
+            '+' => PLUS,
+            '*' => STAR,
+            '%' => PERCENTAGE,
+            '&' => AMPERSAND,
+            '^' => CARET,
+            '.' => DOT,
             _ => return None,
         };
         Some(tok)
     }
 }
 #[macro_export]
-macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; ['['] => { $ crate :: SyntaxKind :: L_BRACKET } ; [']'] => { $ crate :: SyntaxKind :: R_BRACKET } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [-] => { $ crate :: SyntaxKind :: HYPHEN } ; [?] => { $ crate :: SyntaxKind :: QUESTION_MARK } ; [~] => { $ crate :: SyntaxKind :: TILDE } ; [|] => { $ crate :: SyntaxKind :: PIPE } ; [/] => { $ crate :: SyntaxKind :: SLASH } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; [bool_lit] => { $ crate :: SyntaxKind :: BOOL_LIT } ; [hex_lit] => { $ crate :: SyntaxKind :: HEX_LIT } ; [regex_lit] => { $ crate :: SyntaxKind :: REGEX_LIT } ; [dot_matches_all] => { $ crate :: SyntaxKind :: DOT_MATCHES_ALL } ; [case_insensitive] => { $ crate :: SyntaxKind :: CASE_INSENSITIVE } ; }
+macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; ['['] => { $ crate :: SyntaxKind :: L_BRACKET } ; [']'] => { $ crate :: SyntaxKind :: R_BRACKET } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [-] => { $ crate :: SyntaxKind :: HYPHEN } ; [?] => { $ crate :: SyntaxKind :: QUESTION_MARK } ; [~] => { $ crate :: SyntaxKind :: TILDE } ; [|] => { $ crate :: SyntaxKind :: PIPE } ; [/] => { $ crate :: SyntaxKind :: SLASH } ; [+] => { $ crate :: SyntaxKind :: PLUS } ; [*] => { $ crate :: SyntaxKind :: STAR } ; [%] => { $ crate :: SyntaxKind :: PERCENTAGE } ; [<<] => { $ crate :: SyntaxKind :: SHL } ; [>>] => { $ crate :: SyntaxKind :: SHR } ; [&] => { $ crate :: SyntaxKind :: AMPERSAND } ; [^] => { $ crate :: SyntaxKind :: CARET } ; [.] => { $ crate :: SyntaxKind :: DOT } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; [bool_lit] => { $ crate :: SyntaxKind :: BOOL_LIT } ; [hex_lit] => { $ crate :: SyntaxKind :: HEX_LIT } ; [regex_lit] => { $ crate :: SyntaxKind :: REGEX_LIT } ; [dot_matches_all] => { $ crate :: SyntaxKind :: DOT_MATCHES_ALL } ; [case_insensitive] => { $ crate :: SyntaxKind :: CASE_INSENSITIVE } ; }
 pub use T;

@@ -27,11 +27,9 @@ SOURCE_FILE@0..107
                 HEX_TOKEN_TAIL@34..42
                   HEX_JUMP@34..39
                     L_BRACKET@34..35 "["
-                    LITERAL@35..36
-                      INT_LIT@35..36 "0"
+                    INT_LIT@35..36 "0"
                     HYPHEN@36..37 "-"
-                    LITERAL@37..38
-                      INT_LIT@37..38 "3"
+                    INT_LIT@37..38 "3"
                     R_BRACKET@38..39 "]"
                   WHITESPACE@39..40 " "
                   HEX_BYTE@40..42
@@ -102,9 +100,8 @@ SOURCE_FILE@0..107
         CONDITION_KW@89..98 "condition"
         COLON@98..99 ":"
         WHITESPACE@99..102 "\n\t\t"
-        EXPRESSION_STMT@102..104
-          LITERAL@102..104
-            VARIABLE@102..104 "$a"
+        BOOLEAN_TERM@102..104
+          VARIABLE@102..104 "$a"
       WHITESPACE@104..105 "\n"
       R_BRACE@105..106 "}"
   WHITESPACE@106..107 "\n"

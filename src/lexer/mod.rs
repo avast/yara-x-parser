@@ -132,6 +132,22 @@ pub(crate) enum LogosToken {
     Tilde,
     #[token("?")]
     QuestionMark,
+    #[token("+")]
+    Plus,
+    #[token("*")]
+    Star,
+    #[token("%")]
+    Percent,
+    #[token("<<")]
+    SHL,
+    #[token(">>")]
+    SHR,
+    #[token("&")]
+    Ampersand,
+    #[token("^")]
+    Caret,
+    #[token(".")]
+    Dot,
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
@@ -239,6 +255,14 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Pipe => T![|],
         LogosToken::Tilde => T![~],
         LogosToken::QuestionMark => T![?],
+        LogosToken::Plus => T![+],
+        LogosToken::Star => T![*],
+        LogosToken::Percent => T![%],
+        LogosToken::SHL => T![<<],
+        LogosToken::SHR => T![>>],
+        LogosToken::Ampersand => T![&],
+        LogosToken::Caret => T![^],
+        LogosToken::Dot => T![.],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
         LogosToken::Bool(_) => SyntaxKind::BOOL_LIT,

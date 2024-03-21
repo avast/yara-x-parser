@@ -72,8 +72,8 @@ HexPipe =
 HexJump =
     '[' 
         (
-            lhs:Literal? '-' rhs:Literal?
-        |   lhs:Literal 
+            lhs:'int_lit'? '-' rhs:'int_lit'?
+        |   lhs:'int_lit' 
         )
     ']'
 
@@ -95,30 +95,38 @@ BaseAlphabet =
 XorRange = 
     '(' 
         (
-            lhs:Literal '-' rhs:Literal
-        |   lhs:Literal
+            lhs:'int_lit' '-' rhs:'int_lit'
+        |   lhs:'int_lit'
         )
     ')'
 
 Condition =
     'condition' ':'
-        ExpressionStmt
+        BooleanExpr
 
-ExpressionStmt = Expr
+BooleanExpr = 
+    BooleanTerm
+|   BooleanTerm 'and' BooleanExpr
+|   BooleanTerm 'or' BooleanExpr
+
+BooleanTerm = 
+    'variable'
+|   Expr
+|   Expr ('+' | '-' | '*' | '%' | '&' | '|' | '^' | '<<' | '>>' | '~' | '.' ) Expr
+|   'bool_lit'
+|   'not' BooleanTerm
+|   '(' BooleanExpr ')'
 
 Expr = 
-    Expression
-|   PrefixExpr
-|   Literal
+    Term
+|   Term '|' Expr
 
-Expression = 
-    lhs:Expr 
-        op:('and' | 'or')
-    rhs:Expr
+Term = 
+    PrimaryExpr
 
-PrefixExpr = 
-        'not'
-    Expr
-
-Literal =
-    value:('bool_lit' | 'variable' | 'int_lit')
+PrimaryExpr = 
+    'float_lit'
+|   'int_lit'
+|   'string_lit'
+|   '-' Term
+|   '(' Expr ')'

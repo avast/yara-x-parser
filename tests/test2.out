@@ -31,15 +31,14 @@ SOURCE_FILE@0..75
         CONDITION_KW@49..58 "condition"
         COLON@58..59 ":"
         WHITESPACE@59..62 "\n\t\t"
-        EXPRESSION_STMT@62..72
-          EXPRESSION@62..72
-            LITERAL@62..64
-              VARIABLE@62..64 "$a"
-            WHITESPACE@64..65 " "
-            OR_KW@65..67 "or"
-            WHITESPACE@67..70 "\n\t\t"
-            LITERAL@70..72
-              VARIABLE@70..72 "$b"
+        BOOLEAN_EXPR@62..72
+          BOOLEAN_TERM@62..64
+            VARIABLE@62..64 "$a"
+          WHITESPACE@64..65 " "
+          OR_KW@65..67 "or"
+          WHITESPACE@67..70 "\n\t\t"
+          BOOLEAN_TERM@70..72
+            VARIABLE@70..72 "$b"
       WHITESPACE@72..73 "\n"
       R_BRACE@73..74 "}"
   WHITESPACE@74..75 "\n"

@@ -1,0 +1,60 @@
+SOURCE_FILE@0..154
+  COMMENT@0..16 "//Global comment"
+  WHITESPACE@16..18 "\n\n"
+  RULE@18..153
+    COMMENT@18..32 "//Rule comment"
+    WHITESPACE@32..33 "\n"
+    RULE_KW@33..37 "rule"
+    WHITESPACE@37..38 " "
+    IDENTIFIER@38..42 "test"
+    WHITESPACE@42..43 "\n"
+    BLOCK_EXPR@43..153
+      L_BRACE@43..44 "{"
+      WHITESPACE@44..46 "\n\t"
+      STRINGS@46..92
+        COMMENT@46..66 "//Rule block comment"
+        WHITESPACE@66..68 "\n\t"
+        STRINGS_KW@68..75 "strings"
+        COLON@75..76 ":"
+        WHITESPACE@76..79 "\n\t\t"
+        VARIABLE_STMT@79..92
+          VARIABLE@79..81 "$b"
+          WHITESPACE@81..82 " "
+          ASSIGN@82..83 "="
+          WHITESPACE@83..84 " "
+          PATTERN@84..92
+            STRING_LIT@84..92 "\"string\""
+      WHITESPACE@92..95 "\n\n\t"
+      CONDITION@95..151
+        COMMENT@95..111 "//String comment"
+        WHITESPACE@111..113 "\n\t"
+        CONDITION_KW@113..122 "condition"
+        COLON@122..123 ":"
+        WHITESPACE@123..126 "\n\t\t"
+        BOOLEAN_EXPR@126..151
+          BOOLEAN_EXPR@126..138
+            BOOLEAN_TERM@126..128
+              VARIABLE@126..128 "$b"
+            WHITESPACE@128..129 " "
+            AND_KW@129..132 "and"
+            WHITESPACE@132..133 " "
+            BOOLEAN_TERM@133..138
+              EXPRESSION@133..138
+                PRIMARY_EXPR@133..134
+                  INT_LIT@133..134 "9"
+                WHITESPACE@134..135 " "
+                PLUS@135..136 "+"
+                WHITESPACE@136..137 " "
+                PRIMARY_EXPR@137..138
+                  INT_LIT@137..138 "0"
+          WHITESPACE@138..139 " "
+          AND_KW@139..142 "and"
+          WHITESPACE@142..143 " "
+          BOOLEAN_TERM@143..151
+            NOT_KW@143..146 "not"
+            WHITESPACE@146..147 " "
+            BOOLEAN_TERM@147..151
+              BOOL_LIT@147..151 "true"
+      WHITESPACE@151..152 "\n"
+      R_BRACE@152..153 "}"
+  WHITESPACE@153..154 "\n"

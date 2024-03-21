@@ -23,20 +23,17 @@ SOURCE_FILE@0..65
               XOR_KW@35..38 "xor"
               XOR_RANGE@38..45
                 L_PAREN@38..39 "("
-                LITERAL@39..41
-                  INT_LIT@39..41 "10"
+                INT_LIT@39..41 "10"
                 HYPHEN@41..42 "-"
-                LITERAL@42..44
-                  INT_LIT@42..44 "20"
+                INT_LIT@42..44 "20"
                 R_PAREN@44..45 ")"
       WHITESPACE@45..47 "\n\t"
       CONDITION@47..62
         CONDITION_KW@47..56 "condition"
         COLON@56..57 ":"
         WHITESPACE@57..60 "\n\t\t"
-        EXPRESSION_STMT@60..62
-          LITERAL@60..62
-            VARIABLE@60..62 "$a"
+        BOOLEAN_TERM@60..62
+          VARIABLE@60..62 "$a"
       WHITESPACE@62..63 "\n"
       R_BRACE@63..64 "}"
   WHITESPACE@64..65 "\n"

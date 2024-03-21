@@ -303,15 +303,11 @@ fn xor_body(p: &mut Parser) {
 /// used in xor and hex jumps
 fn int_range(p: &mut Parser) {
     // parse LHS of range
-    let m = p.start();
     p.expect(INT_LIT);
-    m.complete(p, LITERAL);
     if p.at(HYPHEN) {
         p.bump(HYPHEN);
         // Parse RHS of range
-        let n = p.start();
         p.expect(INT_LIT);
-        n.complete(p, LITERAL);
     }
 }
 
@@ -319,13 +315,7 @@ fn int_range(p: &mut Parser) {
 /// It consists of a list of expressions
 /// Pratt parser is used to parse expressions
 pub(super) fn condition_body(p: &mut Parser) {
-    while !p.at(EOF) && !p.at(T!['}']) {
-        let m = p.start();
-        if let Some(cm) = expression(p, Some(m), 1) {
-            let m = cm.precede(p);
-            m.complete(p, EXPRESSION_STMT);
-        }
-    }
+    boolean_expr(p, None, 1);
 }
 
 enum Associativity {
@@ -338,7 +328,31 @@ fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
         // add support for other operators
         T![and] => (4, T![and], Associativity::Left),
-        T![or] => (3, T![or], Associativity::Left),
+        T![or] => (2, T![or], Associativity::Left),
+        _ => (0, ERROR, Associativity::Left),
+    }
+}
+
+fn invalid_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
+    match p.current() {
+        // add support for other operators
+        _ => (0, ERROR, Associativity::Left),
+    }
+}
+
+fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
+    match p.current() {
+        // add support for other operators
+        T![|] => (10, T![|], Associativity::Left),
+        T![^] => (12, T![^], Associativity::Left),
+        T![&] => (14, T![&], Associativity::Left),
+        T![<<] => (16, T![<<], Associativity::Left),
+        T![>>] => (16, T![>>], Associativity::Left),
+        T![+] => (18, T![+], Associativity::Left),
+        T![-] => (18, T![-], Associativity::Left),
+        T![*] => (20, T![*], Associativity::Left),
+        T![%] => (20, T![%], Associativity::Left),
+        T![.] => (22, T![.], Associativity::Left),
         _ => (0, ERROR, Associativity::Left),
     }
 }
@@ -349,9 +363,9 @@ fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
 /// This is also used to reflect operator precedence and associativity
 /// It is inspired by Pratt parser used in rust-analyter
 /// <https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html>
-fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
+fn boolean_expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
-    let mut lhs = match lhs(p) {
+    let mut lhs = match boolean_term(p) {
         Some(lhs) => lhs.extend_to(p, m),
         None => {
             m.abandon(p);
@@ -361,6 +375,54 @@ fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMark
 
     loop {
         let (op_bp, op, associativity) = current_op(p);
+        if op_bp <= bp {
+            break;
+        }
+        let m = lhs.precede(p);
+        p.bump(op);
+
+        let op_bp = match associativity {
+            Associativity::Left => op_bp + 1,
+            Associativity::Right => op_bp,
+        };
+        boolean_expr(p, None, op_bp);
+        lhs = m.complete(p, BOOLEAN_EXPR);
+    }
+    Some(lhs)
+}
+
+fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
+    let m = p.start();
+    if p.at(T![not]) {
+        p.bump(T![not]);
+        boolean_term(p);
+    } else if p.at(T!['(']) {
+        p.bump(T!['(']);
+        boolean_expr(p, None, 1);
+        p.bump(T![')']);
+    } else if p.at(T![variable]) {
+        p.bump(T![variable]);
+    } else if p.at(T![bool_lit]) {
+        p.bump(T![bool_lit]);
+    } else {
+        expr_stmt(p, None, 1);
+    }
+    let cm = m.complete(p, BOOLEAN_TERM);
+    Some(cm)
+}
+
+fn expr_stmt(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
+    let m = m.unwrap_or_else(|| p.start());
+    let mut lhs = match expr(p, None, bp) {
+        Some(lhs) => lhs.extend_to(p, m),
+        None => {
+            m.abandon(p);
+            return None;
+        }
+    };
+
+    loop {
+        let (op_bp, op, associativity) = invalid_op(p);
         if op_bp < bp {
             break;
         }
@@ -371,30 +433,73 @@ fn expression(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMark
             Associativity::Left => op_bp + 1,
             Associativity::Right => op_bp,
         };
-        expression(p, None, op_bp);
+        expr_stmt(p, None, op_bp);
         lhs = m.complete(p, EXPRESSION);
     }
     Some(lhs)
 }
 
-/// Left hand side of an expression.
-fn lhs(p: &mut Parser) -> Option<CompletedMarker> {
-    let m;
-    let kind = match p.current() {
-        // unary operators
-        T![not] => {
-            m = p.start();
-            p.bump_any();
-            PREFIX_EXPR
-        }
-        // all other operators
-        _ => {
-            let lhs = atom::atom_expr(p)?;
-            return Some(lhs);
+fn expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
+    let m = m.unwrap_or_else(|| p.start());
+    let mut lhs = match term(p) {
+        Some(lhs) => lhs.extend_to(p, m),
+        None => {
+            m.abandon(p);
+            return None;
         }
     };
-    // parse unary operators interior
-    expression(p, None, 255);
-    let cm = m.complete(p, kind);
+
+    loop {
+        let (op_bp, op, associativity) = expr_op(p);
+        if op_bp < bp {
+            break;
+        }
+        let m = lhs.precede(p);
+        p.bump(op);
+
+        let op_bp = match associativity {
+            Associativity::Left => op_bp + 1,
+            Associativity::Right => op_bp,
+        };
+        expr(p, None, op_bp);
+        lhs = m.complete(p, EXPRESSION);
+    }
+    Some(lhs)
+}
+
+fn term(p: &mut Parser) -> Option<CompletedMarker> {
+    primary_expr(p)
+}
+
+fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
+    let m = p.start();
+    match p.current() {
+        T![float_lit] => {
+            p.bump(T![float_lit]);
+        }
+        T![int_lit] => {
+            p.bump(T![int_lit]);
+        }
+        T![string_lit] => {
+            p.bump(T![string_lit]);
+        }
+        T![identifier] => {
+            p.bump(T![identifier]);
+        }
+        T![-] => {
+            p.bump(T![-]);
+            term(p);
+        }
+        T!['('] => {
+            p.bump(T!['(']);
+            expr(p, None, 1);
+            p.bump(T![')']);
+        }
+        _ => {
+            m.abandon(p);
+            return None;
+        }
+    };
+    let cm = m.complete(p, PRIMARY_EXPR);
     Some(cm)
 }

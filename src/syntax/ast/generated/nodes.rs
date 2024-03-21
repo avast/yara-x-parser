@@ -167,7 +167,7 @@ impl Condition {
     pub fn colon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![:])
     }
-    pub fn expression_stmt(&self) -> Option<ExpressionStmt> {
+    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
         support::child(&self.syntax)
     }
 }
@@ -402,12 +402,6 @@ impl HexPipe {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Literal {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Literal {}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct BaseAlphabet {
     pub(crate) syntax: SyntaxNode,
 }
@@ -440,39 +434,143 @@ impl XorRange {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ExpressionStmt {
+pub struct BooleanExpr {
     pub(crate) syntax: SyntaxNode,
 }
-impl ExpressionStmt {
-    pub fn expr(&self) -> Option<Expr> {
+impl BooleanExpr {
+    pub fn boolean_term(&self) -> Option<BooleanTerm> {
         support::child(&self.syntax)
+    }
+    pub fn and_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![and])
+    }
+    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn or_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![or])
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Expression {
+pub struct BooleanTerm {
     pub(crate) syntax: SyntaxNode,
 }
-impl Expression {}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PrefixExpr {
-    pub(crate) syntax: SyntaxNode,
-}
-impl PrefixExpr {
+impl BooleanTerm {
+    pub fn variable_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn plus_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![+])
+    }
+    pub fn hyphen_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![-])
+    }
+    pub fn star_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![*])
+    }
+    pub fn percentage_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![%])
+    }
+    pub fn ampersand_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![&])
+    }
+    pub fn pipe_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![|])
+    }
+    pub fn caret_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![^])
+    }
+    pub fn shl_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![<<])
+    }
+    pub fn shr_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![>>])
+    }
+    pub fn tilde_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![~])
+    }
+    pub fn dot_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![.])
+    }
+    pub fn bool_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![bool_lit])
+    }
     pub fn not_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![not])
     }
+    pub fn boolean_term(&self) -> Option<BooleanTerm> {
+        support::child(&self.syntax)
+    }
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Expr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Expr {
+    pub fn term(&self) -> Option<Term> {
+        support::child(&self.syntax)
+    }
+    pub fn pipe_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![|])
+    }
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum Expr {
-    Expression(Expression),
-    PrefixExpr(PrefixExpr),
-    Literal(Literal),
+pub struct Term {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Term {
+    pub fn primary_expr(&self) -> Option<PrimaryExpr> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct PrimaryExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl PrimaryExpr {
+    pub fn float_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![float_lit])
+    }
+    pub fn int_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![int_lit])
+    }
+    pub fn string_lit_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![string_lit])
+    }
+    pub fn hyphen_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![-])
+    }
+    pub fn term(&self) -> Option<Term> {
+        support::child(&self.syntax)
+    }
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -825,21 +923,6 @@ impl AstNode for HexPipe {
         &self.syntax
     }
 }
-impl AstNode for Literal {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == LITERAL
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
 impl AstNode for BaseAlphabet {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == BASE_ALPHABET
@@ -870,9 +953,9 @@ impl AstNode for XorRange {
         &self.syntax
     }
 }
-impl AstNode for ExpressionStmt {
+impl AstNode for BooleanExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == EXPRESSION_STMT
+        kind == BOOLEAN_EXPR
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -885,9 +968,9 @@ impl AstNode for ExpressionStmt {
         &self.syntax
     }
 }
-impl AstNode for Expression {
+impl AstNode for BooleanTerm {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == EXPRESSION
+        kind == BOOLEAN_TERM
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -898,57 +981,51 @@ impl AstNode for Expression {
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
-    }
-}
-impl AstNode for PrefixExpr {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == PREFIX_EXPR
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
-impl From<Expression> for Expr {
-    fn from(node: Expression) -> Expr {
-        Expr::Expression(node)
-    }
-}
-impl From<PrefixExpr> for Expr {
-    fn from(node: PrefixExpr) -> Expr {
-        Expr::PrefixExpr(node)
-    }
-}
-impl From<Literal> for Expr {
-    fn from(node: Literal) -> Expr {
-        Expr::Literal(node)
     }
 }
 impl AstNode for Expr {
     fn can_cast(kind: SyntaxKind) -> bool {
-        matches!(kind, EXPRESSION | PREFIX_EXPR | LITERAL)
+        kind == EXPR
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
-        let res = match syntax.kind() {
-            EXPRESSION => Expr::Expression(Expression { syntax }),
-            PREFIX_EXPR => Expr::PrefixExpr(PrefixExpr { syntax }),
-            LITERAL => Expr::Literal(Literal { syntax }),
-            _ => return None,
-        };
-        Some(res)
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
     }
     fn syntax(&self) -> &SyntaxNode {
-        match self {
-            Expr::Expression(it) => &it.syntax,
-            Expr::PrefixExpr(it) => &it.syntax,
-            Expr::Literal(it) => &it.syntax,
+        &self.syntax
+    }
+}
+impl AstNode for Term {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == TERM
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
         }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for PrimaryExpr {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == PRIMARY_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
     }
 }
 impl AnyHasComments {
@@ -966,11 +1043,6 @@ impl AstNode for AnyHasComments {
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
-    }
-}
-impl std::fmt::Display for Expr {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for SourceFile {
@@ -1088,11 +1160,6 @@ impl std::fmt::Display for HexPipe {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for Literal {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
 impl std::fmt::Display for BaseAlphabet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -1103,17 +1170,27 @@ impl std::fmt::Display for XorRange {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for ExpressionStmt {
+impl std::fmt::Display for BooleanExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for Expression {
+impl std::fmt::Display for BooleanTerm {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for PrefixExpr {
+impl std::fmt::Display for Expr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Term {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for PrimaryExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

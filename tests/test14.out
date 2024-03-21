@@ -30,9 +30,8 @@ SOURCE_FILE@0..129
         CONDITION_KW@111..120 "condition"
         COLON@120..121 ":"
         WHITESPACE@121..124 "\n\t\t"
-        EXPRESSION_STMT@124..126
-          LITERAL@124..126
-            VARIABLE@124..126 "$a"
+        BOOLEAN_TERM@124..126
+          VARIABLE@124..126 "$a"
       WHITESPACE@126..127 "\n"
       R_BRACE@127..128 "}"
   WHITESPACE@128..129 "\n"
