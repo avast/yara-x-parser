@@ -19,7 +19,7 @@ pub(crate) const LITERAL_FIRST: TokenSet =
 
 /// Add support for while/for loops, if/else statements, etc.
 /// Right now the only atom in expression is literal
-pub(super) fn atom_expr(p: &mut Parser) -> () {
+pub(super) fn atom_expr(p: &mut Parser) {
     p.bump_any();
 
     // This will be extended to support more expressions later

@@ -152,6 +152,8 @@ pub(crate) enum LogosToken {
     Plus,
     #[token("*")]
     Star,
+    #[token("\\")]
+    Backslash,
     #[token("%")]
     Percent,
     #[token("<<")]
@@ -293,6 +295,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::QuestionMark => T![?],
         LogosToken::Plus => T![+],
         LogosToken::Star => T![*],
+        LogosToken::Backslash => T![backslash],
         LogosToken::Percent => T![%],
         LogosToken::ShiftLeft => T![<<],
         LogosToken::ShiftRight => T![>>],

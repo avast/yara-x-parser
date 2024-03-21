@@ -75,6 +75,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "COMMENT",
         "CASE_INSENSITIVE",
         "DOT_MATCHES_ALL",
+        "BACKSLASH",
         "ERROR",
     ],
     nodes: &[

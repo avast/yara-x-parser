@@ -342,6 +342,7 @@ fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
         T![+] => (18, T![+], Associativity::Left),
         T![-] => (18, T![-], Associativity::Left),
         T![*] => (20, T![*], Associativity::Left),
+        T![backslash] => (20, T![backslash], Associativity::Left),
         T![%] => (20, T![%], Associativity::Left),
         T![.] => (22, T![.], Associativity::Left),
         _ => (0, ERROR, Associativity::Left),

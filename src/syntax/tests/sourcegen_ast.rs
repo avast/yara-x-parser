@@ -423,6 +423,7 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             [regex_lit] => { $crate::SyntaxKind::REGEX_LIT };
             [dot_matches_all] => { $crate::SyntaxKind::DOT_MATCHES_ALL };
             [case_insensitive] => { $crate::SyntaxKind::CASE_INSENSITIVE };
+            [backslash] => { $crate::SyntaxKind::BACKSLASH };
         }
         pub use T;
     };

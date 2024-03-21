@@ -542,6 +542,9 @@ impl Expr {
     pub fn star_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![*])
     }
+    pub fn backslash_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![backslash])
+    }
     pub fn percentage_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![%])
     }
