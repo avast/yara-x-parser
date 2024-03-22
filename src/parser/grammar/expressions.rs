@@ -410,11 +410,6 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
             p.bump(T![not]);
             boolean_term(p);
         }
-        T!['('] => {
-            p.bump(T!['(']);
-            boolean_expr(p, None, 1);
-            p.bump(T![')']);
-        }
         T![variable] => {
             p.bump(T![variable]);
             match p.current() {
@@ -440,8 +435,23 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
             p.bump(T![defined]);
             boolean_term(p);
         }
+
         _ => {
-            expr_stmt(p, None, 1);
+            let primary_expr_len = primary_expr_length(p, 0);
+
+            if p.at(T!['(']) && primary_expr_len == 0 {
+                p.bump(T!['(']);
+                boolean_expr(p, None, 1);
+                p.expect(T![')']);
+            } else if p.at(T![all])
+                || p.at(T![any])
+                || p.at(T![none])
+                || (primary_expr_len > 0 && p.nth(primary_expr_len) == T![of])
+            {
+                of_expr(p);
+            } else {
+                expr_stmt(p, None, 1);
+            }
         }
     }
     let cm = m.complete(p, BOOLEAN_TERM);
@@ -558,4 +568,173 @@ fn range(p: &mut Parser) {
     expr(p, None, 1);
     p.expect(T![')']);
     m.complete(p, RANGE);
+}
+
+fn of_expr(p: &mut Parser) {
+    let m = p.start();
+
+    // Parse quantifier
+    quantifier(p);
+
+    p.expect(T![of]);
+
+    if (p.at(T!['(']) && p.nth(1) == T![variable] && (p.nth(2) == T![,] || p.nth(2) == T![')']))
+        || p.at(T![them])
+    {
+        if p.at(T![them]) {
+            p.bump(T![them]);
+        } else {
+            pattern_ident_tupple(p);
+        }
+        match p.current() {
+            T![at] => {
+                let n = p.start();
+                p.bump(T![at]);
+                expr(p, None, 1);
+                n.complete(p, VARIABLE_ANCHOR);
+            }
+            T![in] => {
+                let n = p.start();
+                p.bump(T![in]);
+                range(p);
+                n.complete(p, VARIABLE_ANCHOR);
+            }
+            _ => (),
+        }
+    } else {
+        boolean_expr_tuple(p);
+    }
+
+    m.complete(p, OF_EXPR);
+}
+
+fn quantifier(p: &mut Parser) {
+    let m = p.start();
+    match p.current() {
+        T![all] => {
+            p.bump(T![all]);
+        }
+        T![any] => {
+            p.bump(T![any]);
+        }
+        T![none] => {
+            p.bump(T![none]);
+        }
+        _ => {
+            primary_expr(p);
+        }
+    }
+    m.complete(p, QUANTIFIER);
+}
+
+fn boolean_expr_tuple(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    boolean_expr(p, None, 1);
+    while p.at(T![,]) {
+        p.bump(T![,]);
+        boolean_expr(p, None, 1);
+    }
+    p.expect(T![')']);
+    m.complete(p, BOOLEAN_EXPR_TUPLE);
+}
+
+fn pattern_ident_tupple(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    variable_wildcard(p);
+    while p.at(T![,]) {
+        p.bump(T![,]);
+        variable_wildcard(p);
+    }
+    p.expect(T![')']);
+    m.complete(p, PATTERN_IDENT_TUPLE);
+}
+
+fn variable_wildcard(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T![variable]);
+    if p.at(T![*]) {
+        p.bump(T![*]);
+    }
+    m.complete(p, VARIABLE_WILDCARD);
+}
+
+fn primary_expr_length(p: &mut Parser, mut len: usize) -> usize {
+    len += match p.current() {
+        T![float_lit]
+        | T![int_lit]
+        | T![string_lit]
+        | T![identifier]
+        | T![filesize]
+        | T![entrypoint] => 1,
+        T![/] => regex_pattern_length(p, len),
+        T![-] => term_length(p, len),
+        T!['('] => expr_length(p, len),
+        _ => 0,
+    };
+    len
+}
+
+fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
+    // Check if the pattern starts with `/` and ends with `/`
+    if p.nth(len) == T![/] && p.nth(len + 1) == REGEX_LIT && p.nth(len + 2) == T![/] {
+        len += 3;
+    } else {
+        return 0;
+    }
+
+    // Check for regex specific modifiers
+    while p.nth(len) == CASE_INSENSITIVE || p.nth(len) == DOT_MATCHES_ALL {
+        len += 1;
+    }
+
+    len
+}
+
+fn term_length(p: &mut Parser, mut len: usize) -> usize {
+    len += primary_expr_length(p, len);
+    len
+}
+
+fn expr_length(p: &mut Parser, mut len: usize) -> usize {
+    // Check if the expression starts with `(`
+    if p.nth(len) == T!['('] {
+        len += 1;
+    } else {
+        return 0;
+    }
+
+    len = term_length(p, len);
+
+    while p.nth(len) == T![|]
+        || p.nth(len) == T![^]
+        || p.nth(len) == T![&]
+        || p.nth(len) == T![<<]
+        || p.nth(len) == T![>>]
+        || p.nth(len) == T![+]
+        || p.nth(len) == T![-]
+        || p.nth(len) == T![*]
+        || p.nth(len) == T![backslash]
+        || p.nth(len) == T![%]
+        || p.nth(len) == T![.]
+    {
+        len += 1;
+        len += expr_length(p, len);
+    }
+
+    // Check if the expression ends with `)`
+    len += 1;
+    if p.nth(len) == T![')'] {
+        len += 1;
+    } else {
+        return 0;
+    }
+
+    // Ensure that the expression is not empty
+    if len == 2 {
+        return 0;
+    }
+
+    len
 }

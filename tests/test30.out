@@ -1,0 +1,57 @@
+SOURCE_FILE@0..115
+  RULE@0..114
+    COMMENT@0..14 "//Rule comment"
+    WHITESPACE@14..15 "\n"
+    RULE_KW@15..19 "rule"
+    WHITESPACE@19..20 " "
+    IDENTIFIER@20..24 "test"
+    WHITESPACE@24..25 "\n"
+    BLOCK_EXPR@25..114
+      L_BRACE@25..26 "{"
+      WHITESPACE@26..28 "\n\t"
+      STRINGS@28..84
+        COMMENT@28..48 "//Rule block comment"
+        WHITESPACE@48..50 "\n\t"
+        STRINGS_KW@50..57 "strings"
+        COLON@57..58 ":"
+        WHITESPACE@58..61 "\n\t\t"
+        VARIABLE_STMT@61..71
+          VARIABLE@61..63 "$a"
+          WHITESPACE@63..64 " "
+          ASSIGN@64..65 "="
+          WHITESPACE@65..66 " "
+          PATTERN@66..71
+            STRING_LIT@66..71 "\"foo\""
+        WHITESPACE@71..74 "\n\t\t"
+        VARIABLE_STMT@74..84
+          VARIABLE@74..76 "$b"
+          WHITESPACE@76..77 " "
+          ASSIGN@77..78 "="
+          WHITESPACE@78..79 " "
+          PATTERN@79..84
+            STRING_LIT@79..84 "\"bar\""
+      WHITESPACE@84..86 "\n\t"
+      CONDITION@86..112
+        CONDITION_KW@86..95 "condition"
+        COLON@95..96 ":"
+        WHITESPACE@96..99 "\n\t\t"
+        BOOLEAN_TERM@99..112
+          OF_EXPR@99..112
+            QUANTIFIER@99..100
+              PRIMARY_EXPR@99..100
+                INT_LIT@99..100 "1"
+            WHITESPACE@100..101 " "
+            OF_KW@101..103 "of"
+            WHITESPACE@103..104 " "
+            PATTERN_IDENT_TUPLE@104..112
+              L_PAREN@104..105 "("
+              VARIABLE_WILDCARD@105..107
+                VARIABLE@105..107 "$a"
+              COMMA@107..108 ","
+              WHITESPACE@108..109 " "
+              VARIABLE_WILDCARD@109..111
+                VARIABLE@109..111 "$b"
+              R_PAREN@111..112 ")"
+      WHITESPACE@112..113 "\n"
+      R_BRACE@113..114 "}"
+  WHITESPACE@114..115 "\n"

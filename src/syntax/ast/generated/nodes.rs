@@ -529,6 +529,9 @@ impl BooleanTerm {
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
     }
+    pub fn of_expr(&self) -> Option<OfExpr> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -600,6 +603,31 @@ impl Expr {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct OfExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl OfExpr {
+    pub fn quantifier(&self) -> Option<Quantifier> {
+        support::child(&self.syntax)
+    }
+    pub fn of_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![of])
+    }
+    pub fn them_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![them])
+    }
+    pub fn pattern_ident_tuple(&self) -> Option<PatternIdentTuple> {
+        support::child(&self.syntax)
+    }
+    pub fn variable_anchor(&self) -> Option<VariableAnchor> {
+        support::child(&self.syntax)
+    }
+    pub fn boolean_expr_tuple(&self) -> Option<BooleanExprTuple> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Term {
     pub(crate) syntax: SyntaxNode,
 }
@@ -665,6 +693,73 @@ impl Range {
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Quantifier {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Quantifier {
+    pub fn all_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![all])
+    }
+    pub fn any_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![any])
+    }
+    pub fn none_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![none])
+    }
+    pub fn primary_expr(&self) -> Option<PrimaryExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn percentage_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![%])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct PatternIdentTuple {
+    pub(crate) syntax: SyntaxNode,
+}
+impl PatternIdentTuple {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn variable_wildcards(&self) -> AstChildren<VariableWildcard> {
+        support::children(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct BooleanExprTuple {
+    pub(crate) syntax: SyntaxNode,
+}
+impl BooleanExprTuple {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn boolean_exprs(&self) -> AstChildren<BooleanExpr> {
+        support::children(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VariableWildcard {
+    pub(crate) syntax: SyntaxNode,
+}
+impl VariableWildcard {
+    pub fn variable_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable])
+    }
+    pub fn star_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![*])
     }
 }
 
@@ -1108,6 +1203,21 @@ impl AstNode for Expr {
         &self.syntax
     }
 }
+impl AstNode for OfExpr {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == OF_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for Term {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == TERM
@@ -1141,6 +1251,66 @@ impl AstNode for PrimaryExpr {
 impl AstNode for Range {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == RANGE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Quantifier {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == QUANTIFIER
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for PatternIdentTuple {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == PATTERN_IDENT_TUPLE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for BooleanExprTuple {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == BOOLEAN_EXPR_TUPLE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for VariableWildcard {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_WILDCARD
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1315,6 +1485,11 @@ impl std::fmt::Display for Expr {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for OfExpr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for Term {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -1326,6 +1501,26 @@ impl std::fmt::Display for PrimaryExpr {
     }
 }
 impl std::fmt::Display for Range {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Quantifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for PatternIdentTuple {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for BooleanExprTuple {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for VariableWildcard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

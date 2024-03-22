@@ -609,10 +609,8 @@ fn lower_comma_list(
         _ => return false,
     };
 
-    let (node, repeat, trailing_comma) = match rule.as_slice() {
-        [Rule::Node(node), Rule::Rep(repeat), Rule::Opt(trailing_comma)] => {
-            (node, repeat, trailing_comma)
-        }
+    let (node, repeat) = match rule.as_slice() {
+        [Rule::Node(node), Rule::Rep(repeat)] => (node, repeat),
         _ => return false,
     };
 
@@ -622,7 +620,7 @@ fn lower_comma_list(
     };
 
     match repeat.as_slice() {
-        [comma, Rule::Node(n)] if comma == &**trailing_comma && n == node => (),
+        [_, Rule::Node(n)] if n == node => (),
         _ => return false,
     }
 

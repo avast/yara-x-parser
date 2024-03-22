@@ -125,6 +125,7 @@ BooleanTerm =
 |   'not' BooleanTerm
 |   'defined' BooleanTerm
 |   '(' BooleanExpr ')'
+|   OfExpr
 
 Expr = 
     Term
@@ -156,3 +157,22 @@ Range =
     '('
         Expr '..' Expr
     ')'
+
+OfExpr = 
+    Quantifier 'of' ('them' | PatternIdentTuple) VariableAnchor?
+|   Quantifier 'of' BooleanExprTuple
+
+Quantifier = 
+    'all'
+|   'any'
+|   'none'
+|   PrimaryExpr '%'?
+
+PatternIdentTuple = 
+    '(' (VariableWildcard (',' VariableWildcard)*) ')'
+
+VariableWildcard =
+    'variable' '*'?
+
+BooleanExprTuple =
+    '(' (BooleanExpr (',' BooleanExpr)*) ')'

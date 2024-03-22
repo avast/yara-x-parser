@@ -72,6 +72,11 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "entrypoint",
         "at",
         "in",
+        "of",
+        "them",
+        "all",
+        "any",
+        "none",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT", "REGEX_LIT"],
     tokens: &[
@@ -120,6 +125,11 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "PRIMARY_EXPR",
         "VARIABLE_ANCHOR",
         "RANGE",
+        "OF_EXPR",
+        "QUANTIFIER",
+        "PATTERN_IDENT_TUPLE",
+        "BOOLEAN_EXPR_TUPLE",
+        "VARIABLE_WILDCARD",
     ],
 };
 

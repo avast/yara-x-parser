@@ -91,6 +91,16 @@ pub(crate) enum LogosToken {
     At,
     #[token("in")]
     In,
+    #[token("of")]
+    Of,
+    #[token("all")]
+    All,
+    #[token("any")]
+    Any,
+    #[token("none")]
+    None,
+    #[token("them")]
+    Them,
 
     // Patterns
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
@@ -287,6 +297,11 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Entrypoint => SyntaxKind::ENTRYPOINT_KW,
         LogosToken::At => SyntaxKind::AT_KW,
         LogosToken::In => SyntaxKind::IN_KW,
+        LogosToken::Of => SyntaxKind::OF_KW,
+        LogosToken::All => SyntaxKind::ALL_KW,
+        LogosToken::Any => SyntaxKind::ANY_KW,
+        LogosToken::None => SyntaxKind::NONE_KW,
+        LogosToken::Them => SyntaxKind::THEM_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,
