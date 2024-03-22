@@ -38,6 +38,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         ("<=", "LE"),
         (">", "GT"),
         (">=", "GE"),
+        ("..", "DOTDOT"),
     ],
     keywords: &[
         "and",
@@ -69,6 +70,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "defined",
         "filesize",
         "entrypoint",
+        "at",
+        "in",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT", "REGEX_LIT"],
     tokens: &[
@@ -115,6 +118,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "EXPR",
         "TERM",
         "PRIMARY_EXPR",
+        "VARIABLE_ANCHOR",
+        "RANGE",
     ],
 };
 

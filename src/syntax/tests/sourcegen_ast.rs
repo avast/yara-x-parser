@@ -475,6 +475,7 @@ impl Field {
                     "<=" => "le",
                     ">" => "gt",
                     ">=" => "ge",
+                    ".." => "dotdot",
                     _ => name,
                 };
                 format_ident!("{}_token", name)

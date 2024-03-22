@@ -405,22 +405,44 @@ fn boolean_expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMa
 
 fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
     let m = p.start();
-    if p.at(T![not]) {
-        p.bump(T![not]);
-        boolean_term(p);
-    } else if p.at(T!['(']) {
-        p.bump(T!['(']);
-        boolean_expr(p, None, 1);
-        p.bump(T![')']);
-    } else if p.at(T![variable]) {
-        p.bump(T![variable]);
-    } else if p.at(T![bool_lit]) {
-        p.bump(T![bool_lit]);
-    } else if p.at(T![defined]) {
-        p.bump(T![defined]);
-        boolean_term(p);
-    } else {
-        expr_stmt(p, None, 1);
+    match p.current() {
+        T![not] => {
+            p.bump(T![not]);
+            boolean_term(p);
+        }
+        T!['('] => {
+            p.bump(T!['(']);
+            boolean_expr(p, None, 1);
+            p.bump(T![')']);
+        }
+        T![variable] => {
+            p.bump(T![variable]);
+            match p.current() {
+                T![at] => {
+                    let n = p.start();
+                    p.bump(T![at]);
+                    expr(p, None, 1);
+                    n.complete(p, VARIABLE_ANCHOR);
+                }
+                T![in] => {
+                    let n = p.start();
+                    p.bump(T![in]);
+                    range(p);
+                    n.complete(p, VARIABLE_ANCHOR);
+                }
+                _ => (),
+            }
+        }
+        T![bool_lit] => {
+            p.bump(T![bool_lit]);
+        }
+        T![defined] => {
+            p.bump(T![defined]);
+            boolean_term(p);
+        }
+        _ => {
+            expr_stmt(p, None, 1);
+        }
     }
     let cm = m.complete(p, BOOLEAN_TERM);
     Some(cm)
@@ -526,4 +548,14 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
     };
     let cm = m.complete(p, PRIMARY_EXPR);
     Some(cm)
+}
+
+fn range(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T!['(']);
+    expr(p, None, 1);
+    p.expect(T![..]);
+    expr(p, None, 1);
+    p.expect(T![')']);
+    m.complete(p, RANGE);
 }

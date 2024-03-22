@@ -87,6 +87,10 @@ pub(crate) enum LogosToken {
     Filesize,
     #[token("entrypoint")]
     Entrypoint,
+    #[token("at")]
+    At,
+    #[token("in")]
+    In,
 
     // Patterns
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
@@ -184,6 +188,8 @@ pub(crate) enum LogosToken {
     GreaterThan,
     #[token(">=")]
     GreaterThanEqual,
+    #[token("..")]
+    DotDot,
 
     // Whitespace - I want to preserve whitespace tokens to implement full fidelity
     // and error resilience
@@ -279,6 +285,8 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Defined => SyntaxKind::DEFINED_KW,
         LogosToken::Filesize => SyntaxKind::FILESIZE_KW,
         LogosToken::Entrypoint => SyntaxKind::ENTRYPOINT_KW,
+        LogosToken::At => SyntaxKind::AT_KW,
+        LogosToken::In => SyntaxKind::IN_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,
@@ -317,6 +325,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::LessThanEqual => T![<=],
         LogosToken::GreaterThan => T![>],
         LogosToken::GreaterThanEqual => T![>=],
+        LogosToken::DotDot => T![..],
         LogosToken::Integer(_) => SyntaxKind::INT_LIT,
         LogosToken::Float(_) => SyntaxKind::FLOAT_LIT,
         LogosToken::Bool(_) => SyntaxKind::BOOL_LIT,

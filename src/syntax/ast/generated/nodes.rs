@@ -460,6 +460,9 @@ impl BooleanTerm {
     pub fn variable_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![variable])
     }
+    pub fn variable_anchor(&self) -> Option<VariableAnchor> {
+        support::child(&self.syntax)
+    }
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
     }
@@ -525,6 +528,25 @@ impl BooleanTerm {
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VariableAnchor {
+    pub(crate) syntax: SyntaxNode,
+}
+impl VariableAnchor {
+    pub fn at_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![at])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn in_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![in])
+    }
+    pub fn range(&self) -> Option<Range> {
+        support::child(&self.syntax)
     }
 }
 
@@ -621,6 +643,25 @@ impl PrimaryExpr {
     }
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Range {
+    pub(crate) syntax: SyntaxNode,
+}
+impl Range {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn dotdot_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![..])
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
@@ -1037,6 +1078,21 @@ impl AstNode for BooleanTerm {
         &self.syntax
     }
 }
+impl AstNode for VariableAnchor {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_ANCHOR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for Expr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == EXPR
@@ -1070,6 +1126,21 @@ impl AstNode for Term {
 impl AstNode for PrimaryExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == PRIMARY_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for Range {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == RANGE
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1234,6 +1305,11 @@ impl std::fmt::Display for BooleanTerm {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for VariableAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -1245,6 +1321,11 @@ impl std::fmt::Display for Term {
     }
 }
 impl std::fmt::Display for PrimaryExpr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for Range {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -113,7 +113,7 @@ BooleanExpr =
     BooleanExpr
 
 BooleanTerm = 
-    'variable'
+    'variable' VariableAnchor?
 |   Expr
 |   Expr 
         (
@@ -147,3 +147,12 @@ PrimaryExpr =
 |   RegexPattern
 |   '-' Term
 |   '(' Expr ')'
+
+VariableAnchor = 
+    'at' Expr
+|   'in' Range
+
+Range = 
+    '('
+        Expr '..' Expr
+    ')'
