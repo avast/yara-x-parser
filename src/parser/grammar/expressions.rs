@@ -437,7 +437,13 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
         }
 
         _ => {
-            let primary_expr_len = primary_expr_length(p, 0);
+            let mut primary_expr_len = primary_expr_length(p, 0);
+
+            // If there is percatage sign after primary expression we need to bump one
+            // more token to check for "of" keyword
+            if primary_expr_len > 0 && p.nth(primary_expr_len) == T![%] {
+                primary_expr_len += 1;
+            }
 
             if p.at(T!['(']) && primary_expr_len == 0 {
                 p.bump(T!['(']);
@@ -622,6 +628,9 @@ fn quantifier(p: &mut Parser) {
         }
         _ => {
             primary_expr(p);
+            if p.at(T![%]) {
+                p.bump(T![%]);
+            }
         }
     }
     m.complete(p, QUANTIFIER);
