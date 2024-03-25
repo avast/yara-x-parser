@@ -523,7 +523,36 @@ fn expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
 }
 
 fn term(p: &mut Parser) -> Option<CompletedMarker> {
-    primary_expr(p)
+    let m = p.start();
+    let cm;
+    let pe = primary_expr(p);
+    match p.current() {
+        T!['['] => {
+            p.bump(T!['[']);
+            expr(p, None, 1);
+            p.expect(T![']']);
+            cm = m.complete(p, INDEXING_EXPR);
+        }
+        T!['('] => {
+            p.bump(T!['(']);
+            if p.at(T![')']) {
+                p.bump(T![')']);
+            } else {
+                expr(p, None, 1);
+                while p.at(T![,]) {
+                    p.bump(T![,]);
+                    expr(p, None, 1);
+                    p.expect(T![')']);
+                }
+            }
+            cm = m.complete(p, FUNCTION_CALL_EXPR);
+        }
+        _ => {
+            m.abandon(p);
+            return pe;
+        }
+    }
+    return Some(cm);
 }
 
 fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {

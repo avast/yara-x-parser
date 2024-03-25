@@ -1,0 +1,4 @@
+rule test {
+    condition:
+        foo.bar(1,2).baz
+}

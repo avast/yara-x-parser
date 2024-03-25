@@ -139,6 +139,8 @@ Expr =
 
 Term = 
     PrimaryExpr
+|   IndexingExpr
+|   FunctionCallExpr
 
 PrimaryExpr = 
     'float_lit'
@@ -149,6 +151,12 @@ PrimaryExpr =
 |   RegexPattern
 |   '-' Term
 |   '(' Expr ')'
+
+IndexingExpr = 
+    PrimaryExpr '[' Expr ']'
+
+FunctionCallExpr =
+    PrimaryExpr ExprTuple
 
 VariableAnchor = 
     'at' Expr

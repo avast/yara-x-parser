@@ -674,16 +674,6 @@ impl ForExpr {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Term {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Term {
-    pub fn primary_expr(&self) -> Option<PrimaryExpr> {
-        support::child(&self.syntax)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PrimaryExpr {
     pub(crate) syntax: SyntaxNode,
 }
@@ -717,6 +707,54 @@ impl PrimaryExpr {
     }
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct IndexingExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl IndexingExpr {
+    pub fn primary_expr(&self) -> Option<PrimaryExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn l_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['['])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn r_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![']'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct FunctionCallExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl FunctionCallExpr {
+    pub fn primary_expr(&self) -> Option<PrimaryExpr> {
+        support::child(&self.syntax)
+    }
+    pub fn expr_tuple(&self) -> Option<ExprTuple> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ExprTuple {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ExprTuple {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn exprs(&self) -> AstChildren<Expr> {
+        support::children(&self.syntax)
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
@@ -807,22 +845,6 @@ impl IdentifierNode {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ExprTuple {
-    pub(crate) syntax: SyntaxNode,
-}
-impl ExprTuple {
-    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T!['('])
-    }
-    pub fn exprs(&self) -> AstChildren<Expr> {
-        support::children(&self.syntax)
-    }
-    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![')'])
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct VariableWildcard {
     pub(crate) syntax: SyntaxNode,
 }
@@ -833,6 +855,13 @@ impl VariableWildcard {
     pub fn star_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![*])
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum Term {
+    PrimaryExpr(PrimaryExpr),
+    IndexingExpr(IndexingExpr),
+    FunctionCallExpr(FunctionCallExpr),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -1312,9 +1341,9 @@ impl AstNode for ForExpr {
         &self.syntax
     }
 }
-impl AstNode for Term {
+impl AstNode for PrimaryExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == TERM
+        kind == PRIMARY_EXPR
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1327,9 +1356,39 @@ impl AstNode for Term {
         &self.syntax
     }
 }
-impl AstNode for PrimaryExpr {
+impl AstNode for IndexingExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == PRIMARY_EXPR
+        kind == INDEXING_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for FunctionCallExpr {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == FUNCTION_CALL_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for ExprTuple {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPR_TUPLE
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1417,21 +1476,6 @@ impl AstNode for IdentifierNode {
         &self.syntax
     }
 }
-impl AstNode for ExprTuple {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == EXPR_TUPLE
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
 impl AstNode for VariableWildcard {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == VARIABLE_WILDCARD
@@ -1445,6 +1489,42 @@ impl AstNode for VariableWildcard {
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
+    }
+}
+impl From<PrimaryExpr> for Term {
+    fn from(node: PrimaryExpr) -> Term {
+        Term::PrimaryExpr(node)
+    }
+}
+impl From<IndexingExpr> for Term {
+    fn from(node: IndexingExpr) -> Term {
+        Term::IndexingExpr(node)
+    }
+}
+impl From<FunctionCallExpr> for Term {
+    fn from(node: FunctionCallExpr) -> Term {
+        Term::FunctionCallExpr(node)
+    }
+}
+impl AstNode for Term {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        matches!(kind, PRIMARY_EXPR | INDEXING_EXPR | FUNCTION_CALL_EXPR)
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        let res = match syntax.kind() {
+            PRIMARY_EXPR => Term::PrimaryExpr(PrimaryExpr { syntax }),
+            INDEXING_EXPR => Term::IndexingExpr(IndexingExpr { syntax }),
+            FUNCTION_CALL_EXPR => Term::FunctionCallExpr(FunctionCallExpr { syntax }),
+            _ => return None,
+        };
+        Some(res)
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        match self {
+            Term::PrimaryExpr(it) => &it.syntax,
+            Term::IndexingExpr(it) => &it.syntax,
+            Term::FunctionCallExpr(it) => &it.syntax,
+        }
     }
 }
 impl From<Range> for Iterable {
@@ -1498,6 +1578,11 @@ impl AstNode for AnyHasComments {
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
+    }
+}
+impl std::fmt::Display for Term {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for Iterable {
@@ -1660,12 +1745,22 @@ impl std::fmt::Display for ForExpr {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for Term {
+impl std::fmt::Display for PrimaryExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for PrimaryExpr {
+impl std::fmt::Display for IndexingExpr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for FunctionCallExpr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ExprTuple {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
@@ -1691,11 +1786,6 @@ impl std::fmt::Display for BooleanExprTuple {
     }
 }
 impl std::fmt::Display for IdentifierNode {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
-impl std::fmt::Display for ExprTuple {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

@@ -122,7 +122,6 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "BOOLEAN_TERM",
         "BOOLEAN_EXPR",
         "EXPR",
-        "TERM",
         "PRIMARY_EXPR",
         "VARIABLE_ANCHOR",
         "RANGE",
@@ -135,6 +134,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "EXPR_TUPLE",
         "IDENTIFIER_NODE",
         "ITERABLE",
+        "INDEXING_EXPR",
+        "FUNCTION_CALL_EXPR",
     ],
 };
 

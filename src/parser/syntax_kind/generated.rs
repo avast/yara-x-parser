@@ -120,7 +120,6 @@ pub enum SyntaxKind {
     BOOLEAN_TERM,
     BOOLEAN_EXPR,
     EXPR,
-    TERM,
     PRIMARY_EXPR,
     VARIABLE_ANCHOR,
     RANGE,
@@ -133,6 +132,8 @@ pub enum SyntaxKind {
     EXPR_TUPLE,
     IDENTIFIER_NODE,
     ITERABLE,
+    INDEXING_EXPR,
+    FUNCTION_CALL_EXPR,
     #[doc(hidden)]
     __LAST,
 }
