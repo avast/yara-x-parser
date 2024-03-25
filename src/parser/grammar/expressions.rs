@@ -570,9 +570,6 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
         T![string_lit] => {
             p.bump(T![string_lit]);
         }
-        T![identifier] => {
-            p.bump(T![identifier]);
-        }
         T![filesize] => {
             p.bump(T![filesize]);
         }
@@ -594,6 +591,13 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
             p.bump(T!['(']);
             expr(p, None, 1);
             p.bump(T![')']);
+        }
+        T![identifier] => {
+            p.bump(T![identifier]);
+            while p.at(T![.]) {
+                p.bump(T![.]);
+                p.expect(T![identifier]);
+            }
         }
         _ => {
             m.abandon(p);

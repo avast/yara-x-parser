@@ -152,6 +152,7 @@ PrimaryExpr =
 |   '-' Term
 |   '~' Term
 |   '(' Expr ')'
+|   (IdentifierNode ('.' IdentifierNode)*)
 
 IndexingExpr = 
     PrimaryExpr '[' Expr ']'

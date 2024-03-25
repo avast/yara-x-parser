@@ -714,6 +714,9 @@ impl PrimaryExpr {
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
     }
+    pub fn identifier_nodes(&self) -> AstChildren<IdentifierNode> {
+        support::children(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -745,6 +748,16 @@ impl FunctionCallExpr {
     }
     pub fn expr_tuple(&self) -> Option<ExprTuple> {
         support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct IdentifierNode {
+    pub(crate) syntax: SyntaxNode,
+}
+impl IdentifierNode {
+    pub fn identifier_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![identifier])
     }
 }
 
@@ -834,16 +847,6 @@ impl BooleanExprTuple {
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct IdentifierNode {
-    pub(crate) syntax: SyntaxNode,
-}
-impl IdentifierNode {
-    pub fn identifier_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![identifier])
     }
 }
 
@@ -1389,6 +1392,21 @@ impl AstNode for FunctionCallExpr {
         &self.syntax
     }
 }
+impl AstNode for IdentifierNode {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == IDENTIFIER_NODE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for ExprTuple {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == EXPR_TUPLE
@@ -1452,21 +1470,6 @@ impl AstNode for PatternIdentTuple {
 impl AstNode for BooleanExprTuple {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == BOOLEAN_EXPR_TUPLE
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
-impl AstNode for IdentifierNode {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == IDENTIFIER_NODE
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1763,6 +1766,11 @@ impl std::fmt::Display for FunctionCallExpr {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for IdentifierNode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for ExprTuple {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -1784,11 +1792,6 @@ impl std::fmt::Display for PatternIdentTuple {
     }
 }
 impl std::fmt::Display for BooleanExprTuple {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
-impl std::fmt::Display for IdentifierNode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
