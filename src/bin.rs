@@ -1,10 +1,11 @@
 use std::fs;
-use yara_parser::SourceFile;
+use yara_parser::{AstNode, SourceFile};
 
 fn main() {
-    let filename = "example.yar";
-    let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    let ast2 = SourceFile::parse(&contents);
-    println!("{:#?}", ast2.tree());
-    println!("{:?}", ast2.errors());
+    let filename = std::env::args().nth(1).expect("No arguments provided");
+    let file_content =
+        fs::read_to_string(&filename).expect("Something went wrong while reading the file");
+    let ast = SourceFile::parse(&file_content);
+    println!("AST:\n\n{:#?}", ast.tree().syntax());
+    println!("Errors: {:?}", ast.errors());
 }
