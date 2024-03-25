@@ -93,6 +93,8 @@ pub(crate) enum LogosToken {
     In,
     #[token("of")]
     Of,
+    #[token("for")]
+    For,
     #[token("all")]
     All,
     #[token("any")]
@@ -298,6 +300,7 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::At => SyntaxKind::AT_KW,
         LogosToken::In => SyntaxKind::IN_KW,
         LogosToken::Of => SyntaxKind::OF_KW,
+        LogosToken::For => SyntaxKind::FOR_KW,
         LogosToken::All => SyntaxKind::ALL_KW,
         LogosToken::Any => SyntaxKind::ANY_KW,
         LogosToken::None => SyntaxKind::NONE_KW,

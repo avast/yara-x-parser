@@ -126,6 +126,7 @@ BooleanTerm =
 |   'defined' BooleanTerm
 |   '(' BooleanExpr ')'
 |   OfExpr
+|   ForExpr
 
 Expr = 
     Term
@@ -162,11 +163,21 @@ OfExpr =
     Quantifier 'of' ('them' | PatternIdentTuple) VariableAnchor?
 |   Quantifier 'of' BooleanExprTuple
 
+ForExpr =
+    (
+        'for' Quantifier 'of' ('them' | PatternIdentTuple)
+    |   'for' Quantifier 'of' (IdentifierNode (',' IdentifierNode)*) 'in' Iterable
+    )
+    ':' '(' BooleanExpr ')'
+
 Quantifier = 
     'all'
 |   'any'
 |   'none'
 |   PrimaryExpr '%'?
+
+Iterable = 
+    Range | Expr | ExprTuple
 
 PatternIdentTuple = 
     '(' (VariableWildcard (',' VariableWildcard)*) ')'
@@ -176,3 +187,9 @@ VariableWildcard =
 
 BooleanExprTuple =
     '(' (BooleanExpr (',' BooleanExpr)*) ')'
+
+ExprTuple = 
+    '(' (Expr (',' Expr)*) ')'
+
+IdentifierNode =
+    'identifier'

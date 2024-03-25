@@ -77,6 +77,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "all",
         "any",
         "none",
+        "for",
     ],
     literals: &["STRING_LIT", "INT_LIT", "FLOAT_LIT", "HEX_LIT", "BOOL_LIT", "REGEX_LIT"],
     tokens: &[
@@ -126,10 +127,14 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "VARIABLE_ANCHOR",
         "RANGE",
         "OF_EXPR",
+        "FOR_EXPR",
         "QUANTIFIER",
         "PATTERN_IDENT_TUPLE",
         "BOOLEAN_EXPR_TUPLE",
         "VARIABLE_WILDCARD",
+        "EXPR_TUPLE",
+        "IDENTIFIER_NODE",
+        "ITERABLE",
     ],
 };
 

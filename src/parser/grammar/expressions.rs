@@ -435,7 +435,9 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
             p.bump(T![defined]);
             boolean_term(p);
         }
-
+        T![for] => {
+            for_expr(p);
+        }
         _ => {
             let mut primary_expr_len = primary_expr_length(p, 0);
 
@@ -614,6 +616,29 @@ fn of_expr(p: &mut Parser) {
     m.complete(p, OF_EXPR);
 }
 
+fn for_expr(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T![for]);
+    quantifier(p);
+    if p.at(T![of]) {
+        p.bump(T![of]);
+        if p.at(T![them]) {
+            p.bump(T![them]);
+        } else {
+            pattern_ident_tupple(p);
+        }
+    } else {
+        ident_tuple(p);
+        p.expect(T![in]);
+        iterable(p);
+    }
+    p.expect(T![:]);
+    p.expect(T!['(']);
+    boolean_expr(p, None, 1);
+    p.expect(T![')']);
+    m.complete(p, FOR_EXPR);
+}
+
 fn quantifier(p: &mut Parser) {
     let m = p.start();
     match p.current() {
@@ -634,6 +659,34 @@ fn quantifier(p: &mut Parser) {
         }
     }
     m.complete(p, QUANTIFIER);
+}
+
+fn iterable(p: &mut Parser) {
+    let m = p.start();
+    match p.current() {
+        T!['('] => {
+            let n = p.start();
+            p.bump(T!['(']);
+            expr(p, None, 1);
+            if p.at(T![..]) {
+                p.bump(T![..]);
+                expr(p, None, 1);
+                p.expect(T![')']);
+                n.complete(p, RANGE);
+            } else {
+                while p.at(T![,]) {
+                    p.bump(T![,]);
+                    expr(p, None, 1);
+                }
+                p.expect(T![')']);
+                n.complete(p, EXPR_TUPLE);
+            }
+        }
+        _ => {
+            expr(p, None, 1);
+        }
+    }
+    m.complete(p, ITERABLE);
 }
 
 fn boolean_expr_tuple(p: &mut Parser) {
@@ -658,6 +711,22 @@ fn pattern_ident_tupple(p: &mut Parser) {
     }
     p.expect(T![')']);
     m.complete(p, PATTERN_IDENT_TUPLE);
+}
+
+fn ident_tuple(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T![identifier]);
+    m.complete(p, IDENTIFIER_NODE);
+    while p.at(T![,]) {
+        ident_list(p);
+    }
+}
+
+fn ident_list(p: &mut Parser) {
+    let m = p.start();
+    p.expect(T![,]);
+    p.expect(T![identifier]);
+    m.complete(p, IDENTIFIER_NODE);
 }
 
 fn variable_wildcard(p: &mut Parser) {
