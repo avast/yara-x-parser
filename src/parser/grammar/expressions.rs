@@ -570,6 +570,15 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
         T![string_lit] => {
             p.bump(T![string_lit]);
         }
+        T![variable_count] => {
+            variable_count(p);
+        }
+        T![variable_offset] => {
+            variable_offset(p);
+        }
+        T![variable_length] => {
+            variable_length(p);
+        }
         T![filesize] => {
             p.bump(T![filesize]);
         }
@@ -606,6 +615,44 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
     };
     let cm = m.complete(p, PRIMARY_EXPR);
     Some(cm)
+}
+
+fn variable_count(p: &mut Parser) {
+    let m = p.start();
+    p.bump(T![variable_count]);
+    if p.at(T![in]) {
+        let n = p.start();
+        p.bump(T![in]);
+        range(p);
+        n.complete(p, IN_RANGE);
+    }
+    m.complete(p, VARIABLE_COUNT);
+}
+
+fn variable_offset(p: &mut Parser) {
+    let m = p.start();
+    p.bump(T![variable_offset]);
+    if p.at(T!['[']) {
+        let n = p.start();
+        p.bump(T!['[']);
+        expr(p, None, 1);
+        p.expect(T![']']);
+        n.complete(p, EXPR_INDEX);
+    }
+    m.complete(p, VARIABLE_OFFSET);
+}
+
+fn variable_length(p: &mut Parser) {
+    let m = p.start();
+    p.bump(T![variable_length]);
+    if p.at(T!['[']) {
+        let n = p.start();
+        p.bump(T!['[']);
+        expr(p, None, 1);
+        p.expect(T![']']);
+        n.complete(p, EXPR_INDEX);
+    }
+    m.complete(p, VARIABLE_LENGTH);
 }
 
 fn range(p: &mut Parser) {

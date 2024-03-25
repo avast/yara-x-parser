@@ -687,6 +687,15 @@ impl PrimaryExpr {
     pub fn string_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![string_lit])
     }
+    pub fn variable_count(&self) -> Option<VariableCount> {
+        support::child(&self.syntax)
+    }
+    pub fn variable_offset(&self) -> Option<VariableOffset> {
+        support::child(&self.syntax)
+    }
+    pub fn variable_length(&self) -> Option<VariableLength> {
+        support::child(&self.syntax)
+    }
     pub fn filesize_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![filesize])
     }
@@ -752,6 +761,45 @@ impl FunctionCallExpr {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VariableCount {
+    pub(crate) syntax: SyntaxNode,
+}
+impl VariableCount {
+    pub fn variable_count_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable_count])
+    }
+    pub fn in_range(&self) -> Option<InRange> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VariableOffset {
+    pub(crate) syntax: SyntaxNode,
+}
+impl VariableOffset {
+    pub fn variable_offset_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable_offset])
+    }
+    pub fn expr_index(&self) -> Option<ExprIndex> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VariableLength {
+    pub(crate) syntax: SyntaxNode,
+}
+impl VariableLength {
+    pub fn variable_offset_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable_offset])
+    }
+    pub fn expr_index(&self) -> Option<ExprIndex> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct IdentifierNode {
     pub(crate) syntax: SyntaxNode,
 }
@@ -762,18 +810,31 @@ impl IdentifierNode {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ExprTuple {
+pub struct InRange {
     pub(crate) syntax: SyntaxNode,
 }
-impl ExprTuple {
-    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T!['('])
+impl InRange {
+    pub fn in_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![in])
     }
-    pub fn exprs(&self) -> AstChildren<Expr> {
-        support::children(&self.syntax)
+    pub fn range(&self) -> Option<Range> {
+        support::child(&self.syntax)
     }
-    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![')'])
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ExprIndex {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ExprIndex {
+    pub fn l_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['['])
+    }
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+    pub fn r_brack_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![']'])
     }
 }
 
@@ -790,6 +851,22 @@ impl Range {
     }
     pub fn dotdot_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![..])
+    }
+    pub fn r_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![')'])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ExprTuple {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ExprTuple {
+    pub fn l_paren_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T!['('])
+    }
+    pub fn exprs(&self) -> AstChildren<Expr> {
+        support::children(&self.syntax)
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
@@ -1392,6 +1469,51 @@ impl AstNode for FunctionCallExpr {
         &self.syntax
     }
 }
+impl AstNode for VariableCount {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_COUNT
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for VariableOffset {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_OFFSET
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for VariableLength {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == VARIABLE_LENGTH
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for IdentifierNode {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == IDENTIFIER_NODE
@@ -1407,9 +1529,24 @@ impl AstNode for IdentifierNode {
         &self.syntax
     }
 }
-impl AstNode for ExprTuple {
+impl AstNode for InRange {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == EXPR_TUPLE
+        kind == IN_RANGE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for ExprIndex {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPR_INDEX
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1425,6 +1562,21 @@ impl AstNode for ExprTuple {
 impl AstNode for Range {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == RANGE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for ExprTuple {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPR_TUPLE
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1766,17 +1918,42 @@ impl std::fmt::Display for FunctionCallExpr {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
+impl std::fmt::Display for VariableCount {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for VariableOffset {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for VariableLength {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
 impl std::fmt::Display for IdentifierNode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for ExprTuple {
+impl std::fmt::Display for InRange {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ExprIndex {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for Range {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ExprTuple {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

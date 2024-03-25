@@ -120,6 +120,15 @@ pub(crate) enum LogosToken {
     // Variables
     #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Variable(String),
+    // Variables
+    #[regex(r"#_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    VariableCount(String),
+    // Variables
+    #[regex(r"@_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    VariableOffset(String),
+    // Variables
+    #[regex(r"!_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    VariableLength(String),
     // Integer
     #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
     Integer(String),
@@ -307,6 +316,9 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
         LogosToken::Them => SyntaxKind::THEM_KW,
         LogosToken::Identifier(_) => SyntaxKind::IDENTIFIER,
         LogosToken::Variable(_) => SyntaxKind::VARIABLE,
+        LogosToken::VariableCount(_) => SyntaxKind::VARIABLE_COUNT,
+        LogosToken::VariableOffset(_) => SyntaxKind::VARIABLE_OFFSET,
+        LogosToken::VariableLength(_) => SyntaxKind::VARIABLE_LENGTH,
         LogosToken::String(_) => SyntaxKind::STRING_LIT,
         LogosToken::Ascii => SyntaxKind::ASCII_KW,
         LogosToken::Wide => SyntaxKind::WIDE_KW,

@@ -83,6 +83,9 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
     tokens: &[
         "IDENTIFIER",
         "VARIABLE",
+        "VARIABLE_COUNT",
+        "VARIABLE_OFFSET",
+        "VARIABLE_LENGTH",
         "WHITESPACE",
         "COMMENT",
         "CASE_INSENSITIVE",
@@ -136,6 +139,8 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "ITERABLE",
         "INDEXING_EXPR",
         "FUNCTION_CALL_EXPR",
+        "IN_RANGE",
+        "EXPR_INDEX",
     ],
 };
 

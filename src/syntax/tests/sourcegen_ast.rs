@@ -415,6 +415,9 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             #([#keywords_idents] => { $crate::SyntaxKind::#keywords };)*
             [identifier] => { $crate::SyntaxKind::IDENTIFIER };
             [variable] => { $crate::SyntaxKind::VARIABLE };
+            [variable_count] => { $crate::SyntaxKind::VARIABLE_COUNT };
+            [variable_offset] => { $crate::SyntaxKind::VARIABLE_OFFSET };
+            [variable_length] => { $crate::SyntaxKind::VARIABLE_LENGTH };
             [string_lit] => { $crate::SyntaxKind::STRING_LIT };
             [int_lit] => { $crate::SyntaxKind::INT_LIT };
             [float_lit] => { $crate::SyntaxKind::FLOAT_LIT };

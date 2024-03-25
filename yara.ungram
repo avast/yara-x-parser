@@ -146,6 +146,9 @@ PrimaryExpr =
     'float_lit'
 |   'int_lit'
 |   'string_lit'
+|   VariableCount
+|   VariableOffset
+|   VariableLength
 |   'filesize'
 |   'entrypoint'
 |   RegexPattern
@@ -153,6 +156,21 @@ PrimaryExpr =
 |   '~' Term
 |   '(' Expr ')'
 |   (IdentifierNode ('.' IdentifierNode)*)
+
+VariableCount = 
+    'variable_count' InRange?
+
+VariableOffset = 
+    'variable_offset' ExprIndex?
+
+VariableLength = 
+    'variable_offset' ExprIndex?
+
+InRange = 
+    'in' Range
+
+ExprIndex = 
+    '[' Expr ']'
 
 IndexingExpr = 
     PrimaryExpr '[' Expr ']'
