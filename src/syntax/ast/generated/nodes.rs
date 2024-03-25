@@ -702,6 +702,9 @@ impl PrimaryExpr {
     pub fn term(&self) -> Option<Term> {
         support::child(&self.syntax)
     }
+    pub fn tilde_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![~])
+    }
     pub fn l_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['('])
     }

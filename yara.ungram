@@ -150,6 +150,7 @@ PrimaryExpr =
 |   'entrypoint'
 |   RegexPattern
 |   '-' Term
+|   '~' Term
 |   '(' Expr ')'
 
 IndexingExpr = 

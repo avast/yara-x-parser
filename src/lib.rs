@@ -336,6 +336,7 @@ fn test_parse_text() {
         // Path to the .in.zip file.
         let path = entry.into_path();
         let display_path = path.display();
+        println!("{:?}", display_path);
 
         let input = fs::read_to_string(&path)
             .unwrap_or_else(|_| panic!("Failed to read input file {:?}", display_path));
@@ -359,10 +360,8 @@ fn test_parse_text() {
                 .map(|error| format!("{:?}", error))
                 .collect::<Vec<_>>()
                 .join("\n");
-            print!("{:?}", display_path);
             assert_eq!(actual_errors, expected_errors);
         } else {
-            print!("{:?}", display_path);
             assert!(ast_struct.errors().is_empty(), "Unexpected errors: {:?}", ast_struct.errors());
         }
     }

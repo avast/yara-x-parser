@@ -439,7 +439,11 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
             for_expr(p);
         }
         _ => {
-            let mut primary_expr_len = primary_expr_length(p, 0);
+            let mut parentheses_count = 0;
+            let mut primary_expr_len = primary_expr_length(p, 0, &mut parentheses_count);
+            if parentheses_count != 0 {
+                primary_expr_len = 0;
+            }
 
             // If there is percatage sign after primary expression we need to bump one
             // more token to check for "of" keyword
@@ -541,8 +545,8 @@ fn term(p: &mut Parser) -> Option<CompletedMarker> {
                 while p.at(T![,]) {
                     p.bump(T![,]);
                     expr(p, None, 1);
-                    p.expect(T![')']);
                 }
+                p.expect(T![')']);
             }
             m.complete(p, FUNCTION_CALL_EXPR)
         }
@@ -580,6 +584,10 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
         }
         T![-] => {
             p.bump(T![-]);
+            term(p);
+        }
+        T![~] => {
+            p.bump(T![~]);
             term(p);
         }
         T!['('] => {
@@ -766,28 +774,25 @@ fn variable_wildcard(p: &mut Parser) {
     m.complete(p, VARIABLE_WILDCARD);
 }
 
-fn primary_expr_length(p: &mut Parser, mut len: usize) -> usize {
-    len += match p.current() {
+fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) -> usize {
+    match p.nth(len) {
         T![float_lit]
         | T![int_lit]
         | T![string_lit]
         | T![identifier]
         | T![filesize]
-        | T![entrypoint] => 1,
+        | T![entrypoint] => len + 1,
         T![/] => regex_pattern_length(p, len),
-        T![-] => term_length(p, len),
-        T!['('] => expr_length(p, len),
-        _ => 0,
-    };
-    len
+        T![-] => term_length(p, len + 1, parentheses_count),
+        T!['('] => expr_length(p, len, parentheses_count),
+        _ => len,
+    }
 }
 
 fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
     // Check if the pattern starts with `/` and ends with `/`
     if p.nth(len) == T![/] && p.nth(len + 1) == REGEX_LIT && p.nth(len + 2) == T![/] {
         len += 3;
-    } else {
-        return 0;
     }
 
     // Check for regex specific modifiers
@@ -798,20 +803,40 @@ fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
     len
 }
 
-fn term_length(p: &mut Parser, mut len: usize) -> usize {
-    len += primary_expr_length(p, len);
-    len
+fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
+    len = primary_expr_length(p, len, parentheses_count);
+
+    match p.nth(len) {
+        T!['['] => {
+            len += 1;
+            len = expr_length(p, len, parentheses_count);
+            len + 1
+        }
+        T!['('] => {
+            len += 1;
+            if p.nth(len) == T![')'] {
+                len + 1
+            } else {
+                len = expr_length(p, len, parentheses_count);
+                while p.nth(len) == T![,] {
+                    len += 1;
+                    len = expr_length(p, len, parentheses_count);
+                }
+                len + 1
+            }
+        }
+        _ => len,
+    }
 }
 
-fn expr_length(p: &mut Parser, mut len: usize) -> usize {
+fn expr_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
     // Check if the expression starts with `(`
     if p.nth(len) == T!['('] {
         len += 1;
-    } else {
-        return 0;
+        *parentheses_count += 1;
     }
 
-    len = term_length(p, len);
+    len = term_length(p, len, parentheses_count);
 
     while p.nth(len) == T![|]
         || p.nth(len) == T![^]
@@ -826,20 +851,14 @@ fn expr_length(p: &mut Parser, mut len: usize) -> usize {
         || p.nth(len) == T![.]
     {
         len += 1;
-        len += expr_length(p, len);
+
+        len = expr_length(p, len, parentheses_count);
     }
 
     // Check if the expression ends with `)`
-    len += 1;
     if p.nth(len) == T![')'] {
         len += 1;
-    } else {
-        return 0;
-    }
-
-    // Ensure that the expression is not empty
-    if len == 2 {
-        return 0;
+        *parentheses_count -= 1;
     }
 
     len
