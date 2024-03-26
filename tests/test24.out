@@ -34,27 +34,29 @@ SOURCE_FILE@0..135
             WHITESPACE@88..89 " "
             AND_KW@89..92 "and"
             WHITESPACE@92..93 " "
-            BOOLEAN_TERM@93..109
-              EXPRESSION@93..109
-                PRIMARY_EXPR@93..101
-                  FILESIZE_KW@93..101 "filesize"
-                WHITESPACE@101..102 " "
-                LT@102..103 "<"
-                WHITESPACE@103..104 " "
-                PRIMARY_EXPR@104..109
-                  INT_LIT@104..109 "100KB"
+            BOOLEAN_EXPR@93..109
+              BOOLEAN_TERM@93..109
+                EXPRESSION@93..109
+                  PRIMARY_EXPR@93..101
+                    FILESIZE_KW@93..101 "filesize"
+                  WHITESPACE@101..102 " "
+                  LT@102..103 "<"
+                  WHITESPACE@103..104 " "
+                  PRIMARY_EXPR@104..109
+                    INT_LIT@104..109 "100KB"
           WHITESPACE@109..110 " "
           OR_KW@110..112 "or"
           WHITESPACE@112..113 " "
-          BOOLEAN_TERM@113..132
-            EXPRESSION@113..132
-              PRIMARY_EXPR@113..123
-                ENTRYPOINT_KW@113..123 "entrypoint"
-              WHITESPACE@123..124 " "
-              EQ@124..126 "=="
-              WHITESPACE@126..127 " "
-              PRIMARY_EXPR@127..132
-                INT_LIT@127..132 "0x400"
+          BOOLEAN_EXPR@113..132
+            BOOLEAN_TERM@113..132
+              EXPRESSION@113..132
+                PRIMARY_EXPR@113..123
+                  ENTRYPOINT_KW@113..123 "entrypoint"
+                WHITESPACE@123..124 " "
+                EQ@124..126 "=="
+                WHITESPACE@126..127 " "
+                PRIMARY_EXPR@127..132
+                  INT_LIT@127..132 "0x400"
       WHITESPACE@132..133 "\n"
       R_BRACE@133..134 "}"
   WHITESPACE@134..135 "\n"

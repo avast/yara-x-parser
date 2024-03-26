@@ -63,8 +63,9 @@ SOURCE_FILE@0..120
           WHITESPACE@109..110 " "
           OR_KW@110..112 "or"
           WHITESPACE@112..113 " "
-          BOOLEAN_TERM@113..117
-            BOOL_LIT@113..117 "true"
+          BOOLEAN_EXPR@113..117
+            BOOLEAN_TERM@113..117
+              BOOL_LIT@113..117 "true"
       WHITESPACE@117..118 "\n"
       R_BRACE@118..119 "}"
   WHITESPACE@119..120 "\n"

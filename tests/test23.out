@@ -33,14 +33,15 @@ SOURCE_FILE@0..110
           WHITESPACE@88..89 " "
           AND_KW@89..92 "and"
           WHITESPACE@92..93 " "
-          BOOLEAN_TERM@93..107
-            NOT_KW@93..96 "not"
-            WHITESPACE@96..97 " "
-            BOOLEAN_TERM@97..107
-              DEFINED_KW@97..104 "defined"
-              WHITESPACE@104..105 " "
-              BOOLEAN_TERM@105..107
-                VARIABLE@105..107 "$b"
+          BOOLEAN_EXPR@93..107
+            BOOLEAN_TERM@93..107
+              NOT_KW@93..96 "not"
+              WHITESPACE@96..97 " "
+              BOOLEAN_TERM@97..107
+                DEFINED_KW@97..104 "defined"
+                WHITESPACE@104..105 " "
+                BOOLEAN_TERM@105..107
+                  VARIABLE@105..107 "$b"
       WHITESPACE@107..108 "\n"
       R_BRACE@108..109 "}"
   WHITESPACE@109..110 "\n"

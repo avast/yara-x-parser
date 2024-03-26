@@ -37,8 +37,9 @@ SOURCE_FILE@0..75
           WHITESPACE@64..65 " "
           OR_KW@65..67 "or"
           WHITESPACE@67..70 "\n\t\t"
-          BOOLEAN_TERM@70..72
-            VARIABLE@70..72 "$b"
+          BOOLEAN_EXPR@70..72
+            BOOLEAN_TERM@70..72
+              VARIABLE@70..72 "$b"
       WHITESPACE@72..73 "\n"
       R_BRACE@73..74 "}"
   WHITESPACE@74..75 "\n"

@@ -63,8 +63,9 @@ SOURCE_FILE@0..136
               WHITESPACE@124..125 " "
               AND_KW@125..128 "and"
               WHITESPACE@128..129 " "
-              BOOLEAN_TERM@129..131
-                VARIABLE@129..131 "$b"
+              BOOLEAN_EXPR@129..131
+                BOOLEAN_TERM@129..131
+                  VARIABLE@129..131 "$b"
             WHITESPACE@131..132 " "
             R_PAREN@132..133 ")"
       WHITESPACE@133..134 "\n"

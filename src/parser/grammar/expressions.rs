@@ -1,5 +1,3 @@
-mod atom;
-
 use super::*;
 
 const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
@@ -397,7 +395,9 @@ fn boolean_expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMa
             Associativity::Left => op_bp + 1,
             Associativity::Right => op_bp,
         };
+        let n = p.start();
         boolean_expr(p, None, op_bp);
+        n.complete(p, BOOLEAN_EXPR);
         lhs = m.complete(p, BOOLEAN_EXPR);
     }
     Some(lhs)

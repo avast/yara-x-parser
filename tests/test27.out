@@ -47,14 +47,15 @@ SOURCE_FILE@0..125
           WHITESPACE@108..109 " "
           AND_KW@109..112 "and"
           WHITESPACE@112..113 " "
-          BOOLEAN_TERM@113..122
-            VARIABLE@113..115 "$b"
-            WHITESPACE@115..116 " "
-            VARIABLE_ANCHOR@116..122
-              AT_KW@116..118 "at"
-              WHITESPACE@118..119 " "
-              PRIMARY_EXPR@119..122
-                INT_LIT@119..122 "200"
+          BOOLEAN_EXPR@113..122
+            BOOLEAN_TERM@113..122
+              VARIABLE@113..115 "$b"
+              WHITESPACE@115..116 " "
+              VARIABLE_ANCHOR@116..122
+                AT_KW@116..118 "at"
+                WHITESPACE@118..119 " "
+                PRIMARY_EXPR@119..122
+                  INT_LIT@119..122 "200"
       WHITESPACE@122..123 "\n"
       R_BRACE@123..124 "}"
   WHITESPACE@124..125 "\n"

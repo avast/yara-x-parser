@@ -170,6 +170,9 @@ impl Condition {
     pub fn boolean_expr(&self) -> Option<BooleanExpr> {
         support::child(&self.syntax)
     }
+    pub fn boolean_term(&self) -> Option<BooleanTerm> {
+        support::child(&self.syntax)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -439,15 +442,6 @@ pub struct BooleanExpr {
 }
 impl BooleanExpr {
     pub fn boolean_term(&self) -> Option<BooleanTerm> {
-        support::child(&self.syntax)
-    }
-    pub fn and_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![and])
-    }
-    pub fn or_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![or])
-    }
-    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
         support::child(&self.syntax)
     }
 }

@@ -102,15 +102,15 @@ XorRange =
 
 Condition =
     'condition' ':'
-        BooleanExpr
+        (BooleanExpr | BooleanTerm)
 
 BooleanExpr = 
     BooleanTerm
-|   BooleanTerm
-        (
+|   lhs:BooleanTerm
+        op:(
             'and'| 'or'
         )
-    BooleanExpr
+    rhs:BooleanExpr
 
 BooleanTerm = 
     'variable' VariableAnchor?
