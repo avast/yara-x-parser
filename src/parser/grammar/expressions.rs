@@ -827,15 +827,20 @@ fn variable_wildcard(p: &mut Parser) {
 
 fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) -> usize {
     match p.nth(len) {
-        T![float_lit]
-        | T![int_lit]
-        | T![string_lit]
-        | T![identifier]
-        | T![filesize]
-        | T![entrypoint] => len + 1,
+        T![float_lit] | T![int_lit] | T![string_lit] | T![filesize] | T![entrypoint] => len + 1,
         T![/] => regex_pattern_length(p, len),
-        T![-] => term_length(p, len + 1, parentheses_count),
+        T![-] | T![~] => term_length(p, len + 1, parentheses_count),
         T!['('] => expr_length(p, len, parentheses_count),
+        T![variable_count] => variable_count_length(p, len),
+        T![variable_offset] => variable_offset_length(p, len),
+        T![variable_length] => variable_length_length(p, len),
+        T![identifier] => {
+            let mut i = len + 1;
+            while p.nth(i) == T![.] && p.nth(i + 1) == T![identifier] {
+                i += 2;
+            }
+            i
+        }
         _ => len,
     }
 }
@@ -851,6 +856,43 @@ fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
         len += 1;
     }
 
+    len
+}
+
+fn variable_count_length(p: &mut Parser, mut len: usize) -> usize {
+    len += 1;
+    if p.nth(len) == T![in] {
+        len += 1;
+        len = range_length(p, len);
+    }
+    len
+}
+
+fn range_length(p: &mut Parser, mut len: usize) -> usize {
+    len += 1;
+    len = expr_length(p, len, &mut 0);
+    len += 1;
+    len = expr_length(p, len, &mut 0);
+    len + 1
+}
+
+fn variable_offset_length(p: &mut Parser, mut len: usize) -> usize {
+    len += 1;
+    if p.nth(len) == T!['['] {
+        len += 1;
+        len = expr_length(p, len, &mut 0);
+        len += 1;
+    }
+    len
+}
+
+fn variable_length_length(p: &mut Parser, mut len: usize) -> usize {
+    len += 1;
+    if p.nth(len) == T!['['] {
+        len += 1;
+        len = expr_length(p, len, &mut 0);
+        len += 1;
+    }
     len
 }
 
