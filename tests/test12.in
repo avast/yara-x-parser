@@ -1,0 +1,20 @@
+import "macho"
+include "test"
+
+rule test
+{
+	strings:
+		$a = "foo"
+	condition:
+		$a
+}
+
+rule test2
+{
+	strings:
+		$b = "bar"
+	condition:
+		$b
+}
+
+import "test3"

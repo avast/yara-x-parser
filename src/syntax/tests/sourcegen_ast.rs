@@ -415,7 +415,18 @@ fn generate_syntax_kinds(grammar: KindsSrc<'_>) -> String {
             #([#keywords_idents] => { $crate::SyntaxKind::#keywords };)*
             [identifier] => { $crate::SyntaxKind::IDENTIFIER };
             [variable] => { $crate::SyntaxKind::VARIABLE };
+            [variable_count] => { $crate::SyntaxKind::VARIABLE_COUNT };
+            [variable_offset] => { $crate::SyntaxKind::VARIABLE_OFFSET };
+            [variable_length] => { $crate::SyntaxKind::VARIABLE_LENGTH };
             [string_lit] => { $crate::SyntaxKind::STRING_LIT };
+            [int_lit] => { $crate::SyntaxKind::INT_LIT };
+            [float_lit] => { $crate::SyntaxKind::FLOAT_LIT };
+            [bool_lit] => { $crate::SyntaxKind::BOOL_LIT };
+            [hex_lit] => { $crate::SyntaxKind::HEX_LIT };
+            [regex_lit] => { $crate::SyntaxKind::REGEX_LIT };
+            [dot_matches_all] => { $crate::SyntaxKind::DOT_MATCHES_ALL };
+            [case_insensitive] => { $crate::SyntaxKind::CASE_INSENSITIVE };
+            [backslash] => { $crate::SyntaxKind::BACKSLASH };
         }
         pub use T;
     };
@@ -444,9 +455,30 @@ impl Field {
                     "'}'" => "r_brace",
                     "'('" => "l_paren",
                     "')'" => "r_paren",
+                    "'['" => "l_brack",
+                    "']'" => "r_brack",
                     ":" => "colon",
                     "," => "comma",
                     "=" => "assign",
+                    "-" => "hyphen",
+                    "|" => "pipe",
+                    "~" => "tilde",
+                    "?" => "question_mark",
+                    "+" => "plus",
+                    "*" => "star",
+                    "%" => "percentage",
+                    "<<" => "shl",
+                    ">>" => "shr",
+                    "&" => "ampersand",
+                    "^" => "caret",
+                    "." => "dot",
+                    "==" => "eq",
+                    "!=" => "ne",
+                    "<" => "lt",
+                    "<=" => "le",
+                    ">" => "gt",
+                    ">=" => "ge",
+                    ".." => "dotdot",
                     _ => name,
                 };
                 format_ident!("{}_token", name)
@@ -470,7 +502,7 @@ impl Field {
 
 fn lower(grammar: &Grammar) -> AstSrc {
     let mut res = AstSrc {
-        tokens: "Whitespace Comment StringLit Number Variable"
+        tokens: "Whitespace Comment StringLit IntLit BoolLit FloatLit Variable"
             .split_ascii_whitespace()
             .map(|it| it.to_string())
             .collect::<Vec<_>>(),
@@ -495,6 +527,7 @@ fn lower(grammar: &Grammar) -> AstSrc {
         }
     }
 
+    deduplicate_fields(&mut res);
     extract_struct_traits(&mut res);
     res
 }
@@ -579,10 +612,8 @@ fn lower_comma_list(
         _ => return false,
     };
 
-    let (node, repeat, trailing_comma) = match rule.as_slice() {
-        [Rule::Node(node), Rule::Rep(repeat), Rule::Opt(trailing_comma)] => {
-            (node, repeat, trailing_comma)
-        }
+    let (node, repeat) = match rule.as_slice() {
+        [Rule::Node(node), Rule::Rep(repeat)] => (node, repeat),
         _ => return false,
     };
 
@@ -592,7 +623,7 @@ fn lower_comma_list(
     };
 
     match repeat.as_slice() {
-        [comma, Rule::Node(n)] if comma == &**trailing_comma && n == node => (),
+        [_, Rule::Node(n)] if n == node => (),
         _ => return false,
     }
 
@@ -610,6 +641,23 @@ fn extract_struct_traits(ast: &mut AstSrc) {
     for node in &mut ast.nodes {
         if nodes_with_comments.contains(&&*node.name) {
             node.traits.push("HasComments".into());
+        }
+    }
+}
+
+fn deduplicate_fields(ast: &mut AstSrc) {
+    for node in &mut ast.nodes {
+        let mut i = 0;
+        'outer: while i < node.fields.len() {
+            for j in 0..i {
+                let f1 = &node.fields[i];
+                let f2 = &node.fields[j];
+                if f1 == f2 {
+                    node.fields.remove(i);
+                    continue 'outer;
+                }
+            }
+            i += 1;
         }
     }
 }

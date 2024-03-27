@@ -1,0 +1,13 @@
+//Global comment
+
+//Rule comment
+rule test
+{
+	//Rule block comment
+	strings:
+		$b = "string"
+
+	//String comment
+	condition:
+		$b and 9 + 0 and not true
+}

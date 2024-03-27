@@ -1,1 +1,5 @@
-SyntaxError("expected strings or condition", 87..87)
+SyntaxError("expected meta, strings or condition keyword", 87..87)
+SyntaxError("expected meta, strings or condition keyword", 93..93)
+SyntaxError("expected meta, strings or condition keyword", 97..97)
+SyntaxError("expected meta, strings or condition keyword", 100..100)
+SyntaxError("expected meta, strings or condition keyword", 102..102)

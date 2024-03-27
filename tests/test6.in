@@ -6,7 +6,7 @@ rule condition
 	//Rule block comment
 
 	//String comment
-	string*
+	string`
 		a = 00000
 		$b = "bar"
 	condition:

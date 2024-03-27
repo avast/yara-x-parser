@@ -1,0 +1,7 @@
+//Rule comment
+rule test
+{
+	//Rule block comment
+	condition:
+		for any foo, bar in (1,2,3) : ( 1 > filesize ) or true
+}

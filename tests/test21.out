@@ -1,0 +1,33 @@
+SOURCE_FILE@0..55
+  RULE@0..54
+    COMMENT@0..14 "//Rule comment"
+    WHITESPACE@14..15 "\n"
+    RULE_KW@15..19 "rule"
+    WHITESPACE@19..20 " "
+    IDENTIFIER@20..24 "test"
+    WHITESPACE@24..25 "\n"
+    BLOCK_EXPR@25..54
+      L_BRACE@25..26 "{"
+      WHITESPACE@26..28 "\n\t"
+      CONDITION@28..52
+        CONDITION_KW@28..37 "condition"
+        COLON@37..38 ":"
+        WHITESPACE@38..41 "\n\t\t"
+        BOOLEAN_TERM@41..52
+          EXPRESSION@41..52
+            EXPRESSION@41..46
+              PRIMARY_EXPR@41..42
+                INT_LIT@41..42 "9"
+              WHITESPACE@42..43 " "
+              PLUS@43..44 "+"
+              WHITESPACE@44..45 " "
+              PRIMARY_EXPR@45..46
+                INT_LIT@45..46 "9"
+            WHITESPACE@46..47 " "
+            EQ@47..49 "=="
+            WHITESPACE@49..50 " "
+            PRIMARY_EXPR@50..52
+              INT_LIT@50..52 "18"
+      WHITESPACE@52..53 "\n"
+      R_BRACE@53..54 "}"
+  WHITESPACE@54..55 "\n"

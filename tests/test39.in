@@ -1,0 +1,6 @@
+rule test {
+	strings:
+		$a = "foo"
+    condition:
+    	foo[0] and $a or (1 == 1)
+}
