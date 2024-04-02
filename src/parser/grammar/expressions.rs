@@ -673,7 +673,10 @@ fn of_expr(p: &mut Parser) {
 
     p.expect(T![of]);
 
-    if (p.at(T!['(']) && p.nth(1) == T![variable] && (p.nth(2) == T![,] || p.nth(2) == T![')']))
+    if (p.at(T!['('])
+        && p.nth(1) == T![variable]
+        && ((p.nth(2) == T![,] || p.nth(2) == T![')'])
+            || (p.nth(2) == T![*] && (p.nth(3) == T![,] || p.nth(3) == T![')']))))
         || p.at(T![them])
     {
         if p.at(T![them]) {
@@ -830,7 +833,7 @@ fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) 
         T![float_lit] | T![int_lit] | T![string_lit] | T![filesize] | T![entrypoint] => len + 1,
         T![/] => regex_pattern_length(p, len),
         T![-] | T![~] => term_length(p, len + 1, parentheses_count),
-        T!['('] => expr_length(p, len, parentheses_count),
+        T!['('] => expr_length(p, len, parentheses_count, false),
         T![variable_count] => variable_count_length(p, len),
         T![variable_offset] => variable_offset_length(p, len),
         T![variable_length] => variable_length_length(p, len),
@@ -870,9 +873,9 @@ fn variable_count_length(p: &mut Parser, mut len: usize) -> usize {
 
 fn range_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
-    len = expr_length(p, len, &mut 0);
+    len = expr_length(p, len, &mut 0, true);
     len += 1;
-    len = expr_length(p, len, &mut 0);
+    len = expr_length(p, len, &mut 0, true);
     len + 1
 }
 
@@ -880,7 +883,7 @@ fn variable_offset_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
         len += 1;
-        len = expr_length(p, len, &mut 0);
+        len = expr_length(p, len, &mut 0, false);
         len += 1;
     }
     len
@@ -890,7 +893,7 @@ fn variable_length_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
         len += 1;
-        len = expr_length(p, len, &mut 0);
+        len = expr_length(p, len, &mut 0, false);
         len += 1;
     }
     len
@@ -902,7 +905,7 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     match p.nth(len) {
         T!['['] => {
             len += 1;
-            len = expr_length(p, len, parentheses_count);
+            len = expr_length(p, len, parentheses_count, false);
             len + 1
         }
         T!['('] => {
@@ -910,10 +913,10 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
             if p.nth(len) == T![')'] {
                 len + 1
             } else {
-                len = expr_length(p, len, parentheses_count);
+                len = expr_length(p, len, parentheses_count, true);
                 while p.nth(len) == T![,] {
                     len += 1;
-                    len = expr_length(p, len, parentheses_count);
+                    len = expr_length(p, len, parentheses_count, true);
                 }
                 len + 1
             }
@@ -922,7 +925,12 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     }
 }
 
-fn expr_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
+fn expr_length(
+    p: &mut Parser,
+    mut len: usize,
+    parentheses_count: &mut i32,
+    expression_paranthesis: bool,
+) -> usize {
     // Check if the expression starts with `(`
     if p.nth(len) == T!['('] {
         len += 1;
@@ -945,11 +953,11 @@ fn expr_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     {
         len += 1;
 
-        len = expr_length(p, len, parentheses_count);
+        len = expr_length(p, len, parentheses_count, false);
     }
 
     // Check if the expression ends with `)`
-    if p.nth(len) == T![')'] {
+    if p.nth(len) == T![')'] && !expression_paranthesis {
         len += 1;
         *parentheses_count -= 1;
     }

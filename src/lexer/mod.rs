@@ -29,17 +29,6 @@ impl fmt::Display for LexingError {
 #[derive(Logos, Debug, PartialEq)]
 #[logos(error = LexingError)]
 pub(crate) enum LogosToken {
-    // For now it is desired to support only small subset of YARA language
-    // so just something like:
-    // rule foo {
-    //   strings:
-    //     $a = "foo"
-    //     $b = "bar"
-    //   condition:
-    //     $a and $b
-    // }
-    // will be supported
-
     // Keywords
     #[token("import")]
     Import,
@@ -111,23 +100,22 @@ pub(crate) enum LogosToken {
     #[regex(r"\{[0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
     HexString(String),
     // Strings
-    #[regex(r#""([^"\n\\]|\\["\\])*""#, |lex| lex.slice().to_string())]
+    #[regex(r#""([^"\n]|\\["\\])*""#, |lex| lex.slice().to_string())]
     String(String),
-
     // Identifiers
     #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
     // Variables
-    #[regex(r"\$_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"\$[a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Variable(String),
     // Variables
-    #[regex(r"#_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"#[a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     VariableCount(String),
     // Variables
-    #[regex(r"@_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"@[a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     VariableOffset(String),
     // Variables
-    #[regex(r"!_?[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"![a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     VariableLength(String),
     // Integer
     #[regex(r"0x[a-fA-F0-9]+|0o[0-7]+|[0-9]+(KB|MB)?", |lex| lex.slice().to_string())]
