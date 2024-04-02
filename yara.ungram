@@ -194,7 +194,7 @@ OfExpr =
 ForExpr =
     (
         'for' Quantifier 'of' ('them' | PatternIdentTuple)
-    |   'for' Quantifier 'of' (IdentifierNode (',' IdentifierNode)*) 'in' Iterable
+    |   'for' Quantifier (IdentifierNode (',' IdentifierNode)*) 'in' Iterable
     )
     ':' '(' BooleanExpr ')'
 

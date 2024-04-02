@@ -97,7 +97,7 @@ pub(crate) enum LogosToken {
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
     Regexp(String),
     // Hexadecimal string
-    #[regex(r"\{[0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
+    #[regex(r"=\s\{[\s0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
     HexString(String),
     // Strings
     #[regex(r#""([^"\n]|\\["\\])*""#, |lex| lex.slice().to_string())]
@@ -399,7 +399,8 @@ fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
     let mut chars = hex_string.chars().peekable();
     while let Some(ch) = chars.next() {
         match ch {
-            ' ' => tokens.push((SyntaxKind::WHITESPACE, 1)),
+            '=' => tokens.push((SyntaxKind::ASSIGN, 1)),
+            ' ' | '\t' | '\n' | '\r' => tokens.push((SyntaxKind::WHITESPACE, 1)),
             '-' => tokens.push((SyntaxKind::HYPHEN, 1)),
             '{' => tokens.push((SyntaxKind::L_BRACE, 1)),
             '}' => tokens.push((SyntaxKind::R_BRACE, 1)),

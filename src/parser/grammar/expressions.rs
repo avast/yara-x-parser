@@ -126,6 +126,7 @@ pub(super) fn meta_body(p: &mut Parser) {
             }
             _ => {
                 p.error("expected a valid metadata value");
+                m.abandon(p);
                 return;
             }
         }
@@ -599,7 +600,7 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
         T!['('] => {
             p.bump(T!['(']);
             expr(p, None, 1);
-            p.bump(T![')']);
+            p.expect(T![')']);
         }
         T![identifier] => {
             p.bump(T![identifier]);
@@ -833,7 +834,7 @@ fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) 
         T![float_lit] | T![int_lit] | T![string_lit] | T![filesize] | T![entrypoint] => len + 1,
         T![/] => regex_pattern_length(p, len),
         T![-] | T![~] => term_length(p, len + 1, parentheses_count),
-        T!['('] => expr_length(p, len, parentheses_count, false),
+        T!['('] => expr_length(p, len, parentheses_count),
         T![variable_count] => variable_count_length(p, len),
         T![variable_offset] => variable_offset_length(p, len),
         T![variable_length] => variable_length_length(p, len),
@@ -873,9 +874,9 @@ fn variable_count_length(p: &mut Parser, mut len: usize) -> usize {
 
 fn range_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
-    len = expr_length(p, len, &mut 0, true);
+    len = expr_length(p, len, &mut 0);
     len += 1;
-    len = expr_length(p, len, &mut 0, true);
+    len = expr_length(p, len, &mut 0);
     len + 1
 }
 
@@ -883,7 +884,7 @@ fn variable_offset_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
         len += 1;
-        len = expr_length(p, len, &mut 0, false);
+        len = expr_length(p, len, &mut 0);
         len += 1;
     }
     len
@@ -893,7 +894,7 @@ fn variable_length_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
         len += 1;
-        len = expr_length(p, len, &mut 0, false);
+        len = expr_length(p, len, &mut 0);
         len += 1;
     }
     len
@@ -905,18 +906,19 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     match p.nth(len) {
         T!['['] => {
             len += 1;
-            len = expr_length(p, len, parentheses_count, false);
+            len = expr_length(p, len, parentheses_count);
             len + 1
         }
         T!['('] => {
+            *parentheses_count += 1;
             len += 1;
             if p.nth(len) == T![')'] {
                 len + 1
             } else {
-                len = expr_length(p, len, parentheses_count, true);
+                len = expr_length(p, len, parentheses_count);
                 while p.nth(len) == T![,] {
                     len += 1;
-                    len = expr_length(p, len, parentheses_count, true);
+                    len = expr_length(p, len, parentheses_count);
                 }
                 len + 1
             }
@@ -925,12 +927,7 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     }
 }
 
-fn expr_length(
-    p: &mut Parser,
-    mut len: usize,
-    parentheses_count: &mut i32,
-    expression_paranthesis: bool,
-) -> usize {
+fn expr_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
     // Check if the expression starts with `(`
     if p.nth(len) == T!['('] {
         len += 1;
@@ -953,11 +950,11 @@ fn expr_length(
     {
         len += 1;
 
-        len = expr_length(p, len, parentheses_count, false);
+        len = expr_length(p, len, parentheses_count);
     }
 
     // Check if the expression ends with `)`
-    if p.nth(len) == T![')'] && !expression_paranthesis {
+    if p.nth(len) == T![')'] {
         len += 1;
         *parentheses_count -= 1;
     }
