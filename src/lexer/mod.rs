@@ -97,10 +97,10 @@ pub(crate) enum LogosToken {
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
     Regexp(String),
     // Hexadecimal string
-    #[regex(r"=\s\{[\s0-9A-Fa-f?~()|\[\] -]*\}", |lex| lex.slice().to_string())]
+    #[regex(r"=\s\{(([\s0-9A-Fa-f?~()|\[\] -]|//.*)*)\}", |lex| lex.slice().to_string())]
     HexString(String),
     // Strings
-    #[regex(r#""([^"\n]|\\["\\])*""#, |lex| lex.slice().to_string())]
+    #[regex(r#""(([^"\\]|\\x[0-9a-fA-F]{2}|\\[trn"\\]|\\.)*)""#, |lex| lex.slice().to_string())]
     String(String),
     // Identifiers
     #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
@@ -211,6 +211,35 @@ pub(crate) enum LogosToken {
     MultilineComment,
 }
 
+#[derive(Logos, Debug, PartialEq)]
+#[logos(error = LexingError)]
+pub(crate) enum HexLogosToken {
+    #[token("=")]
+    Assign,
+    #[token("-")]
+    Hyphen,
+    #[token("{")]
+    LBrace,
+    #[token("}")]
+    RBrace,
+    #[token("(")]
+    LParen,
+    #[token(")")]
+    RParen,
+    #[token("|")]
+    Pipe,
+    #[token("~")]
+    Tilde,
+    #[regex(r"[ \t\n\r]+")]
+    Whitespace,
+    #[regex(r"~?[0-9a-fA-F?]{2}")]
+    Lit,
+    #[regex(r"\[\-?[0-9]*\-?[0-9]*\]")]
+    Range,
+    #[regex(r"//.*")]
+    Comment,
+}
+
 /// A token of Rust source.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Token {
@@ -239,10 +268,7 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
         let syntaxkind = match token {
             Ok(token) => {
                 if let LogosToken::HexString(hex_string) = token {
-                    let detailed_tokens = process_hex_string_token(hex_string);
-                    for (kind, len) in detailed_tokens {
-                        tokens.push(Token { kind, len: TextSize::from(len as u32) });
-                    }
+                    process_hex_string_token(hex_string, &mut tokens, &mut errors, &mut offset);
                     continue;
                 } else if let LogosToken::Regexp(regex) = token {
                     let detailed_tokens = process_regex_string_token(regex);
@@ -394,78 +420,94 @@ fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
 }
 
 // Process hexadecimal string token to generate detailed tokens
-fn process_hex_string_token(hex_string: String) -> Vec<(SyntaxKind, usize)> {
-    let mut tokens = Vec::new();
-    let mut chars = hex_string.chars().peekable();
-    while let Some(ch) = chars.next() {
-        match ch {
-            '=' => tokens.push((SyntaxKind::ASSIGN, 1)),
-            ' ' | '\t' | '\n' | '\r' => tokens.push((SyntaxKind::WHITESPACE, 1)),
-            '-' => tokens.push((SyntaxKind::HYPHEN, 1)),
-            '{' => tokens.push((SyntaxKind::L_BRACE, 1)),
-            '}' => tokens.push((SyntaxKind::R_BRACE, 1)),
-            '(' => tokens.push((SyntaxKind::L_PAREN, 1)),
-            ')' => tokens.push((SyntaxKind::R_PAREN, 1)),
-            '[' => {
-                tokens.push((SyntaxKind::L_BRACKET, 1));
-                let mut num_str = String::new();
-                while let Some(&peeked) = chars.peek() {
-                    if peeked.is_ascii_digit() {
-                        num_str.push(chars.next().unwrap());
-                    } else if peeked == '-' {
-                        if !num_str.is_empty() {
-                            tokens.push((SyntaxKind::INT_LIT, num_str.len()));
-                            num_str.clear();
-                        }
-                        tokens.push((SyntaxKind::HYPHEN, 1));
-                        chars.next();
-                    } else if peeked == ']' {
-                        if !num_str.is_empty() {
-                            tokens.push((SyntaxKind::INT_LIT, num_str.len()));
-                            num_str.clear();
-                        }
-                        tokens.push((SyntaxKind::R_BRACKET, 1));
-                        chars.next();
-                    } else {
-                        break;
-                    }
+fn process_hex_string_token(
+    hex_string: String,
+    tokens: &mut Vec<Token>,
+    errors: &mut Vec<SyntaxError>,
+    offset: &mut usize,
+) {
+    let logos_tokens: Vec<_> = HexLogosToken::lexer(&hex_string).spanned().collect();
+
+    for (token, range) in logos_tokens {
+        let token_len = range.len().try_into().unwrap();
+        let token_range = TextRange::at(offset.to_owned().try_into().unwrap(), token_len);
+        match token {
+            Ok(token) => match token {
+                HexLogosToken::Assign => {
+                    tokens.push(Token { kind: SyntaxKind::ASSIGN, len: token_len })
                 }
-            }
-            ']' => tokens.push((SyntaxKind::R_BRACKET, 1)),
-            '|' => tokens.push((SyntaxKind::PIPE, 1)),
-            '~' => {
-                // Consume the next two characters to form the hex byte
-                let mut len = 1;
-                for _ in 0..2 {
-                    if let Some(&peeked) = chars.peek() {
-                        if peeked.is_ascii_hexdigit() || peeked == '?' {
-                            chars.next();
-                            len += 1;
-                        } else {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
+                HexLogosToken::Hyphen => {
+                    tokens.push(Token { kind: SyntaxKind::HYPHEN, len: token_len })
                 }
-                tokens.push((SyntaxKind::HEX_LIT, len));
-            }
-            _ => {
-                // If it's a hexadecimal character or '?', add as HexByte
-                if ch.is_ascii_hexdigit() || ch == '?' {
-                    let mut len = 1;
-                    if let Some(&peeked) = chars.peek() {
-                        if peeked.is_ascii_hexdigit() || peeked == '?' {
-                            chars.next();
-                            len += 1;
+                HexLogosToken::LBrace => {
+                    tokens.push(Token { kind: SyntaxKind::L_BRACE, len: token_len })
+                }
+                HexLogosToken::RBrace => {
+                    tokens.push(Token { kind: SyntaxKind::R_BRACE, len: token_len })
+                }
+                HexLogosToken::LParen => {
+                    tokens.push(Token { kind: SyntaxKind::L_PAREN, len: token_len })
+                }
+                HexLogosToken::RParen => {
+                    tokens.push(Token { kind: SyntaxKind::R_PAREN, len: token_len })
+                }
+                HexLogosToken::Pipe => {
+                    tokens.push(Token { kind: SyntaxKind::PIPE, len: token_len })
+                }
+                HexLogosToken::Tilde => {
+                    tokens.push(Token { kind: SyntaxKind::TILDE, len: token_len })
+                }
+                HexLogosToken::Whitespace => {
+                    tokens.push(Token { kind: SyntaxKind::WHITESPACE, len: token_len })
+                }
+                HexLogosToken::Lit => {
+                    tokens.push(Token { kind: SyntaxKind::HEX_LIT, len: token_len })
+                }
+                HexLogosToken::Range => {
+                    let content = &hex_string[range.clone()];
+                    let parts: Vec<_> = content[1..content.len() - 1].split('-').collect();
+                    tokens.push(Token {
+                        kind: SyntaxKind::L_BRACKET,
+                        len: 1_usize.try_into().unwrap(),
+                    });
+                    if let Some(part) = parts.first() {
+                        if !part.is_empty() && part.chars().all(|c| c.is_ascii_digit()) {
+                            tokens.push(Token {
+                                kind: SyntaxKind::INT_LIT,
+                                len: part.len().try_into().unwrap(),
+                            });
                         }
                     }
-                    tokens.push((SyntaxKind::HEX_LIT, len));
+                    if parts.len() > 1 {
+                        tokens.push(Token {
+                            kind: SyntaxKind::HYPHEN,
+                            len: 1_usize.try_into().unwrap(),
+                        });
+                        if let Some(part) = parts.get(1) {
+                            if !part.is_empty() && part.chars().all(|c| c.is_ascii_digit()) {
+                                tokens.push(Token {
+                                    kind: SyntaxKind::INT_LIT,
+                                    len: part.len().try_into().unwrap(),
+                                });
+                            }
+                        }
+                    }
+                    tokens.push(Token {
+                        kind: SyntaxKind::R_BRACKET,
+                        len: 1_usize.try_into().unwrap(),
+                    });
                 }
+                HexLogosToken::Comment => {
+                    tokens.push(Token { kind: SyntaxKind::COMMENT, len: token_len })
+                }
+            },
+            Err(err) => {
+                errors.push(SyntaxError::new(err.to_string(), token_range));
+                tokens.push(Token { kind: SyntaxKind::ERROR, len: token_len });
             }
-        }
+        };
+        *offset += range.len();
     }
-    tokens
 }
 
 #[cfg(test)]
