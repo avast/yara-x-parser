@@ -23,18 +23,19 @@ SOURCE_FILE@0..60
         CONDITION_KW@36..45 "condition"
         COLON@45..46 ":"
         WHITESPACE@46..49 "\n\t\t"
-        BOOLEAN_EXPR@49..57
-          BOOLEAN_TERM@49..51
-            PRIMARY_EXPR@49..51
-              HYPHEN@49..50 "-"
-              PRIMARY_EXPR@50..51
-                INT_LIT@50..51 "1"
-          WHITESPACE@51..52 " "
-          OR_KW@52..54 "or"
-          WHITESPACE@54..55 " "
-          BOOLEAN_EXPR@55..57
-            BOOLEAN_TERM@55..57
-              VARIABLE@55..57 "$a"
+        EXPRESSION_STMT@49..57
+          BOOLEAN_EXPR@49..57
+            BOOLEAN_TERM@49..51
+              PRIMARY_EXPR@49..51
+                HYPHEN@49..50 "-"
+                PRIMARY_EXPR@50..51
+                  INT_LIT@50..51 "1"
+            WHITESPACE@51..52 " "
+            OR_KW@52..54 "or"
+            WHITESPACE@54..55 " "
+            BOOLEAN_EXPR@55..57
+              BOOLEAN_TERM@55..57
+                VARIABLE@55..57 "$a"
       WHITESPACE@57..58 "\n"
       R_BRACE@58..59 "}"
   WHITESPACE@59..60 "\n"

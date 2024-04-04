@@ -11,22 +11,23 @@ SOURCE_FILE@0..53
         CONDITION_KW@16..25 "condition"
         COLON@25..26 ":"
         WHITESPACE@26..35 "\n        "
-        BOOLEAN_TERM@35..51
-          EXPRESSION@35..51
-            FUNCTION_CALL_EXPR@35..47
-              PRIMARY_EXPR@35..42
-                IDENTIFIER@35..38 "foo"
-                DOT@38..39 "."
-                IDENTIFIER@39..42 "bar"
-              L_PAREN@42..43 "("
-              PRIMARY_EXPR@43..44
-                INT_LIT@43..44 "1"
-              COMMA@44..45 ","
-              PRIMARY_EXPR@45..46
-                INT_LIT@45..46 "2"
-              R_PAREN@46..47 ")"
-            DOT@47..48 "."
-            PRIMARY_EXPR@48..51
-              IDENTIFIER@48..51 "baz"
+        EXPRESSION_STMT@35..51
+          BOOLEAN_TERM@35..51
+            EXPRESSION@35..51
+              FUNCTION_CALL_EXPR@35..47
+                PRIMARY_EXPR@35..42
+                  IDENTIFIER@35..38 "foo"
+                  DOT@38..39 "."
+                  IDENTIFIER@39..42 "bar"
+                L_PAREN@42..43 "("
+                PRIMARY_EXPR@43..44
+                  INT_LIT@43..44 "1"
+                COMMA@44..45 ","
+                PRIMARY_EXPR@45..46
+                  INT_LIT@45..46 "2"
+                R_PAREN@46..47 ")"
+              DOT@47..48 "."
+              PRIMARY_EXPR@48..51
+                IDENTIFIER@48..51 "baz"
       WHITESPACE@51..52 "\n"
       R_BRACE@52..53 "}"

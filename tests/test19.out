@@ -31,32 +31,33 @@ SOURCE_FILE@0..154
         CONDITION_KW@113..122 "condition"
         COLON@122..123 ":"
         WHITESPACE@123..126 "\n\t\t"
-        BOOLEAN_EXPR@126..151
-          BOOLEAN_EXPR@126..138
-            BOOLEAN_TERM@126..128
-              VARIABLE@126..128 "$b"
-            WHITESPACE@128..129 " "
-            AND_KW@129..132 "and"
-            WHITESPACE@132..133 " "
-            BOOLEAN_EXPR@133..138
-              BOOLEAN_TERM@133..138
-                EXPRESSION@133..138
-                  PRIMARY_EXPR@133..134
-                    INT_LIT@133..134 "9"
-                  WHITESPACE@134..135 " "
-                  PLUS@135..136 "+"
-                  WHITESPACE@136..137 " "
-                  PRIMARY_EXPR@137..138
-                    INT_LIT@137..138 "0"
-          WHITESPACE@138..139 " "
-          AND_KW@139..142 "and"
-          WHITESPACE@142..143 " "
-          BOOLEAN_EXPR@143..151
-            BOOLEAN_TERM@143..151
-              NOT_KW@143..146 "not"
-              WHITESPACE@146..147 " "
-              BOOLEAN_TERM@147..151
-                BOOL_LIT@147..151 "true"
+        EXPRESSION_STMT@126..151
+          BOOLEAN_EXPR@126..151
+            BOOLEAN_EXPR@126..138
+              BOOLEAN_TERM@126..128
+                VARIABLE@126..128 "$b"
+              WHITESPACE@128..129 " "
+              AND_KW@129..132 "and"
+              WHITESPACE@132..133 " "
+              BOOLEAN_EXPR@133..138
+                BOOLEAN_TERM@133..138
+                  EXPRESSION@133..138
+                    PRIMARY_EXPR@133..134
+                      INT_LIT@133..134 "9"
+                    WHITESPACE@134..135 " "
+                    PLUS@135..136 "+"
+                    WHITESPACE@136..137 " "
+                    PRIMARY_EXPR@137..138
+                      INT_LIT@137..138 "0"
+            WHITESPACE@138..139 " "
+            AND_KW@139..142 "and"
+            WHITESPACE@142..143 " "
+            BOOLEAN_EXPR@143..151
+              BOOLEAN_TERM@143..151
+                NOT_KW@143..146 "not"
+                WHITESPACE@146..147 " "
+                BOOLEAN_TERM@147..151
+                  BOOL_LIT@147..151 "true"
       WHITESPACE@151..152 "\n"
       R_BRACE@152..153 "}"
   WHITESPACE@153..154 "\n"

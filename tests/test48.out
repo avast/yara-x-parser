@@ -35,23 +35,24 @@ SOURCE_FILE@0..118
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_TERM@99..115
-          OF_EXPR@99..115
-            QUANTIFIER@99..102
-              ANY_KW@99..102 "any"
-            WHITESPACE@102..103 " "
-            OF_KW@103..105 "of"
-            WHITESPACE@105..106 " "
-            PATTERN_IDENT_TUPLE@106..115
-              L_PAREN@106..107 "("
-              VARIABLE_WILDCARD@107..110
-                VARIABLE@107..109 "$a"
-                STAR@109..110 "*"
-              COMMA@110..111 ","
-              WHITESPACE@111..112 " "
-              VARIABLE_WILDCARD@112..114
-                VARIABLE@112..114 "$b"
-              R_PAREN@114..115 ")"
+        EXPRESSION_STMT@99..115
+          BOOLEAN_TERM@99..115
+            OF_EXPR@99..115
+              QUANTIFIER@99..102
+                ANY_KW@99..102 "any"
+              WHITESPACE@102..103 " "
+              OF_KW@103..105 "of"
+              WHITESPACE@105..106 " "
+              PATTERN_IDENT_TUPLE@106..115
+                L_PAREN@106..107 "("
+                VARIABLE_WILDCARD@107..110
+                  VARIABLE@107..109 "$a"
+                  STAR@109..110 "*"
+                COMMA@110..111 ","
+                WHITESPACE@111..112 " "
+                VARIABLE_WILDCARD@112..114
+                  VARIABLE@112..114 "$b"
+                R_PAREN@114..115 ")"
       WHITESPACE@115..116 "\n"
       R_BRACE@116..117 "}"
   WHITESPACE@117..118 "\n"

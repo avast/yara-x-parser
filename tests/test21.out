@@ -13,21 +13,22 @@ SOURCE_FILE@0..55
         CONDITION_KW@28..37 "condition"
         COLON@37..38 ":"
         WHITESPACE@38..41 "\n\t\t"
-        BOOLEAN_TERM@41..52
-          EXPRESSION@41..52
-            EXPRESSION@41..46
-              PRIMARY_EXPR@41..42
-                INT_LIT@41..42 "9"
-              WHITESPACE@42..43 " "
-              PLUS@43..44 "+"
-              WHITESPACE@44..45 " "
-              PRIMARY_EXPR@45..46
-                INT_LIT@45..46 "9"
-            WHITESPACE@46..47 " "
-            EQ@47..49 "=="
-            WHITESPACE@49..50 " "
-            PRIMARY_EXPR@50..52
-              INT_LIT@50..52 "18"
+        EXPRESSION_STMT@41..52
+          BOOLEAN_TERM@41..52
+            EXPRESSION@41..52
+              EXPRESSION@41..46
+                PRIMARY_EXPR@41..42
+                  INT_LIT@41..42 "9"
+                WHITESPACE@42..43 " "
+                PLUS@43..44 "+"
+                WHITESPACE@44..45 " "
+                PRIMARY_EXPR@45..46
+                  INT_LIT@45..46 "9"
+              WHITESPACE@46..47 " "
+              EQ@47..49 "=="
+              WHITESPACE@49..50 " "
+              PRIMARY_EXPR@50..52
+                INT_LIT@50..52 "18"
       WHITESPACE@52..53 "\n"
       R_BRACE@53..54 "}"
   WHITESPACE@54..55 "\n"

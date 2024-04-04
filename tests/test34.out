@@ -35,39 +35,40 @@ SOURCE_FILE@0..132
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_TERM@99..129
-          L_PAREN@99..100 "("
-          BOOLEAN_TERM@100..128
-            OF_EXPR@100..128
-              QUANTIFIER@100..103
-                ANY_KW@100..103 "any"
-              WHITESPACE@103..104 " "
-              OF_KW@104..106 "of"
-              WHITESPACE@106..107 " "
-              BOOLEAN_EXPR_TUPLE@107..128
-                L_PAREN@107..108 "("
-                BOOLEAN_EXPR@108..117
-                  BOOLEAN_TERM@108..110
-                    VARIABLE@108..110 "$a"
-                  WHITESPACE@110..111 " "
-                  AND_KW@111..114 "and"
-                  WHITESPACE@114..115 " "
-                  BOOLEAN_EXPR@115..117
-                    BOOLEAN_TERM@115..117
-                      VARIABLE@115..117 "$b"
-                COMMA@117..118 ","
-                WHITESPACE@118..119 " "
-                BOOLEAN_EXPR@119..127
-                  BOOLEAN_TERM@119..121
-                    VARIABLE@119..121 "$b"
-                  WHITESPACE@121..122 " "
-                  OR_KW@122..124 "or"
-                  WHITESPACE@124..125 " "
-                  BOOLEAN_EXPR@125..127
-                    BOOLEAN_TERM@125..127
-                      VARIABLE@125..127 "$a"
-                R_PAREN@127..128 ")"
-          R_PAREN@128..129 ")"
+        EXPRESSION_STMT@99..129
+          BOOLEAN_TERM@99..129
+            L_PAREN@99..100 "("
+            BOOLEAN_TERM@100..128
+              OF_EXPR@100..128
+                QUANTIFIER@100..103
+                  ANY_KW@100..103 "any"
+                WHITESPACE@103..104 " "
+                OF_KW@104..106 "of"
+                WHITESPACE@106..107 " "
+                BOOLEAN_EXPR_TUPLE@107..128
+                  L_PAREN@107..108 "("
+                  BOOLEAN_EXPR@108..117
+                    BOOLEAN_TERM@108..110
+                      VARIABLE@108..110 "$a"
+                    WHITESPACE@110..111 " "
+                    AND_KW@111..114 "and"
+                    WHITESPACE@114..115 " "
+                    BOOLEAN_EXPR@115..117
+                      BOOLEAN_TERM@115..117
+                        VARIABLE@115..117 "$b"
+                  COMMA@117..118 ","
+                  WHITESPACE@118..119 " "
+                  BOOLEAN_EXPR@119..127
+                    BOOLEAN_TERM@119..121
+                      VARIABLE@119..121 "$b"
+                    WHITESPACE@121..122 " "
+                    OR_KW@122..124 "or"
+                    WHITESPACE@124..125 " "
+                    BOOLEAN_EXPR@125..127
+                      BOOLEAN_TERM@125..127
+                        VARIABLE@125..127 "$a"
+                  R_PAREN@127..128 ")"
+            R_PAREN@128..129 ")"
       WHITESPACE@129..130 "\n"
       R_BRACE@130..131 "}"
   WHITESPACE@131..132 "\n"

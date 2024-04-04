@@ -35,16 +35,17 @@ SOURCE_FILE@0..107
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_TERM@99..104
-          PRIMARY_EXPR@99..104
-            L_PAREN@99..100 "("
-            EXPRESSION@100..103
-              PRIMARY_EXPR@100..101
-                INT_LIT@100..101 "1"
-              PLUS@101..102 "+"
-              PRIMARY_EXPR@102..103
-                INT_LIT@102..103 "1"
-            R_PAREN@103..104 ")"
+        EXPRESSION_STMT@99..104
+          BOOLEAN_TERM@99..104
+            PRIMARY_EXPR@99..104
+              L_PAREN@99..100 "("
+              EXPRESSION@100..103
+                PRIMARY_EXPR@100..101
+                  INT_LIT@100..101 "1"
+                PLUS@101..102 "+"
+                PRIMARY_EXPR@102..103
+                  INT_LIT@102..103 "1"
+              R_PAREN@103..104 ")"
       WHITESPACE@104..105 "\n"
       R_BRACE@105..106 "}"
   WHITESPACE@106..107 "\n"

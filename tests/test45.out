@@ -23,16 +23,17 @@ SOURCE_FILE@0..59
         CONDITION_KW@36..45 "condition"
         COLON@45..46 ":"
         WHITESPACE@46..49 "\n\t\t"
-        BOOLEAN_TERM@49..56
-          EXPRESSION@49..56
-            PRIMARY_EXPR@49..51
-              VARIABLE_OFFSET@49..51
-                VARIABLE_OFFSET@49..51 "@a"
-            WHITESPACE@51..52 " "
-            EQ@52..54 "=="
-            WHITESPACE@54..55 " "
-            PRIMARY_EXPR@55..56
-              INT_LIT@55..56 "1"
+        EXPRESSION_STMT@49..56
+          BOOLEAN_TERM@49..56
+            EXPRESSION@49..56
+              PRIMARY_EXPR@49..51
+                VARIABLE_OFFSET@49..51
+                  VARIABLE_OFFSET@49..51 "@a"
+              WHITESPACE@51..52 " "
+              EQ@52..54 "=="
+              WHITESPACE@54..55 " "
+              PRIMARY_EXPR@55..56
+                INT_LIT@55..56 "1"
       WHITESPACE@56..57 "\n"
       R_BRACE@57..58 "}"
   WHITESPACE@58..59 "\n"

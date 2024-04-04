@@ -40,22 +40,23 @@ SOURCE_FILE@0..157
         CONDITION_KW@122..131 "condition"
         COLON@131..132 ":"
         WHITESPACE@132..135 "\n\t\t"
-        BOOLEAN_EXPR@135..154
-          BOOLEAN_TERM@135..137
-            VARIABLE@135..137 "$a"
-          WHITESPACE@137..138 " "
-          OR_KW@138..140 "or"
-          WHITESPACE@140..143 "\n\t\t"
-          BOOLEAN_EXPR@143..154
+        EXPRESSION_STMT@135..154
+          BOOLEAN_EXPR@135..154
+            BOOLEAN_TERM@135..137
+              VARIABLE@135..137 "$a"
+            WHITESPACE@137..138 " "
+            OR_KW@138..140 "or"
+            WHITESPACE@140..143 "\n\t\t"
             BOOLEAN_EXPR@143..154
-              BOOLEAN_TERM@143..145
-                VARIABLE@143..145 "$b"
-              WHITESPACE@145..146 " "
-              AND_KW@146..149 "and"
-              WHITESPACE@149..150 " "
-              BOOLEAN_EXPR@150..154
-                BOOLEAN_TERM@150..154
-                  BOOL_LIT@150..154 "true"
+              BOOLEAN_EXPR@143..154
+                BOOLEAN_TERM@143..145
+                  VARIABLE@143..145 "$b"
+                WHITESPACE@145..146 " "
+                AND_KW@146..149 "and"
+                WHITESPACE@149..150 " "
+                BOOLEAN_EXPR@150..154
+                  BOOLEAN_TERM@150..154
+                    BOOL_LIT@150..154 "true"
       WHITESPACE@154..155 "\n"
       R_BRACE@155..156 "}"
   WHITESPACE@156..157 "\n"

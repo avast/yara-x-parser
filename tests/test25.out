@@ -27,23 +27,24 @@ SOURCE_FILE@0..127
         CONDITION_KW@73..82 "condition"
         COLON@82..83 ":"
         WHITESPACE@83..86 "\n\t\t"
-        BOOLEAN_EXPR@86..124
-          BOOLEAN_TERM@86..88
-            VARIABLE@86..88 "$b"
-          WHITESPACE@88..89 " "
-          AND_KW@89..92 "and"
-          WHITESPACE@92..93 " "
-          BOOLEAN_EXPR@93..124
-            BOOLEAN_TERM@93..124
-              PRIMARY_EXPR@93..124
-                REGEX_PATTERN@93..124
-                  SLASH@93..94 "/"
-                  REGEX_LIT@94..121 "http(s)?:\\/\\/example\\ ..."
-                  SLASH@121..122 "/"
-                  REGEX_MOD@122..123
-                    CASE_INSENSITIVE@122..123 "i"
-                  REGEX_MOD@123..124
-                    DOT_MATCHES_ALL@123..124 "s"
+        EXPRESSION_STMT@86..124
+          BOOLEAN_EXPR@86..124
+            BOOLEAN_TERM@86..88
+              VARIABLE@86..88 "$b"
+            WHITESPACE@88..89 " "
+            AND_KW@89..92 "and"
+            WHITESPACE@92..93 " "
+            BOOLEAN_EXPR@93..124
+              BOOLEAN_TERM@93..124
+                PRIMARY_EXPR@93..124
+                  REGEX_PATTERN@93..124
+                    SLASH@93..94 "/"
+                    REGEX_LIT@94..121 "http(s)?:\\/\\/example\\ ..."
+                    SLASH@121..122 "/"
+                    REGEX_MOD@122..123
+                      CASE_INSENSITIVE@122..123 "i"
+                    REGEX_MOD@123..124
+                      DOT_MATCHES_ALL@123..124 "s"
       WHITESPACE@124..125 "\n"
       R_BRACE@125..126 "}"
   WHITESPACE@126..127 "\n"

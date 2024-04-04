@@ -35,14 +35,15 @@ SOURCE_FILE@0..113
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_TERM@99..110
-          OF_EXPR@99..110
-            QUANTIFIER@99..102
-              ALL_KW@99..102 "all"
-            WHITESPACE@102..103 " "
-            OF_KW@103..105 "of"
-            WHITESPACE@105..106 " "
-            THEM_KW@106..110 "them"
+        EXPRESSION_STMT@99..110
+          BOOLEAN_TERM@99..110
+            OF_EXPR@99..110
+              QUANTIFIER@99..102
+                ALL_KW@99..102 "all"
+              WHITESPACE@102..103 " "
+              OF_KW@103..105 "of"
+              WHITESPACE@105..106 " "
+              THEM_KW@106..110 "them"
       WHITESPACE@110..111 "\n"
       R_BRACE@111..112 "}"
   WHITESPACE@112..113 "\n"

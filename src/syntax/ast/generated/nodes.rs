@@ -167,10 +167,7 @@ impl Condition {
     pub fn colon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![:])
     }
-    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
-        support::child(&self.syntax)
-    }
-    pub fn boolean_term(&self) -> Option<BooleanTerm> {
+    pub fn expression_stmt(&self) -> Option<ExpressionStmt> {
         support::child(&self.syntax)
     }
 }
@@ -437,14 +434,20 @@ impl XorRange {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct BooleanExpr {
+pub struct ExpressionStmt {
     pub(crate) syntax: SyntaxNode,
 }
-impl BooleanExpr {
-    pub fn boolean_term(&self) -> Option<BooleanTerm> {
+impl ExpressionStmt {
+    pub fn expression(&self) -> Option<Expression> {
         support::child(&self.syntax)
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct BooleanExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl BooleanExpr {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct BooleanTerm {
@@ -935,6 +938,12 @@ impl VariableWildcard {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum Expression {
+    BooleanExpr(BooleanExpr),
+    BooleanTerm(BooleanTerm),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Term {
     PrimaryExpr(PrimaryExpr),
     IndexingExpr(IndexingExpr),
@@ -1328,6 +1337,21 @@ impl AstNode for XorRange {
         &self.syntax
     }
 }
+impl AstNode for ExpressionStmt {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPRESSION_STMT
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for BooleanExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == BOOLEAN_EXPR
@@ -1643,6 +1667,35 @@ impl AstNode for VariableWildcard {
         &self.syntax
     }
 }
+impl From<BooleanExpr> for Expression {
+    fn from(node: BooleanExpr) -> Expression {
+        Expression::BooleanExpr(node)
+    }
+}
+impl From<BooleanTerm> for Expression {
+    fn from(node: BooleanTerm) -> Expression {
+        Expression::BooleanTerm(node)
+    }
+}
+impl AstNode for Expression {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        matches!(kind, BOOLEAN_EXPR | BOOLEAN_TERM)
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        let res = match syntax.kind() {
+            BOOLEAN_EXPR => Expression::BooleanExpr(BooleanExpr { syntax }),
+            BOOLEAN_TERM => Expression::BooleanTerm(BooleanTerm { syntax }),
+            _ => return None,
+        };
+        Some(res)
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        match self {
+            Expression::BooleanExpr(it) => &it.syntax,
+            Expression::BooleanTerm(it) => &it.syntax,
+        }
+    }
+}
 impl From<PrimaryExpr> for Term {
     fn from(node: PrimaryExpr) -> Term {
         Term::PrimaryExpr(node)
@@ -1730,6 +1783,11 @@ impl AstNode for AnyHasComments {
     }
     fn syntax(&self) -> &SyntaxNode {
         &self.syntax
+    }
+}
+impl std::fmt::Display for Expression {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
     }
 }
 impl std::fmt::Display for Term {
@@ -1863,6 +1921,11 @@ impl std::fmt::Display for BaseAlphabet {
     }
 }
 impl std::fmt::Display for XorRange {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ExpressionStmt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

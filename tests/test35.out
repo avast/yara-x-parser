@@ -35,32 +35,33 @@ SOURCE_FILE@0..122
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_EXPR@99..119
-          BOOLEAN_TERM@99..101
-            VARIABLE@99..101 "$a"
-          WHITESPACE@101..102 " "
-          OR_KW@102..104 "or"
-          WHITESPACE@104..105 " "
-          BOOLEAN_EXPR@105..119
+        EXPRESSION_STMT@99..119
+          BOOLEAN_EXPR@99..119
+            BOOLEAN_TERM@99..101
+              VARIABLE@99..101 "$a"
+            WHITESPACE@101..102 " "
+            OR_KW@102..104 "or"
+            WHITESPACE@104..105 " "
             BOOLEAN_EXPR@105..119
-              BOOLEAN_TERM@105..107
-                VARIABLE@105..107 "$b"
-              WHITESPACE@107..108 " "
-              AND_KW@108..111 "and"
-              WHITESPACE@111..112 " "
-              BOOLEAN_EXPR@112..119
-                BOOLEAN_TERM@112..119
-                  PRIMARY_EXPR@112..119
-                    L_PAREN@112..113 "("
-                    EXPRESSION@113..118
-                      PRIMARY_EXPR@113..114
-                        INT_LIT@113..114 "9"
-                      WHITESPACE@114..115 " "
-                      PLUS@115..116 "+"
-                      WHITESPACE@116..117 " "
-                      PRIMARY_EXPR@117..118
-                        INT_LIT@117..118 "9"
-                    R_PAREN@118..119 ")"
+              BOOLEAN_EXPR@105..119
+                BOOLEAN_TERM@105..107
+                  VARIABLE@105..107 "$b"
+                WHITESPACE@107..108 " "
+                AND_KW@108..111 "and"
+                WHITESPACE@111..112 " "
+                BOOLEAN_EXPR@112..119
+                  BOOLEAN_TERM@112..119
+                    PRIMARY_EXPR@112..119
+                      L_PAREN@112..113 "("
+                      EXPRESSION@113..118
+                        PRIMARY_EXPR@113..114
+                          INT_LIT@113..114 "9"
+                        WHITESPACE@114..115 " "
+                        PLUS@115..116 "+"
+                        WHITESPACE@116..117 " "
+                        PRIMARY_EXPR@117..118
+                          INT_LIT@117..118 "9"
+                      R_PAREN@118..119 ")"
       WHITESPACE@119..120 "\n"
       R_BRACE@120..121 "}"
   WHITESPACE@121..122 "\n"

@@ -101,12 +101,16 @@ XorRange =
     ')'
 
 Condition =
-    'condition' ':'
-        (BooleanExpr | BooleanTerm)
+    'condition' ':' ExpressionStmt
+
+ExpressionStmt = Expression
+
+Expression = 
+    BooleanExpr
+|   BooleanTerm
 
 BooleanExpr = 
-    BooleanTerm
-|   lhs:BooleanTerm
+    lhs:BooleanExpr
         op:(
             'and'| 'or'
         )

@@ -31,28 +31,29 @@ SOURCE_FILE@0..150
         CONDITION_KW@113..122 "condition"
         COLON@122..123 ":"
         WHITESPACE@123..126 "\n\t\t"
-        BOOLEAN_EXPR@126..147
-          BOOLEAN_TERM@126..128
-            VARIABLE@126..128 "$a"
-          WHITESPACE@128..129 " "
-          AND_KW@129..132 "and"
-          WHITESPACE@132..133 " "
-          BOOLEAN_EXPR@133..147
-            BOOLEAN_TERM@133..147
-              EXPRESSION@133..147
-                PRIMARY_EXPR@133..134
-                  INT_LIT@133..134 "9"
-                WHITESPACE@134..135 " "
-                PLUS@135..136 "+"
-                WHITESPACE@136..137 " "
-                EXPRESSION@137..147
-                  PRIMARY_EXPR@137..138
-                    INT_LIT@137..138 "0"
-                  WHITESPACE@138..139 " "
-                  DOT@139..140 "."
-                  WHITESPACE@140..141 " "
-                  PRIMARY_EXPR@141..147
-                    STRING_LIT@141..147 "\"test\""
+        EXPRESSION_STMT@126..147
+          BOOLEAN_EXPR@126..147
+            BOOLEAN_TERM@126..128
+              VARIABLE@126..128 "$a"
+            WHITESPACE@128..129 " "
+            AND_KW@129..132 "and"
+            WHITESPACE@132..133 " "
+            BOOLEAN_EXPR@133..147
+              BOOLEAN_TERM@133..147
+                EXPRESSION@133..147
+                  PRIMARY_EXPR@133..134
+                    INT_LIT@133..134 "9"
+                  WHITESPACE@134..135 " "
+                  PLUS@135..136 "+"
+                  WHITESPACE@136..137 " "
+                  EXPRESSION@137..147
+                    PRIMARY_EXPR@137..138
+                      INT_LIT@137..138 "0"
+                    WHITESPACE@138..139 " "
+                    DOT@139..140 "."
+                    WHITESPACE@140..141 " "
+                    PRIMARY_EXPR@141..147
+                      STRING_LIT@141..147 "\"test\""
       WHITESPACE@147..148 "\n"
       R_BRACE@148..149 "}"
   WHITESPACE@149..150 "\n"

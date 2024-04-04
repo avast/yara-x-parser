@@ -35,39 +35,40 @@ SOURCE_FILE@0..142
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_EXPR@99..139
-          BOOLEAN_TERM@99..113
-            VARIABLE@99..101 "$a"
-            WHITESPACE@101..102 " "
-            VARIABLE_ANCHOR@102..113
-              IN_KW@102..104 "in"
-              WHITESPACE@104..105 " "
-              RANGE@105..113
-                L_PAREN@105..106 "("
-                PRIMARY_EXPR@106..107
-                  INT_LIT@106..107 "0"
-                DOTDOT@107..109 ".."
-                PRIMARY_EXPR@109..112
-                  INT_LIT@109..112 "100"
-                R_PAREN@112..113 ")"
-          WHITESPACE@113..114 " "
-          AND_KW@114..117 "and"
-          WHITESPACE@117..118 " "
-          BOOLEAN_EXPR@118..139
-            BOOLEAN_TERM@118..139
-              VARIABLE@118..120 "$b"
-              WHITESPACE@120..121 " "
-              VARIABLE_ANCHOR@121..139
-                IN_KW@121..123 "in"
-                WHITESPACE@123..124 " "
-                RANGE@124..139
-                  L_PAREN@124..125 "("
-                  PRIMARY_EXPR@125..128
-                    INT_LIT@125..128 "100"
-                  DOTDOT@128..130 ".."
-                  PRIMARY_EXPR@130..138
-                    FILESIZE_KW@130..138 "filesize"
-                  R_PAREN@138..139 ")"
+        EXPRESSION_STMT@99..139
+          BOOLEAN_EXPR@99..139
+            BOOLEAN_TERM@99..113
+              VARIABLE@99..101 "$a"
+              WHITESPACE@101..102 " "
+              VARIABLE_ANCHOR@102..113
+                IN_KW@102..104 "in"
+                WHITESPACE@104..105 " "
+                RANGE@105..113
+                  L_PAREN@105..106 "("
+                  PRIMARY_EXPR@106..107
+                    INT_LIT@106..107 "0"
+                  DOTDOT@107..109 ".."
+                  PRIMARY_EXPR@109..112
+                    INT_LIT@109..112 "100"
+                  R_PAREN@112..113 ")"
+            WHITESPACE@113..114 " "
+            AND_KW@114..117 "and"
+            WHITESPACE@117..118 " "
+            BOOLEAN_EXPR@118..139
+              BOOLEAN_TERM@118..139
+                VARIABLE@118..120 "$b"
+                WHITESPACE@120..121 " "
+                VARIABLE_ANCHOR@121..139
+                  IN_KW@121..123 "in"
+                  WHITESPACE@123..124 " "
+                  RANGE@124..139
+                    L_PAREN@124..125 "("
+                    PRIMARY_EXPR@125..128
+                      INT_LIT@125..128 "100"
+                    DOTDOT@128..130 ".."
+                    PRIMARY_EXPR@130..138
+                      FILESIZE_KW@130..138 "filesize"
+                    R_PAREN@138..139 ")"
       WHITESPACE@139..140 "\n"
       R_BRACE@140..141 "}"
   WHITESPACE@141..142 "\n"

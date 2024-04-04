@@ -314,7 +314,9 @@ fn int_range(p: &mut Parser) {
 /// It consists of a list of expressions
 /// Pratt parser is used to parse expressions
 pub(super) fn condition_body(p: &mut Parser) {
+    let m = p.start();
     boolean_expr(p, None, 1);
+    m.complete(p, EXPRESSION_STMT);
 }
 
 enum Associativity {

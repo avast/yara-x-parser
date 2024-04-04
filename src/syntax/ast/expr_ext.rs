@@ -26,25 +26,45 @@ use crate::{
 //    }
 //}
 //
-//impl ast::XorRange {
-//    pub fn lhs(&self) -> Option<ast::Literal> {
-//        support::children(self.syntax()).next()
-//    }
-//
-//    pub fn rhs(&self) -> Option<ast::Literal> {
-//        support::children(self.syntax()).nth(1)
-//    }
-//}
-//
-//impl ast::HexJump {
-//    pub fn lhs(&self) -> Option<ast::Literal> {
-//        support::children(self.syntax()).next()
-//    }
-//
-//    pub fn rhs(&self) -> Option<ast::Literal> {
-//        support::children(self.syntax()).nth(1)
-//    }
-//}
+impl ast::XorRange {
+    pub fn lhs(&self) -> SyntaxToken {
+        self.syntax()
+            .children_with_tokens()
+            .filter(|e| !e.kind().is_trivia())
+            .nth(1)
+            .and_then(|e| e.into_token())
+            .unwrap()
+    }
+
+    pub fn rhs(&self) -> SyntaxToken {
+        self.syntax()
+            .children_with_tokens()
+            .filter(|e| !e.kind().is_trivia())
+            .nth(3)
+            .and_then(|e| e.into_token())
+            .unwrap()
+    }
+}
+
+impl ast::HexJump {
+    pub fn lhs(&self) -> SyntaxToken {
+        self.syntax()
+            .children_with_tokens()
+            .filter(|e| !e.kind().is_trivia())
+            .nth(0)
+            .and_then(|e| e.into_token())
+            .unwrap()
+    }
+
+    pub fn rhs(&self) -> SyntaxToken {
+        self.syntax()
+            .children_with_tokens()
+            .filter(|e| !e.kind().is_trivia())
+            .last()
+            .and_then(|e| e.into_token())
+            .unwrap()
+    }
+}
 //
 impl ast::BooleanExpr {
     pub fn op_details(&self) -> Option<(SyntaxToken, BinaryOp)> {

@@ -43,9 +43,10 @@ SOURCE_FILE@0..157
         CONDITION_KW@126..135 "condition"
         COLON@135..136 ":"
         WHITESPACE@136..139 "\n\t\t"
-        BOOLEAN_TERM@139..140
-          PRIMARY_EXPR@139..140
-            IDENTIFIER@139..140 "a"
+        EXPRESSION_STMT@139..140
+          BOOLEAN_TERM@139..140
+            PRIMARY_EXPR@139..140
+              IDENTIFIER@139..140 "a"
       WHITESPACE@140..141 " "
       ERROR@141..144
         IDENTIFIER@141..144 "ord"

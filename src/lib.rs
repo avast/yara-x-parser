@@ -139,7 +139,14 @@ fn api_walktrough() {
         // For the condition part, we can similarly get its body which is
         // an `BOOLEAN_EXPR` node
         let condition = block.condition().unwrap();
-        let boolean_expr = condition.boolean_expr().unwrap();
+        let expression_stmt = condition.expression_stmt().unwrap();
+
+        let expression = expression_stmt.expression().unwrap();
+
+        let boolean_expr = match &expression {
+            Expression::BooleanExpr(e) => e,
+            _ => unreachable!(),
+        };
 
         // Now we can obtain `lhs`, `rhs` or `op` nodes for top level expression
         // in this case we have `OR` operator
@@ -152,13 +159,12 @@ fn api_walktrough() {
         assert!(lhs_literal.kind() == SyntaxKind::VARIABLE);
         assert_eq!(lhs_literal.text(), "$a");
 
-        println!("{:#?}", boolean_expr);
         // On the right hand side we have a `BOOLEAN_EXPT` node
         let rhs = boolean_expr.rhs().unwrap();
 
         // It contains prefix expression which is essentially a `BOOLEAN_TERM` node
         // in this case we have `NOT` node and nested `VARIABLE` node
-        let rhs_term = rhs.boolean_term().unwrap();
+        let rhs_term = rhs.lhs().unwrap();
         assert!(rhs_term.not_token().is_some());
         assert!(
             rhs_term.boolean_term().unwrap().bool_lit_token().unwrap().kind()
@@ -169,7 +175,7 @@ fn api_walktrough() {
 
         //Last but not least, in any point we can obtain the syntax node
         //for example let's obtain the syntax node for `EXPRESSION_STMT`
-        let expression_stmt_syntax = boolean_expr.syntax();
+        let expression_stmt_syntax = expression_stmt.syntax();
 
         assert_eq!(expression_stmt_syntax.text().to_string(), "$a or not true");
 
@@ -181,7 +187,7 @@ fn api_walktrough() {
 
         // We can also obtain the children
         let children = expression_stmt_syntax.first_child_or_token().unwrap();
-        assert_eq!(children.kind(), SyntaxKind::BOOLEAN_TERM);
+        assert_eq!(children.kind(), SyntaxKind::BOOLEAN_EXPR);
 
         // and also the next sibling, which in this layer can be also a whitespace
         let next_sibling = parent.next_sibling_or_token().unwrap();
@@ -210,9 +216,12 @@ fn api_walktrough() {
                         NodeOrToken::Token(it) => it.kind(),
                     };
                     if i == 0 {
-                        assert_eq!(kind, SyntaxKind::BOOLEAN_EXPR);
+                        assert_eq!(kind, SyntaxKind::EXPRESSION_STMT);
                     }
                     if i == 1 {
+                        assert_eq!(kind, SyntaxKind::BOOLEAN_EXPR);
+                    }
+                    if i == 2 {
                         assert_eq!(kind, SyntaxKind::BOOLEAN_TERM);
                     }
                     if i == 3 {
@@ -225,7 +234,7 @@ fn api_walktrough() {
                         NodeOrToken::Token(it) => it.kind(),
                     };
                     if i == 4 {
-                        assert_eq!(kind, SyntaxKind::BOOLEAN_TERM);
+                        assert_eq!(kind, SyntaxKind::VARIABLE);
                     }
                 }
             }
@@ -263,11 +272,18 @@ fn api_walktrough() {
             assert!(rule.identifier_token().unwrap().text() == "test_rule");
             let block = rule.body().unwrap();
             let condition = block.condition().unwrap();
-            let condition_body = condition.boolean_term().unwrap();
+            let condition_body = condition.expression_stmt().unwrap();
+
+            let expression = condition_body.expression().unwrap();
+
+            let boolean_term = match &expression {
+                Expression::BooleanTerm(e) => e,
+                _ => unreachable!(),
+            };
 
             // The operator is wrong, therefore we only have
             // a variable
-            assert!(condition_body.variable_token().unwrap().kind() == SyntaxKind::VARIABLE);
+            assert!(boolean_term.variable_token().unwrap().kind() == SyntaxKind::VARIABLE);
 
             // and we can obtain the error token
             let error_token = block

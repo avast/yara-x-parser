@@ -33,8 +33,9 @@ SOURCE_FILE@0..157
         CONDITION_KW@67..76 "condition"
         COLON@76..77 ":"
         WHITESPACE@77..80 "\n\t\t"
-        BOOLEAN_TERM@80..82
-          VARIABLE@80..82 "$a"
+        EXPRESSION_STMT@80..82
+          BOOLEAN_TERM@80..82
+            VARIABLE@80..82 "$a"
       WHITESPACE@82..83 "\n"
       R_BRACE@83..84 "}"
   WHITESPACE@84..86 "\n\n"
@@ -62,8 +63,9 @@ SOURCE_FILE@0..157
         CONDITION_KW@123..132 "condition"
         COLON@132..133 ":"
         WHITESPACE@133..136 "\n\t\t"
-        BOOLEAN_TERM@136..138
-          VARIABLE@136..138 "$b"
+        EXPRESSION_STMT@136..138
+          BOOLEAN_TERM@136..138
+            VARIABLE@136..138 "$b"
       WHITESPACE@138..139 "\n"
       R_BRACE@139..140 "}"
   WHITESPACE@140..142 "\n\n"

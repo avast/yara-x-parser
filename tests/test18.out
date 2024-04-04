@@ -26,8 +26,9 @@ SOURCE_FILE@0..78
         CONDITION_KW@60..69 "condition"
         COLON@69..70 ":"
         WHITESPACE@70..73 "\n\t\t"
-        BOOLEAN_TERM@73..75
-          VARIABLE@73..75 "$a"
+        EXPRESSION_STMT@73..75
+          BOOLEAN_TERM@73..75
+            VARIABLE@73..75 "$a"
       WHITESPACE@75..76 "\n"
       R_BRACE@76..77 "}"
   WHITESPACE@77..78 "\n"

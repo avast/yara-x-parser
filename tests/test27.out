@@ -35,27 +35,28 @@ SOURCE_FILE@0..125
         CONDITION_KW@86..95 "condition"
         COLON@95..96 ":"
         WHITESPACE@96..99 "\n\t\t"
-        BOOLEAN_EXPR@99..122
-          BOOLEAN_TERM@99..108
-            VARIABLE@99..101 "$a"
-            WHITESPACE@101..102 " "
-            VARIABLE_ANCHOR@102..108
-              AT_KW@102..104 "at"
-              WHITESPACE@104..105 " "
-              PRIMARY_EXPR@105..108
-                INT_LIT@105..108 "100"
-          WHITESPACE@108..109 " "
-          AND_KW@109..112 "and"
-          WHITESPACE@112..113 " "
-          BOOLEAN_EXPR@113..122
-            BOOLEAN_TERM@113..122
-              VARIABLE@113..115 "$b"
-              WHITESPACE@115..116 " "
-              VARIABLE_ANCHOR@116..122
-                AT_KW@116..118 "at"
-                WHITESPACE@118..119 " "
-                PRIMARY_EXPR@119..122
-                  INT_LIT@119..122 "200"
+        EXPRESSION_STMT@99..122
+          BOOLEAN_EXPR@99..122
+            BOOLEAN_TERM@99..108
+              VARIABLE@99..101 "$a"
+              WHITESPACE@101..102 " "
+              VARIABLE_ANCHOR@102..108
+                AT_KW@102..104 "at"
+                WHITESPACE@104..105 " "
+                PRIMARY_EXPR@105..108
+                  INT_LIT@105..108 "100"
+            WHITESPACE@108..109 " "
+            AND_KW@109..112 "and"
+            WHITESPACE@112..113 " "
+            BOOLEAN_EXPR@113..122
+              BOOLEAN_TERM@113..122
+                VARIABLE@113..115 "$b"
+                WHITESPACE@115..116 " "
+                VARIABLE_ANCHOR@116..122
+                  AT_KW@116..118 "at"
+                  WHITESPACE@118..119 " "
+                  PRIMARY_EXPR@119..122
+                    INT_LIT@119..122 "200"
       WHITESPACE@122..123 "\n"
       R_BRACE@123..124 "}"
   WHITESPACE@124..125 "\n"
