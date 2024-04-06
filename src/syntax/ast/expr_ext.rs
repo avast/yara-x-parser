@@ -6,7 +6,7 @@
 use crate::{
     syntax::ast::{
         self,
-        operators::{BinaryOp, LogicOp, UnaryOp},
+        operators::{BinaryOp, ExprOp, LogicOp},
         support, AstNode, AstToken,
     },
     SyntaxToken, T,
@@ -26,6 +26,44 @@ use crate::{
 //    }
 //}
 //
+impl ast::ExprBody {
+    pub fn op_details(&self) -> Option<(SyntaxToken, BinaryOp)> {
+        self.syntax().children_with_tokens().filter_map(|it| it.into_token()).find_map(|c| {
+            let bin_op = match c.kind() {
+                T![+] => BinaryOp::ExprOp(ExprOp::Add),
+                T![-] => BinaryOp::ExprOp(ExprOp::Sub),
+                T![*] => BinaryOp::ExprOp(ExprOp::Mul),
+                T![backslash] => BinaryOp::ExprOp(ExprOp::Div),
+                T![%] => BinaryOp::ExprOp(ExprOp::Mod),
+                T![&] => BinaryOp::ExprOp(ExprOp::BitAnd),
+                T![|] => BinaryOp::ExprOp(ExprOp::BitOr),
+                T![^] => BinaryOp::ExprOp(ExprOp::BitXor),
+                T![<<] => BinaryOp::ExprOp(ExprOp::Shl),
+                T![>>] => BinaryOp::ExprOp(ExprOp::Shr),
+                T![.] => BinaryOp::ExprOp(ExprOp::Dot),
+                _ => return None,
+            };
+            Some((c, bin_op))
+        })
+    }
+
+    pub fn op_kind(&self) -> Option<BinaryOp> {
+        self.op_details().map(|t| t.1)
+    }
+
+    pub fn op_token(&self) -> Option<SyntaxToken> {
+        self.op_details().map(|t| t.0)
+    }
+
+    pub fn lhs(&self) -> Option<ast::Expr> {
+        support::children(self.syntax()).next()
+    }
+
+    pub fn rhs(&self) -> Option<ast::Expr> {
+        support::children(self.syntax()).nth(1)
+    }
+}
+
 impl ast::XorRange {
     pub fn lhs(&self) -> SyntaxToken {
         self.syntax()
@@ -51,7 +89,7 @@ impl ast::HexJump {
         self.syntax()
             .children_with_tokens()
             .filter(|e| !e.kind().is_trivia())
-            .nth(0)
+            .next()
             .and_then(|e| e.into_token())
             .unwrap()
     }
@@ -86,12 +124,12 @@ impl ast::BooleanExpr {
         self.op_details().map(|t| t.0)
     }
 
-    pub fn lhs(&self) -> Option<ast::BooleanTerm> {
+    pub fn lhs(&self) -> Option<ast::Expression> {
         support::children(self.syntax()).next()
     }
 
-    pub fn rhs(&self) -> Option<ast::BooleanExpr> {
-        support::children(self.syntax()).next()
+    pub fn rhs(&self) -> Option<ast::Expression> {
+        support::children(self.syntax()).nth(1)
     }
 
     pub fn sub_exprs(&self) -> (Option<ast::Expr>, Option<ast::Expr>) {

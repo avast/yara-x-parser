@@ -53,7 +53,7 @@ SOURCE_FILE@0..122
                   BOOLEAN_TERM@112..119
                     PRIMARY_EXPR@112..119
                       L_PAREN@112..113 "("
-                      EXPRESSION@113..118
+                      EXPR_BODY@113..118
                         PRIMARY_EXPR@113..114
                           INT_LIT@113..114 "9"
                         WHITESPACE@114..115 " "

@@ -13,7 +13,7 @@ SOURCE_FILE@0..53
         WHITESPACE@26..35 "\n        "
         EXPRESSION_STMT@35..51
           BOOLEAN_TERM@35..51
-            EXPRESSION@35..51
+            EXPR_BODY@35..51
               FUNCTION_CALL_EXPR@35..47
                 PRIMARY_EXPR@35..42
                   IDENTIFIER@35..38 "foo"

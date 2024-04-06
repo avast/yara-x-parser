@@ -155,23 +155,36 @@ fn api_walktrough() {
 
         // On the left hand side we have a LITERAL token
         let lhs = boolean_expr.lhs().unwrap();
-        let lhs_literal = lhs.variable_token().unwrap();
-        assert!(lhs_literal.kind() == SyntaxKind::VARIABLE);
-        assert_eq!(lhs_literal.text(), "$a");
+        let lhs_literal = match &lhs {
+            Expression::BooleanTerm(l) => l,
+            _ => unreachable!(),
+        };
+        assert!(lhs_literal.variable_token().unwrap().kind() == SyntaxKind::VARIABLE);
+        assert_eq!(lhs_literal.variable_token().unwrap().text(), "$a");
 
         // On the right hand side we have a `BOOLEAN_EXPT` node
         let rhs = boolean_expr.rhs().unwrap();
 
         // It contains prefix expression which is essentially a `BOOLEAN_TERM` node
         // in this case we have `NOT` node and nested `VARIABLE` node
-        let rhs_term = rhs.lhs().unwrap();
-        assert!(rhs_term.not_token().is_some());
+        let rhs_literal = match &rhs {
+            Expression::BooleanExpr(r) => r,
+            _ => unreachable!(),
+        };
+
+        let lhs_of_rhs = rhs_literal.lhs().unwrap();
+
+        let lhs = match &lhs_of_rhs {
+            Expression::BooleanTerm(l) => l,
+            _ => unreachable!(),
+        };
+
+        assert!(lhs.not_token().is_some());
         assert!(
-            rhs_term.boolean_term().unwrap().bool_lit_token().unwrap().kind()
-                == SyntaxKind::BOOL_LIT
+            lhs.boolean_term().unwrap().bool_lit_token().unwrap().kind() == SyntaxKind::BOOL_LIT
         );
 
-        assert_eq!(rhs_term.boolean_term().unwrap().bool_lit_token().unwrap().text(), "true");
+        assert_eq!(lhs.boolean_term().unwrap().bool_lit_token().unwrap().text(), "true");
 
         //Last but not least, in any point we can obtain the syntax node
         //for example let's obtain the syntax node for `EXPRESSION_STMT`

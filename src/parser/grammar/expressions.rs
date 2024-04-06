@@ -524,7 +524,7 @@ fn expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
             Associativity::Right => op_bp,
         };
         expr(p, None, op_bp);
-        lhs = m.complete(p, EXPRESSION);
+        lhs = m.complete(p, EXPR_BODY);
     }
     Some(lhs)
 }

@@ -139,6 +139,9 @@ pub enum SyntaxKind {
     FUNCTION_CALL_EXPR,
     IN_RANGE,
     EXPR_INDEX,
+    TERM,
+    EXPR_BODY,
+    NESTED_EXPR,
     #[doc(hidden)]
     __LAST,
 }

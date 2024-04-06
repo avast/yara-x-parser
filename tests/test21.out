@@ -16,7 +16,7 @@ SOURCE_FILE@0..55
         EXPRESSION_STMT@41..52
           BOOLEAN_TERM@41..52
             EXPRESSION@41..52
-              EXPRESSION@41..46
+              EXPR_BODY@41..46
                 PRIMARY_EXPR@41..42
                   INT_LIT@41..42 "9"
                 WHITESPACE@42..43 " "

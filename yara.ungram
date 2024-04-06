@@ -110,11 +110,11 @@ Expression =
 |   BooleanTerm
 
 BooleanExpr = 
-    lhs:BooleanExpr
+    lhs:Expression
         op:(
             'and'| 'or'
         )
-    rhs:BooleanExpr
+    rhs:Expression
 
 BooleanTerm = 
     'variable' VariableAnchor?
@@ -133,18 +133,18 @@ BooleanTerm =
 |   ForExpr
 
 Expr = 
-    Term
-|   Term 
-        (
-            '+' | '-' | '*' | 'backslash' | '%' |
-            '&' | '|' | '^' | '<<' | '>>' | '~' | '.' 
-        )
-    Expr
-
-Term = 
     PrimaryExpr
 |   IndexingExpr
 |   FunctionCallExpr
+|   ExprBody
+
+ExprBody = 
+    lhs:Expr
+        op:(
+            '+' | '-' | '*' | 'backslash' | '%' |
+            '&' | '|' | '^' | '<<' | '>>' | '.' 
+        )
+    rhs:Expr
 
 PrimaryExpr = 
     'float_lit'
@@ -156,8 +156,8 @@ PrimaryExpr =
 |   'filesize'
 |   'entrypoint'
 |   RegexPattern
-|   '-' Term
-|   '~' Term
+|   '-' Expr
+|   '~' Expr
 |   '(' Expr ')'
 |   (IdentifierNode ('.' IdentifierNode)*)
 
@@ -209,7 +209,11 @@ Quantifier =
 |   PrimaryExpr '%'?
 
 Iterable = 
-    Range | Expr | ExprTuple
+    Range 
+|   NestedExpr
+|   ExprTuple
+
+NestedExpr = Expr
 
 PatternIdentTuple = 
     '(' (VariableWildcard (',' VariableWildcard)*) ')'

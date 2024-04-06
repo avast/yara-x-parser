@@ -43,7 +43,7 @@ SOURCE_FILE@0..162
                   QUANTIFIER@99..104
                     PRIMARY_EXPR@99..104
                       L_PAREN@99..100 "("
-                      EXPRESSION@100..103
+                      EXPR_BODY@100..103
                         PRIMARY_EXPR@100..101
                           INT_LIT@100..101 "1"
                         PLUS@101..102 "+"

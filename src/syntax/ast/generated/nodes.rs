@@ -554,55 +554,6 @@ impl VariableAnchor {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Expr {
-    pub(crate) syntax: SyntaxNode,
-}
-impl Expr {
-    pub fn term(&self) -> Option<Term> {
-        support::child(&self.syntax)
-    }
-    pub fn plus_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![+])
-    }
-    pub fn hyphen_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![-])
-    }
-    pub fn star_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![*])
-    }
-    pub fn backslash_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![backslash])
-    }
-    pub fn percentage_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![%])
-    }
-    pub fn ampersand_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![&])
-    }
-    pub fn pipe_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![|])
-    }
-    pub fn caret_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![^])
-    }
-    pub fn shl_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![<<])
-    }
-    pub fn shr_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![>>])
-    }
-    pub fn tilde_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![~])
-    }
-    pub fn dot_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![.])
-    }
-    pub fn expr(&self) -> Option<Expr> {
-        support::child(&self.syntax)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct OfExpr {
     pub(crate) syntax: SyntaxNode,
 }
@@ -705,7 +656,7 @@ impl PrimaryExpr {
     pub fn hyphen_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![-])
     }
-    pub fn term(&self) -> Option<Term> {
+    pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
     }
     pub fn tilde_token(&self) -> Option<SyntaxToken> {
@@ -713,9 +664,6 @@ impl PrimaryExpr {
     }
     pub fn l_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['('])
-    }
-    pub fn expr(&self) -> Option<Expr> {
-        support::child(&self.syntax)
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
@@ -756,6 +704,12 @@ impl FunctionCallExpr {
         support::child(&self.syntax)
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ExprBody {
+    pub(crate) syntax: SyntaxNode,
+}
+impl ExprBody {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct VariableCount {
@@ -925,6 +879,16 @@ impl BooleanExprTuple {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct NestedExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl NestedExpr {
+    pub fn expr(&self) -> Option<Expr> {
+        support::child(&self.syntax)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct VariableWildcard {
     pub(crate) syntax: SyntaxNode,
 }
@@ -944,16 +908,17 @@ pub enum Expression {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum Term {
+pub enum Expr {
     PrimaryExpr(PrimaryExpr),
     IndexingExpr(IndexingExpr),
     FunctionCallExpr(FunctionCallExpr),
+    ExprBody(ExprBody),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Iterable {
     Range(Range),
-    Expr(Expr),
+    NestedExpr(NestedExpr),
     ExprTuple(ExprTuple),
 }
 
@@ -1397,21 +1362,6 @@ impl AstNode for VariableAnchor {
         &self.syntax
     }
 }
-impl AstNode for Expr {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == EXPR
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
 impl AstNode for OfExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == OF_EXPR
@@ -1475,6 +1425,21 @@ impl AstNode for IndexingExpr {
 impl AstNode for FunctionCallExpr {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == FUNCTION_CALL_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for ExprBody {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == EXPR_BODY
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1652,6 +1617,21 @@ impl AstNode for BooleanExprTuple {
         &self.syntax
     }
 }
+impl AstNode for NestedExpr {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == NESTED_EXPR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for VariableWildcard {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == VARIABLE_WILDCARD
@@ -1696,39 +1676,46 @@ impl AstNode for Expression {
         }
     }
 }
-impl From<PrimaryExpr> for Term {
-    fn from(node: PrimaryExpr) -> Term {
-        Term::PrimaryExpr(node)
+impl From<PrimaryExpr> for Expr {
+    fn from(node: PrimaryExpr) -> Expr {
+        Expr::PrimaryExpr(node)
     }
 }
-impl From<IndexingExpr> for Term {
-    fn from(node: IndexingExpr) -> Term {
-        Term::IndexingExpr(node)
+impl From<IndexingExpr> for Expr {
+    fn from(node: IndexingExpr) -> Expr {
+        Expr::IndexingExpr(node)
     }
 }
-impl From<FunctionCallExpr> for Term {
-    fn from(node: FunctionCallExpr) -> Term {
-        Term::FunctionCallExpr(node)
+impl From<FunctionCallExpr> for Expr {
+    fn from(node: FunctionCallExpr) -> Expr {
+        Expr::FunctionCallExpr(node)
     }
 }
-impl AstNode for Term {
+impl From<ExprBody> for Expr {
+    fn from(node: ExprBody) -> Expr {
+        Expr::ExprBody(node)
+    }
+}
+impl AstNode for Expr {
     fn can_cast(kind: SyntaxKind) -> bool {
-        matches!(kind, PRIMARY_EXPR | INDEXING_EXPR | FUNCTION_CALL_EXPR)
+        matches!(kind, PRIMARY_EXPR | INDEXING_EXPR | FUNCTION_CALL_EXPR | EXPR_BODY)
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
-            PRIMARY_EXPR => Term::PrimaryExpr(PrimaryExpr { syntax }),
-            INDEXING_EXPR => Term::IndexingExpr(IndexingExpr { syntax }),
-            FUNCTION_CALL_EXPR => Term::FunctionCallExpr(FunctionCallExpr { syntax }),
+            PRIMARY_EXPR => Expr::PrimaryExpr(PrimaryExpr { syntax }),
+            INDEXING_EXPR => Expr::IndexingExpr(IndexingExpr { syntax }),
+            FUNCTION_CALL_EXPR => Expr::FunctionCallExpr(FunctionCallExpr { syntax }),
+            EXPR_BODY => Expr::ExprBody(ExprBody { syntax }),
             _ => return None,
         };
         Some(res)
     }
     fn syntax(&self) -> &SyntaxNode {
         match self {
-            Term::PrimaryExpr(it) => &it.syntax,
-            Term::IndexingExpr(it) => &it.syntax,
-            Term::FunctionCallExpr(it) => &it.syntax,
+            Expr::PrimaryExpr(it) => &it.syntax,
+            Expr::IndexingExpr(it) => &it.syntax,
+            Expr::FunctionCallExpr(it) => &it.syntax,
+            Expr::ExprBody(it) => &it.syntax,
         }
     }
 }
@@ -1737,9 +1724,9 @@ impl From<Range> for Iterable {
         Iterable::Range(node)
     }
 }
-impl From<Expr> for Iterable {
-    fn from(node: Expr) -> Iterable {
-        Iterable::Expr(node)
+impl From<NestedExpr> for Iterable {
+    fn from(node: NestedExpr) -> Iterable {
+        Iterable::NestedExpr(node)
     }
 }
 impl From<ExprTuple> for Iterable {
@@ -1749,12 +1736,12 @@ impl From<ExprTuple> for Iterable {
 }
 impl AstNode for Iterable {
     fn can_cast(kind: SyntaxKind) -> bool {
-        matches!(kind, RANGE | EXPR | EXPR_TUPLE)
+        matches!(kind, RANGE | NESTED_EXPR | EXPR_TUPLE)
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
             RANGE => Iterable::Range(Range { syntax }),
-            EXPR => Iterable::Expr(Expr { syntax }),
+            NESTED_EXPR => Iterable::NestedExpr(NestedExpr { syntax }),
             EXPR_TUPLE => Iterable::ExprTuple(ExprTuple { syntax }),
             _ => return None,
         };
@@ -1763,7 +1750,7 @@ impl AstNode for Iterable {
     fn syntax(&self) -> &SyntaxNode {
         match self {
             Iterable::Range(it) => &it.syntax,
-            Iterable::Expr(it) => &it.syntax,
+            Iterable::NestedExpr(it) => &it.syntax,
             Iterable::ExprTuple(it) => &it.syntax,
         }
     }
@@ -1790,7 +1777,7 @@ impl std::fmt::Display for Expression {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for Term {
+impl std::fmt::Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
@@ -1945,11 +1932,6 @@ impl std::fmt::Display for VariableAnchor {
         std::fmt::Display::fmt(self.syntax(), f)
     }
 }
-impl std::fmt::Display for Expr {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self.syntax(), f)
-    }
-}
 impl std::fmt::Display for OfExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
@@ -1971,6 +1953,11 @@ impl std::fmt::Display for IndexingExpr {
     }
 }
 impl std::fmt::Display for FunctionCallExpr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for ExprBody {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
@@ -2026,6 +2013,11 @@ impl std::fmt::Display for PatternIdentTuple {
     }
 }
 impl std::fmt::Display for BooleanExprTuple {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for NestedExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

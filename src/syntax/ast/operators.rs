@@ -5,19 +5,30 @@
 use std::fmt;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub enum UnaryOp {
-    Not,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum BinaryOp {
     LogicOp(LogicOp),
+    ExprOp(ExprOp),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum LogicOp {
     And,
     Or,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum ExprOp {
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+    BitAnd,
+    BitOr,
+    BitXor,
+    Shl,
+    Shr,
+    Dot,
 }
 
 impl fmt::Display for LogicOp {
@@ -30,10 +41,30 @@ impl fmt::Display for LogicOp {
     }
 }
 
+impl fmt::Display for ExprOp {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let res = match self {
+            ExprOp::Add => "+",
+            ExprOp::Sub => "-",
+            ExprOp::Mul => "*",
+            ExprOp::Div => "\\",
+            ExprOp::Mod => "%",
+            ExprOp::BitAnd => "&",
+            ExprOp::BitOr => "|",
+            ExprOp::BitXor => "^",
+            ExprOp::Shl => "<<",
+            ExprOp::Shr => ">>",
+            ExprOp::Dot => ".",
+        };
+        f.write_str(res)
+    }
+}
+
 impl fmt::Display for BinaryOp {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             BinaryOp::LogicOp(op) => fmt::Display::fmt(op, f),
+            BinaryOp::ExprOp(op) => fmt::Display::fmt(op, f),
         }
     }
 }

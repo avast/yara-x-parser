@@ -141,6 +141,9 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "FUNCTION_CALL_EXPR",
         "IN_RANGE",
         "EXPR_INDEX",
+        "TERM",
+        "EXPR_BODY",
+        "NESTED_EXPR",
     ],
 };
 
