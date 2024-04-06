@@ -37,7 +37,7 @@ SOURCE_FILE@0..135
               WHITESPACE@92..93 " "
               BOOLEAN_EXPR@93..109
                 BOOLEAN_TERM@93..109
-                  EXPRESSION@93..109
+                  BOOLEAN_TERM_EXPR@93..109
                     PRIMARY_EXPR@93..101
                       FILESIZE_KW@93..101 "filesize"
                     WHITESPACE@101..102 " "
@@ -50,7 +50,7 @@ SOURCE_FILE@0..135
             WHITESPACE@112..113 " "
             BOOLEAN_EXPR@113..132
               BOOLEAN_TERM@113..132
-                EXPRESSION@113..132
+                BOOLEAN_TERM_EXPR@113..132
                   PRIMARY_EXPR@113..123
                     ENTRYPOINT_KW@113..123 "entrypoint"
                   WHITESPACE@123..124 " "

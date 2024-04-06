@@ -144,6 +144,7 @@ pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
         "TERM",
         "EXPR_BODY",
         "NESTED_EXPR",
+        "BOOLEAN_TERM_EXPR",
     ],
 };
 

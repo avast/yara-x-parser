@@ -13,7 +13,7 @@ SOURCE_FILE@0..68
         WHITESPACE@26..35 "\n        "
         EXPRESSION_STMT@35..66
           BOOLEAN_TERM@35..66
-            EXPRESSION@35..66
+            BOOLEAN_TERM_EXPR@35..66
               EXPR_BODY@35..49
                 INDEXING_EXPR@35..45
                   PRIMARY_EXPR@35..42

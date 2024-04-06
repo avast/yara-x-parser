@@ -44,7 +44,7 @@ SOURCE_FILE@0..144
               BOOLEAN_EXPR@83..107
                 BOOLEAN_EXPR@83..107
                   BOOLEAN_TERM@83..94
-                    EXPRESSION@83..94
+                    BOOLEAN_TERM_EXPR@83..94
                       EXPR_BODY@83..88
                         PRIMARY_EXPR@83..84
                           INT_LIT@83..84 "9"
@@ -79,7 +79,7 @@ SOURCE_FILE@0..144
                 WHITESPACE@117..118 " "
                 BOOLEAN_EXPR@118..141
                   BOOLEAN_TERM@118..141
-                    EXPRESSION@118..141
+                    BOOLEAN_TERM_EXPR@118..141
                       EXPR_BODY@118..126
                         PRIMARY_EXPR@118..121
                           FLOAT_LIT@118..121 "1.1"

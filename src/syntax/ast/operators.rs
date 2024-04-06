@@ -8,6 +8,7 @@ use std::fmt;
 pub enum BinaryOp {
     LogicOp(LogicOp),
     ExprOp(ExprOp),
+    BoolTermExprOp(BoolTermExprOp),
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -29,6 +30,16 @@ pub enum ExprOp {
     Shl,
     Shr,
     Dot,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum BoolTermExprOp {
+    Eq,
+    Ne,
+    Gt,
+    Lt,
+    Ge,
+    Le,
 }
 
 impl fmt::Display for LogicOp {
@@ -60,11 +71,26 @@ impl fmt::Display for ExprOp {
     }
 }
 
+impl fmt::Display for BoolTermExprOp {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let res = match self {
+            BoolTermExprOp::Eq => "==",
+            BoolTermExprOp::Ne => "!=",
+            BoolTermExprOp::Gt => ">",
+            BoolTermExprOp::Lt => "<",
+            BoolTermExprOp::Ge => ">=",
+            BoolTermExprOp::Le => "<=",
+        };
+        f.write_str(res)
+    }
+}
+
 impl fmt::Display for BinaryOp {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             BinaryOp::LogicOp(op) => fmt::Display::fmt(op, f),
             BinaryOp::ExprOp(op) => fmt::Display::fmt(op, f),
+            BinaryOp::BoolTermExprOp(op) => fmt::Display::fmt(op, f),
         }
     }
 }

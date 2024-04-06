@@ -463,47 +463,8 @@ impl BooleanTerm {
     pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
     }
-    pub fn eq_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![==])
-    }
-    pub fn ne_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![!=])
-    }
-    pub fn lt_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![<])
-    }
-    pub fn le_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![<=])
-    }
-    pub fn gt_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![>])
-    }
-    pub fn ge_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![>=])
-    }
-    pub fn contains_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![contains])
-    }
-    pub fn icontains_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![icontains])
-    }
-    pub fn startswith_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![startswith])
-    }
-    pub fn istartswith_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![istartswith])
-    }
-    pub fn endswith_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![endswith])
-    }
-    pub fn iendswith_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![iendswith])
-    }
-    pub fn iequals_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![iequals])
-    }
-    pub fn matches_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![matches])
+    pub fn boolean_term_expr(&self) -> Option<BooleanTermExpr> {
+        support::child(&self.syntax)
     }
     pub fn bool_lit_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![bool_lit])
@@ -552,6 +513,12 @@ impl VariableAnchor {
         support::child(&self.syntax)
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct BooleanTermExpr {
+    pub(crate) syntax: SyntaxNode,
+}
+impl BooleanTermExpr {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct OfExpr {
@@ -796,9 +763,6 @@ pub struct Range {
 impl Range {
     pub fn l_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['('])
-    }
-    pub fn expr(&self) -> Option<Expr> {
-        support::child(&self.syntax)
     }
     pub fn dotdot_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![..])
@@ -1350,6 +1314,21 @@ impl AstNode for BooleanTerm {
 impl AstNode for VariableAnchor {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == VARIABLE_ANCHOR
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl AstNode for BooleanTermExpr {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == BOOLEAN_TERM_EXPR
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -1928,6 +1907,11 @@ impl std::fmt::Display for BooleanTerm {
     }
 }
 impl std::fmt::Display for VariableAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for BooleanTermExpr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }

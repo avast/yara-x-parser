@@ -47,7 +47,7 @@ SOURCE_FILE@0..82
               BOOLEAN_TERM@72..80
                 L_PAREN@72..73 "("
                 BOOLEAN_TERM@73..79
-                  EXPRESSION@73..79
+                  BOOLEAN_TERM_EXPR@73..79
                     PRIMARY_EXPR@73..74
                       INT_LIT@73..74 "1"
                     WHITESPACE@74..75 " "

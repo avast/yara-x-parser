@@ -142,6 +142,7 @@ pub enum SyntaxKind {
     TERM,
     EXPR_BODY,
     NESTED_EXPR,
+    BOOLEAN_TERM_EXPR,
     #[doc(hidden)]
     __LAST,
 }

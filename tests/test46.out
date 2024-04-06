@@ -25,7 +25,7 @@ SOURCE_FILE@0..59
         WHITESPACE@46..49 "\n\t\t"
         EXPRESSION_STMT@49..56
           BOOLEAN_TERM@49..56
-            EXPRESSION@49..56
+            BOOLEAN_TERM_EXPR@49..56
               PRIMARY_EXPR@49..51
                 VARIABLE_LENGTH@49..51
                   VARIABLE_LENGTH@49..51 "!a"

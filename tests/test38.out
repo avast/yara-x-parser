@@ -51,7 +51,7 @@ SOURCE_FILE@0..120
                 L_PAREN@93..94 "("
                 WHITESPACE@94..95 " "
                 BOOLEAN_TERM@95..107
-                  EXPRESSION@95..107
+                  BOOLEAN_TERM_EXPR@95..107
                     PRIMARY_EXPR@95..96
                       INT_LIT@95..96 "1"
                     WHITESPACE@96..97 " "

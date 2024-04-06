@@ -119,18 +119,21 @@ BooleanExpr =
 BooleanTerm = 
     'variable' VariableAnchor?
 |   Expr
-|   Expr 
-        (
-            '==' | '!=' | '<' | '<=' | '>' | '>=' |
-            'contains' | 'icontains' | 'startswith' | 'istartswith' | 'endswith' | 'iendswith' | 'iequals' | 'matches'
-        )
-    Expr
+|   BooleanTermExpr
 |   'bool_lit'
 |   'not' BooleanTerm
 |   'defined' BooleanTerm
 |   '(' BooleanExpr ')'
 |   OfExpr
 |   ForExpr
+
+BooleanTermExpr =
+    lhs:Expr 
+        op:(
+            '==' | '!=' | '<' | '<=' | '>' | '>=' |
+            'contains' | 'icontains' | 'startswith' | 'istartswith' | 'endswith' | 'iendswith' | 'iequals' | 'matches'
+        )
+    rhs:Expr
 
 Expr = 
     PrimaryExpr
@@ -188,7 +191,7 @@ VariableAnchor =
 
 Range = 
     '('
-        Expr '..' Expr
+        lhs:Expr '..' rhs:Expr
     ')'
 
 OfExpr = 

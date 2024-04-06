@@ -496,7 +496,7 @@ fn expr_stmt(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarke
             Associativity::Right => op_bp,
         };
         expr_stmt(p, None, op_bp);
-        lhs = m.complete(p, EXPRESSION);
+        lhs = m.complete(p, BOOLEAN_TERM_EXPR);
     }
     Some(lhs)
 }
