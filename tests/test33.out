@@ -86,7 +86,7 @@ SOURCE_FILE@0..162
             WHITESPACE@146..147 " "
             BOOLEAN_EXPR@147..159
               BOOLEAN_TERM@147..159
-                EXPRESSION@147..159
+                BOOLEAN_TERM_EXPR@147..159
                   PRIMARY_EXPR@147..148
                     INT_LIT@147..148 "9"
                   WHITESPACE@148..149 " "
