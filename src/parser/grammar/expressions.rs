@@ -755,7 +755,6 @@ fn quantifier(p: &mut Parser) {
 }
 
 fn iterable(p: &mut Parser) {
-    let m = p.start();
     match p.current() {
         T!['('] => {
             let n = p.start();
@@ -776,10 +775,11 @@ fn iterable(p: &mut Parser) {
             }
         }
         _ => {
+            let n = p.start();
             expr(p, None, 1);
+            n.complete(p, NESTED_EXPR);
         }
     }
-    m.complete(p, ITERABLE);
 }
 
 fn boolean_expr_tuple(p: &mut Parser) {

@@ -174,6 +174,16 @@ impl ast::BooleanTermExpr {
         support::children(self.syntax()).nth(1)
     }
 }
+
+impl ast::VariableWildcard {
+    pub fn matches(&self, ident: &str) -> bool {
+        if self.star_token().is_some() {
+            ident.starts_with(self.variable_token().unwrap().text())
+        } else {
+            ident == self.variable_token().unwrap().text()
+        }
+    }
+}
 //
 //#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 //pub enum LiteralKind {

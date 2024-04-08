@@ -33,18 +33,17 @@ SOURCE_FILE@0..120
                 WHITESPACE@79..80 " "
                 IN_KW@80..82 "in"
                 WHITESPACE@82..83 " "
-                ITERABLE@83..90
-                  EXPR_TUPLE@83..90
-                    L_PAREN@83..84 "("
-                    PRIMARY_EXPR@84..85
-                      INT_LIT@84..85 "1"
-                    COMMA@85..86 ","
-                    PRIMARY_EXPR@86..87
-                      INT_LIT@86..87 "2"
-                    COMMA@87..88 ","
-                    PRIMARY_EXPR@88..89
-                      INT_LIT@88..89 "3"
-                    R_PAREN@89..90 ")"
+                EXPR_TUPLE@83..90
+                  L_PAREN@83..84 "("
+                  PRIMARY_EXPR@84..85
+                    INT_LIT@84..85 "1"
+                  COMMA@85..86 ","
+                  PRIMARY_EXPR@86..87
+                    INT_LIT@86..87 "2"
+                  COMMA@87..88 ","
+                  PRIMARY_EXPR@88..89
+                    INT_LIT@88..89 "3"
+                  R_PAREN@89..90 ")"
                 WHITESPACE@90..91 " "
                 COLON@91..92 ":"
                 WHITESPACE@92..93 " "

@@ -580,7 +580,7 @@ impl ForExpr {
     pub fn l_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T!['('])
     }
-    pub fn boolean_expr(&self) -> Option<BooleanExpr> {
+    pub fn expression(&self) -> Option<Expression> {
         support::child(&self.syntax)
     }
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {

@@ -203,7 +203,7 @@ ForExpr =
         'for' Quantifier 'of' ('them' | PatternIdentTuple)
     |   'for' Quantifier (IdentifierNode (',' IdentifierNode)*) 'in' Iterable
     )
-    ':' '(' BooleanExpr ')'
+    ':' '(' Expression ')'
 
 Quantifier = 
     'all'
