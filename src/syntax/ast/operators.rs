@@ -40,6 +40,14 @@ pub enum BoolTermExprOp {
     Lt,
     Ge,
     Le,
+    Contains,
+    IContains,
+    StartsWith,
+    IStartsWith,
+    EndsWith,
+    IEndsWith,
+    IEquals,
+    Matches,
 }
 
 impl fmt::Display for LogicOp {
@@ -80,6 +88,14 @@ impl fmt::Display for BoolTermExprOp {
             BoolTermExprOp::Lt => "<",
             BoolTermExprOp::Ge => ">=",
             BoolTermExprOp::Le => "<=",
+            BoolTermExprOp::Contains => "contains",
+            BoolTermExprOp::IContains => "icontains",
+            BoolTermExprOp::StartsWith => "startswith",
+            BoolTermExprOp::IStartsWith => "istartswith",
+            BoolTermExprOp::EndsWith => "endswith",
+            BoolTermExprOp::IEndsWith => "iendswith",
+            BoolTermExprOp::IEquals => "iequals",
+            BoolTermExprOp::Matches => "matches",
         };
         f.write_str(res)
     }

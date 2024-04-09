@@ -75,7 +75,8 @@ SOURCE_FILE@0..95
                       EXPR_INDEX@84..87
                         L_BRACKET@84..85 "["
                         PRIMARY_EXPR@85..86
-                          IDENTIFIER@85..86 "i"
+                          IDENTIFIER_NODE@85..86
+                            IDENTIFIER@85..86 "i"
                         R_BRACKET@86..87 "]"
               WHITESPACE@87..88 " "
               EQ@88..90 "=="

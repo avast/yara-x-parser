@@ -1,16 +1,14 @@
 /// This library is used to create a parser for YARA language
 /// It should provide also token for whitespaces
 /// as we want full fidelity and error resilience.;
-use crate::{
-    parser::SyntaxKind,
-    syntax::{
-        syntax_error::SyntaxError, syntax_node::SyntaxNode, text_token_source::TextTokenSource,
-        text_tree_sink::TextTreeSink,
-    },
+use crate::syntax::{
+    syntax_error::SyntaxError, syntax_node::SyntaxNode, text_token_source::TextTokenSource,
+    text_tree_sink::TextTreeSink,
 };
 
+pub use crate::parser::SyntaxKind;
 pub use crate::syntax::ast::*;
-pub use crate::syntax::syntax_node::SyntaxToken;
+pub use crate::syntax::syntax_node::{SyntaxToken, YARALanguage};
 pub use crate::syntax::SourceFile;
 
 // use only for tests

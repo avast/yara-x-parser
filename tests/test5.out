@@ -50,7 +50,8 @@ SOURCE_FILE@0..157
               BOOLEAN_EXPR@144..154
                 BOOLEAN_TERM@144..145
                   PRIMARY_EXPR@144..145
-                    IDENTIFIER@144..145 "b"
+                    IDENTIFIER_NODE@144..145
+                      IDENTIFIER@144..145 "b"
                 WHITESPACE@145..146 " "
                 AND_KW@146..149 "and"
                 WHITESPACE@149..150 " "

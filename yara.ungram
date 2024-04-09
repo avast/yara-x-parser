@@ -162,7 +162,11 @@ PrimaryExpr =
 |   '-' Expr
 |   '~' Expr
 |   '(' Expr ')'
-|   (IdentifierNode ('.' IdentifierNode)*)
+|   IdentifierNode
+|   FieldAcess
+
+FieldAcess =
+    (IdentifierNode ('.' IdentifierNode)*)
 
 VariableCount = 
     'variable_count' InRange?
@@ -171,7 +175,7 @@ VariableOffset =
     'variable_offset' ExprIndex?
 
 VariableLength = 
-    'variable_offset' ExprIndex?
+    'variable_length' ExprIndex?
 
 InRange = 
     'in' Range
@@ -180,7 +184,7 @@ ExprIndex =
     '[' Expr ']'
 
 IndexingExpr = 
-    PrimaryExpr '[' Expr ']'
+    PrimaryExpr ExprIndex
 
 FunctionCallExpr =
     PrimaryExpr ExprTuple

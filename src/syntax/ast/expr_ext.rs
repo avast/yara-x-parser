@@ -152,6 +152,14 @@ impl ast::BooleanTermExpr {
                 T![<=] => BinaryOp::BoolTermExprOp(BoolTermExprOp::Le),
                 T![>] => BinaryOp::BoolTermExprOp(BoolTermExprOp::Gt),
                 T![>=] => BinaryOp::BoolTermExprOp(BoolTermExprOp::Ge),
+                T![contains] => BinaryOp::BoolTermExprOp(BoolTermExprOp::Contains),
+                T![icontains] => BinaryOp::BoolTermExprOp(BoolTermExprOp::IContains),
+                T![startswith] => BinaryOp::BoolTermExprOp(BoolTermExprOp::StartsWith),
+                T![istartswith] => BinaryOp::BoolTermExprOp(BoolTermExprOp::IStartsWith),
+                T![endswith] => BinaryOp::BoolTermExprOp(BoolTermExprOp::EndsWith),
+                T![iendswith] => BinaryOp::BoolTermExprOp(BoolTermExprOp::IEndsWith),
+                T![iequals] => BinaryOp::BoolTermExprOp(BoolTermExprOp::IEquals),
+                T![matches] => BinaryOp::BoolTermExprOp(BoolTermExprOp::Matches),
                 _ => return None,
             };
             Some((c, bin_op))

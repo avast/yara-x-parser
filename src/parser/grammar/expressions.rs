@@ -534,12 +534,15 @@ fn term(p: &mut Parser) -> Option<CompletedMarker> {
     let pe = primary_expr(p);
     let cm = match p.current() {
         T!['['] => {
+            let n = p.start();
             p.bump(T!['[']);
             expr(p, None, 1);
             p.expect(T![']']);
+            n.complete(p, EXPR_INDEX);
             m.complete(p, INDEXING_EXPR)
         }
         T!['('] => {
+            let n = p.start();
             p.bump(T!['(']);
             if p.at(T![')']) {
                 p.bump(T![')']);
@@ -551,6 +554,7 @@ fn term(p: &mut Parser) -> Option<CompletedMarker> {
                 }
                 p.expect(T![')']);
             }
+            n.complete(p, EXPR_TUPLE);
             m.complete(p, FUNCTION_CALL_EXPR)
         }
         _ => {
@@ -605,10 +609,22 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
             p.expect(T![')']);
         }
         T![identifier] => {
-            p.bump(T![identifier]);
-            while p.at(T![.]) {
-                p.bump(T![.]);
-                p.expect(T![identifier]);
+            if p.nth(1) == T![.] {
+                let m = p.start();
+                let n = p.start();
+                p.bump(T![identifier]);
+                n.complete(p, IDENTIFIER_NODE);
+                while p.at(T![.]) {
+                    p.bump(T![.]);
+                    let m = p.start();
+                    p.expect(T![identifier]);
+                    m.complete(p, IDENTIFIER_NODE);
+                }
+                m.complete(p, FIELD_ACESS);
+            } else {
+                let m = p.start();
+                p.bump(T![identifier]);
+                m.complete(p, IDENTIFIER_NODE);
             }
         }
         _ => {

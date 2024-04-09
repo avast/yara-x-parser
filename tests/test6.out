@@ -46,7 +46,8 @@ SOURCE_FILE@0..157
         EXPRESSION_STMT@139..140
           BOOLEAN_TERM@139..140
             PRIMARY_EXPR@139..140
-              IDENTIFIER@139..140 "a"
+              IDENTIFIER_NODE@139..140
+                IDENTIFIER@139..140 "a"
       WHITESPACE@140..141 " "
       ERROR@141..144
         IDENTIFIER@141..144 "ord"

@@ -29,11 +29,13 @@ SOURCE_FILE@0..82
               BOOLEAN_TERM@55..61
                 INDEXING_EXPR@55..61
                   PRIMARY_EXPR@55..58
-                    IDENTIFIER@55..58 "foo"
-                  L_BRACKET@58..59 "["
-                  PRIMARY_EXPR@59..60
-                    INT_LIT@59..60 "0"
-                  R_BRACKET@60..61 "]"
+                    IDENTIFIER_NODE@55..58
+                      IDENTIFIER@55..58 "foo"
+                  EXPR_INDEX@58..61
+                    L_BRACKET@58..59 "["
+                    PRIMARY_EXPR@59..60
+                      INT_LIT@59..60 "0"
+                    R_BRACKET@60..61 "]"
               WHITESPACE@61..62 " "
               AND_KW@62..65 "and"
               WHITESPACE@65..66 " "

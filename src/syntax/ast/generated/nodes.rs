@@ -635,8 +635,11 @@ impl PrimaryExpr {
     pub fn r_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![')'])
     }
-    pub fn identifier_nodes(&self) -> AstChildren<IdentifierNode> {
-        support::children(&self.syntax)
+    pub fn identifier_node(&self) -> Option<IdentifierNode> {
+        support::child(&self.syntax)
+    }
+    pub fn field_acess(&self) -> Option<FieldAcess> {
+        support::child(&self.syntax)
     }
 }
 
@@ -648,14 +651,8 @@ impl IndexingExpr {
     pub fn primary_expr(&self) -> Option<PrimaryExpr> {
         support::child(&self.syntax)
     }
-    pub fn l_brack_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T!['['])
-    }
-    pub fn expr(&self) -> Option<Expr> {
+    pub fn expr_index(&self) -> Option<ExprIndex> {
         support::child(&self.syntax)
-    }
-    pub fn r_brack_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![']'])
     }
 }
 
@@ -709,8 +706,8 @@ pub struct VariableLength {
     pub(crate) syntax: SyntaxNode,
 }
 impl VariableLength {
-    pub fn variable_offset_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, T![variable_offset])
+    pub fn variable_length_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![variable_length])
     }
     pub fn expr_index(&self) -> Option<ExprIndex> {
         support::child(&self.syntax)
@@ -724,6 +721,16 @@ pub struct IdentifierNode {
 impl IdentifierNode {
     pub fn identifier_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![identifier])
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct FieldAcess {
+    pub(crate) syntax: SyntaxNode,
+}
+impl FieldAcess {
+    pub fn identifier_nodes(&self) -> AstChildren<IdentifierNode> {
+        support::children(&self.syntax)
     }
 }
 
@@ -1491,6 +1498,21 @@ impl AstNode for IdentifierNode {
         &self.syntax
     }
 }
+impl AstNode for FieldAcess {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == FIELD_ACESS
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
 impl AstNode for InRange {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == IN_RANGE
@@ -1962,6 +1984,11 @@ impl std::fmt::Display for VariableLength {
     }
 }
 impl std::fmt::Display for IdentifierNode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self.syntax(), f)
+    }
+}
+impl std::fmt::Display for FieldAcess {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(self.syntax(), f)
     }
