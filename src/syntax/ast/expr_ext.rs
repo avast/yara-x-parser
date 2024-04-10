@@ -98,7 +98,8 @@ impl ast::HexJump {
     pub fn lhs(&self) -> SyntaxToken {
         self.syntax()
             .children_with_tokens()
-            .find(|e| !e.kind().is_trivia())
+            .filter(|e| !e.kind().is_trivia())
+            .nth(1)
             .and_then(|e| e.into_token())
             .unwrap()
     }
@@ -107,7 +108,7 @@ impl ast::HexJump {
         self.syntax()
             .children_with_tokens()
             .filter(|e| !e.kind().is_trivia())
-            .last()
+            .nth(3)
             .and_then(|e| e.into_token())
             .unwrap()
     }
