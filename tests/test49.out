@@ -1,0 +1,103 @@
+SOURCE_FILE@0..230
+  RULE@0..229
+    COMMENT@0..14 "//Rule comment"
+    WHITESPACE@14..15 "\n"
+    RULE_KW@15..19 "rule"
+    WHITESPACE@19..20 " "
+    IDENTIFIER@20..24 "test"
+    WHITESPACE@24..25 "\n"
+    BLOCK_EXPR@25..229
+      L_BRACE@25..26 "{"
+      WHITESPACE@26..28 "\n\t"
+      STRINGS@28..204
+        COMMENT@28..48 "//Rule block comment"
+        WHITESPACE@48..53 "\n    "
+        STRINGS_KW@53..60 "strings"
+        COLON@60..61 ":"
+        WHITESPACE@61..70 "\n        "
+        VARIABLE_STMT@70..161
+          VARIABLE@70..72 "$a"
+          WHITESPACE@72..73 " "
+          ASSIGN@73..74 "="
+          WHITESPACE@74..75 " "
+          PATTERN@75..161
+            HEX_PATTERN@75..161
+              L_BRACE@75..76 "{"
+              WHITESPACE@76..89 "\n            "
+              HEX_TOKEN@89..151
+                HEX_BYTE@89..91
+                  HEX_LIT@89..91 "AA"
+                WHITESPACE@91..92 " "
+                HEX_TOKEN_TAIL@92..94
+                  HEX_BYTE@92..94
+                    HEX_LIT@92..94 "55"
+                WHITESPACE@94..95 " "
+                HEX_TOKEN_TAIL@95..97
+                  HEX_BYTE@95..97
+                    HEX_LIT@95..97 "8B"
+                WHITESPACE@97..98 " "
+                HEX_TOKEN_TAIL@98..100
+                  HEX_BYTE@98..100
+                    HEX_LIT@98..100 "EC"
+                WHITESPACE@100..101 " "
+                HEX_TOKEN_TAIL@101..103
+                  HEX_BYTE@101..103
+                    HEX_LIT@101..103 "83"
+                WHITESPACE@103..104 " "
+                HEX_TOKEN_TAIL@104..106
+                  HEX_BYTE@104..106
+                    HEX_LIT@104..106 "EC"
+                WHITESPACE@106..107 " "
+                COMMENT@107..121 "//test comment"
+                WHITESPACE@121..134 "\n            "
+                HEX_TOKEN_TAIL@134..136
+                  HEX_BYTE@134..136
+                    HEX_LIT@134..136 "0C"
+                WHITESPACE@136..137 " "
+                HEX_TOKEN_TAIL@137..139
+                  HEX_BYTE@137..139
+                    HEX_LIT@137..139 "56"
+                WHITESPACE@139..140 " "
+                HEX_TOKEN_TAIL@140..142
+                  HEX_BYTE@140..142
+                    HEX_LIT@140..142 "8B"
+                WHITESPACE@142..143 " "
+                HEX_TOKEN_TAIL@143..145
+                  HEX_BYTE@143..145
+                    HEX_LIT@143..145 "75"
+                WHITESPACE@145..146 " "
+                HEX_TOKEN_TAIL@146..148
+                  HEX_BYTE@146..148
+                    HEX_LIT@146..148 "08"
+                WHITESPACE@148..149 " "
+                HEX_TOKEN_TAIL@149..151
+                  HEX_BYTE@149..151
+                    HEX_LIT@149..151 "57"
+              WHITESPACE@151..160 "\n        "
+              R_BRACE@160..161 "}"
+        WHITESPACE@161..170 "\n        "
+        VARIABLE_STMT@170..204
+          VARIABLE@170..172 "$b"
+          WHITESPACE@172..173 " "
+          ASSIGN@173..174 "="
+          WHITESPACE@174..175 " "
+          PATTERN@175..204
+            STRING_LIT@175..204 "\"\\\\x2E\\\\x70\\\\x68\\\\x70 ..."
+      WHITESPACE@204..206 "\n\t"
+      CONDITION@206..227
+        CONDITION_KW@206..215 "condition"
+        COLON@215..216 ":"
+        WHITESPACE@216..219 "\n\t\t"
+        EXPRESSION_STMT@219..227
+          BOOLEAN_EXPR@219..227
+            BOOLEAN_TERM@219..221
+              VARIABLE@219..221 "$a"
+            WHITESPACE@221..222 " "
+            OR_KW@222..224 "or"
+            WHITESPACE@224..225 " "
+            BOOLEAN_EXPR@225..227
+              BOOLEAN_TERM@225..227
+                VARIABLE@225..227 "$b"
+      WHITESPACE@227..228 "\n"
+      R_BRACE@228..229 "}"
+  WHITESPACE@229..230 "\n"

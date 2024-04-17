@@ -1,0 +1,41 @@
+SOURCE_FILE@0..60
+  RULE@0..59
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 "\n"
+    BLOCK_EXPR@10..59
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..13 "\n\t"
+      STRINGS@13..34
+        STRINGS_KW@13..20 "strings"
+        COLON@20..21 ":"
+        WHITESPACE@21..24 "\n\t\t"
+        VARIABLE_STMT@24..34
+          VARIABLE@24..26 "$a"
+          WHITESPACE@26..27 " "
+          ASSIGN@27..28 "="
+          WHITESPACE@28..29 " "
+          PATTERN@29..34
+            STRING_LIT@29..34 "\"foo\""
+      WHITESPACE@34..36 "\n\t"
+      CONDITION@36..57
+        CONDITION_KW@36..45 "condition"
+        COLON@45..46 ":"
+        WHITESPACE@46..49 "\n\t\t"
+        EXPRESSION_STMT@49..57
+          BOOLEAN_EXPR@49..57
+            BOOLEAN_TERM@49..51
+              PRIMARY_EXPR@49..51
+                HYPHEN@49..50 "-"
+                PRIMARY_EXPR@50..51
+                  INT_LIT@50..51 "1"
+            WHITESPACE@51..52 " "
+            OR_KW@52..54 "or"
+            WHITESPACE@54..55 " "
+            BOOLEAN_EXPR@55..57
+              BOOLEAN_TERM@55..57
+                VARIABLE@55..57 "$a"
+      WHITESPACE@57..58 "\n"
+      R_BRACE@58..59 "}"
+  WHITESPACE@59..60 "\n"

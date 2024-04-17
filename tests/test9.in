@@ -1,0 +1,10 @@
+rule test
+{
+    meta:
+        description = "Test rule"
+        number = 123
+	strings:
+		$a = "foo"
+	condition:
+		$a
+}

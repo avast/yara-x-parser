@@ -1,0 +1,49 @@
+SOURCE_FILE@0..119
+  RULE@0..118
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 "\n"
+    BLOCK_EXPR@10..118
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..16 "\n    "
+      META@16..76
+        META_KW@16..20 "meta"
+        COLON@20..21 ":"
+        WHITESPACE@21..30 "\n        "
+        META_STMT@30..55
+          IDENTIFIER@30..41 "description"
+          WHITESPACE@41..42 " "
+          ASSIGN@42..43 "="
+          WHITESPACE@43..44 " "
+          STRING_LIT@44..55 "\"Test rule\""
+        WHITESPACE@55..64 "\n        "
+        META_STMT@64..76
+          IDENTIFIER@64..70 "number"
+          WHITESPACE@70..71 " "
+          ASSIGN@71..72 "="
+          WHITESPACE@72..73 " "
+          INT_LIT@73..76 "123"
+      WHITESPACE@76..78 "\n\t"
+      STRINGS@78..99
+        STRINGS_KW@78..85 "strings"
+        COLON@85..86 ":"
+        WHITESPACE@86..89 "\n\t\t"
+        VARIABLE_STMT@89..99
+          VARIABLE@89..91 "$a"
+          WHITESPACE@91..92 " "
+          ASSIGN@92..93 "="
+          WHITESPACE@93..94 " "
+          PATTERN@94..99
+            STRING_LIT@94..99 "\"foo\""
+      WHITESPACE@99..101 "\n\t"
+      CONDITION@101..116
+        CONDITION_KW@101..110 "condition"
+        COLON@110..111 ":"
+        WHITESPACE@111..114 "\n\t\t"
+        EXPRESSION_STMT@114..116
+          BOOLEAN_TERM@114..116
+            VARIABLE@114..116 "$a"
+      WHITESPACE@116..117 "\n"
+      R_BRACE@117..118 "}"
+  WHITESPACE@118..119 "\n"

@@ -14,34 +14,136 @@ pub enum SyntaxKind {
     R_PAREN,
     L_BRACE,
     R_BRACE,
+    L_BRACKET,
+    R_BRACKET,
     COMMA,
     ASSIGN,
+    HYPHEN,
+    QUESTION_MARK,
+    TILDE,
+    PIPE,
+    SLASH,
+    PLUS,
+    STAR,
+    PERCENTAGE,
+    SHL,
+    SHR,
+    AMPERSAND,
+    CARET,
+    DOT,
+    EQ,
+    NE,
+    LT,
+    LE,
+    GT,
+    GE,
+    DOTDOT,
     AND_KW,
     OR_KW,
     NOT_KW,
-    TRUE_KW,
-    FALSE_KW,
     RULE_KW,
     STRINGS_KW,
     CONDITION_KW,
+    META_KW,
+    PRIVATE_KW,
+    GLOBAL_KW,
+    IMPORT_KW,
+    INCLUDE_KW,
+    ASCII_KW,
+    WIDE_KW,
+    NOCASE_KW,
+    FULLWORD_KW,
+    XOR_KW,
+    BASE64_KW,
+    BASE64WIDE_KW,
+    CONTAINS_KW,
+    ICONTAINS_KW,
+    STARTSWITH_KW,
+    ISTARTSWITH_KW,
+    ENDSWITH_KW,
+    IENDSWITH_KW,
+    IEQUALS_KW,
+    MATCHES_KW,
+    DEFINED_KW,
+    FILESIZE_KW,
+    ENTRYPOINT_KW,
+    AT_KW,
+    IN_KW,
+    OF_KW,
+    THEM_KW,
+    ALL_KW,
+    ANY_KW,
+    NONE_KW,
+    FOR_KW,
     STRING_LIT,
-    NUMBER,
+    INT_LIT,
+    FLOAT_LIT,
+    HEX_LIT,
+    BOOL_LIT,
+    REGEX_LIT,
     IDENTIFIER,
     VARIABLE,
+    VARIABLE_COUNT,
+    VARIABLE_OFFSET,
+    VARIABLE_LENGTH,
     WHITESPACE,
     COMMENT,
+    CASE_INSENSITIVE,
+    DOT_MATCHES_ALL,
+    BACKSLASH,
     ERROR,
     RULE,
+    MODIFIER,
+    TAG,
     STRINGS,
+    META,
     CONDITION,
     SOURCE_FILE,
     BLOCK_EXPR,
     PREFIX_EXPR,
-    LITERAL,
     EXPRESSION,
     EXPRESSION_STMT,
     VARIABLE_STMT,
+    IMPORT_STMT,
+    INCLUDE_STMT,
+    META_STMT,
     PATTERN,
+    PATTERN_MOD,
+    BASE_ALPHABET,
+    XOR_RANGE,
+    HEX_PATTERN,
+    HEX_TOKEN,
+    HEX_TOKEN_TAIL,
+    HEX_BYTE,
+    HEX_ALTERNATIVE,
+    HEX_JUMP,
+    HEX_PIPE,
+    REGEX_PATTERN,
+    REGEX_MOD,
+    BOOLEAN_TERM,
+    BOOLEAN_EXPR,
+    EXPR,
+    PRIMARY_EXPR,
+    VARIABLE_ANCHOR,
+    RANGE,
+    OF_EXPR,
+    FOR_EXPR,
+    QUANTIFIER,
+    PATTERN_IDENT_TUPLE,
+    BOOLEAN_EXPR_TUPLE,
+    VARIABLE_WILDCARD,
+    EXPR_TUPLE,
+    IDENTIFIER_NODE,
+    ITERABLE,
+    INDEXING_EXPR,
+    FUNCTION_CALL_EXPR,
+    IN_RANGE,
+    EXPR_INDEX,
+    TERM,
+    EXPR_BODY,
+    NESTED_EXPR,
+    BOOLEAN_TERM_EXPR,
+    FIELD_ACESS,
     #[doc(hidden)]
     __LAST,
 }
@@ -50,25 +152,121 @@ impl SyntaxKind {
     pub fn is_keyword(self) -> bool {
         matches!(
             self,
-            AND_KW | OR_KW | NOT_KW | TRUE_KW | FALSE_KW | RULE_KW | STRINGS_KW | CONDITION_KW
+            AND_KW
+                | OR_KW
+                | NOT_KW
+                | RULE_KW
+                | STRINGS_KW
+                | CONDITION_KW
+                | META_KW
+                | PRIVATE_KW
+                | GLOBAL_KW
+                | IMPORT_KW
+                | INCLUDE_KW
+                | ASCII_KW
+                | WIDE_KW
+                | NOCASE_KW
+                | FULLWORD_KW
+                | XOR_KW
+                | BASE64_KW
+                | BASE64WIDE_KW
+                | CONTAINS_KW
+                | ICONTAINS_KW
+                | STARTSWITH_KW
+                | ISTARTSWITH_KW
+                | ENDSWITH_KW
+                | IENDSWITH_KW
+                | IEQUALS_KW
+                | MATCHES_KW
+                | DEFINED_KW
+                | FILESIZE_KW
+                | ENTRYPOINT_KW
+                | AT_KW
+                | IN_KW
+                | OF_KW
+                | THEM_KW
+                | ALL_KW
+                | ANY_KW
+                | NONE_KW
+                | FOR_KW
         )
     }
     pub fn is_punct(self) -> bool {
-        matches!(self, COLON | L_PAREN | R_PAREN | L_BRACE | R_BRACE | COMMA | ASSIGN)
+        matches!(
+            self,
+            COLON
+                | L_PAREN
+                | R_PAREN
+                | L_BRACE
+                | R_BRACE
+                | L_BRACKET
+                | R_BRACKET
+                | COMMA
+                | ASSIGN
+                | HYPHEN
+                | QUESTION_MARK
+                | TILDE
+                | PIPE
+                | SLASH
+                | PLUS
+                | STAR
+                | PERCENTAGE
+                | SHL
+                | SHR
+                | AMPERSAND
+                | CARET
+                | DOT
+                | EQ
+                | NE
+                | LT
+                | LE
+                | GT
+                | GE
+                | DOTDOT
+        )
     }
     pub fn is_literal(self) -> bool {
-        matches!(self, STRING_LIT | NUMBER)
+        matches!(self, STRING_LIT | INT_LIT | FLOAT_LIT | HEX_LIT | BOOL_LIT | REGEX_LIT)
     }
     pub fn from_keyword(ident: &str) -> Option<SyntaxKind> {
         let kw = match ident {
             "and" => AND_KW,
             "or" => OR_KW,
             "not" => NOT_KW,
-            "true" => TRUE_KW,
-            "false" => FALSE_KW,
             "rule" => RULE_KW,
             "strings" => STRINGS_KW,
             "condition" => CONDITION_KW,
+            "meta" => META_KW,
+            "private" => PRIVATE_KW,
+            "global" => GLOBAL_KW,
+            "import" => IMPORT_KW,
+            "include" => INCLUDE_KW,
+            "ascii" => ASCII_KW,
+            "wide" => WIDE_KW,
+            "nocase" => NOCASE_KW,
+            "fullword" => FULLWORD_KW,
+            "xor" => XOR_KW,
+            "base64" => BASE64_KW,
+            "base64wide" => BASE64WIDE_KW,
+            "contains" => CONTAINS_KW,
+            "icontains" => ICONTAINS_KW,
+            "startswith" => STARTSWITH_KW,
+            "istartswith" => ISTARTSWITH_KW,
+            "endswith" => ENDSWITH_KW,
+            "iendswith" => IENDSWITH_KW,
+            "iequals" => IEQUALS_KW,
+            "matches" => MATCHES_KW,
+            "defined" => DEFINED_KW,
+            "filesize" => FILESIZE_KW,
+            "entrypoint" => ENTRYPOINT_KW,
+            "at" => AT_KW,
+            "in" => IN_KW,
+            "of" => OF_KW,
+            "them" => THEM_KW,
+            "all" => ALL_KW,
+            "any" => ANY_KW,
+            "none" => NONE_KW,
+            "for" => FOR_KW,
             _ => return None,
         };
         Some(kw)
@@ -80,13 +278,28 @@ impl SyntaxKind {
             ')' => R_PAREN,
             '{' => L_BRACE,
             '}' => R_BRACE,
+            '[' => L_BRACKET,
+            ']' => R_BRACKET,
             ',' => COMMA,
             '=' => ASSIGN,
+            '-' => HYPHEN,
+            '?' => QUESTION_MARK,
+            '~' => TILDE,
+            '|' => PIPE,
+            '/' => SLASH,
+            '+' => PLUS,
+            '*' => STAR,
+            '%' => PERCENTAGE,
+            '&' => AMPERSAND,
+            '^' => CARET,
+            '.' => DOT,
+            '<' => LT,
+            '>' => GT,
             _ => return None,
         };
         Some(tok)
     }
 }
 #[macro_export]
-macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [true] => { $ crate :: SyntaxKind :: TRUE_KW } ; [false] => { $ crate :: SyntaxKind :: FALSE_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; }
+macro_rules ! T { [:] => { $ crate :: SyntaxKind :: COLON } ; ['('] => { $ crate :: SyntaxKind :: L_PAREN } ; [')'] => { $ crate :: SyntaxKind :: R_PAREN } ; ['{'] => { $ crate :: SyntaxKind :: L_BRACE } ; ['}'] => { $ crate :: SyntaxKind :: R_BRACE } ; ['['] => { $ crate :: SyntaxKind :: L_BRACKET } ; [']'] => { $ crate :: SyntaxKind :: R_BRACKET } ; [,] => { $ crate :: SyntaxKind :: COMMA } ; [=] => { $ crate :: SyntaxKind :: ASSIGN } ; [-] => { $ crate :: SyntaxKind :: HYPHEN } ; [?] => { $ crate :: SyntaxKind :: QUESTION_MARK } ; [~] => { $ crate :: SyntaxKind :: TILDE } ; [|] => { $ crate :: SyntaxKind :: PIPE } ; [/] => { $ crate :: SyntaxKind :: SLASH } ; [+] => { $ crate :: SyntaxKind :: PLUS } ; [*] => { $ crate :: SyntaxKind :: STAR } ; [%] => { $ crate :: SyntaxKind :: PERCENTAGE } ; [<<] => { $ crate :: SyntaxKind :: SHL } ; [>>] => { $ crate :: SyntaxKind :: SHR } ; [&] => { $ crate :: SyntaxKind :: AMPERSAND } ; [^] => { $ crate :: SyntaxKind :: CARET } ; [.] => { $ crate :: SyntaxKind :: DOT } ; [==] => { $ crate :: SyntaxKind :: EQ } ; [!=] => { $ crate :: SyntaxKind :: NE } ; [<] => { $ crate :: SyntaxKind :: LT } ; [<=] => { $ crate :: SyntaxKind :: LE } ; [>] => { $ crate :: SyntaxKind :: GT } ; [>=] => { $ crate :: SyntaxKind :: GE } ; [..] => { $ crate :: SyntaxKind :: DOTDOT } ; [and] => { $ crate :: SyntaxKind :: AND_KW } ; [or] => { $ crate :: SyntaxKind :: OR_KW } ; [not] => { $ crate :: SyntaxKind :: NOT_KW } ; [rule] => { $ crate :: SyntaxKind :: RULE_KW } ; [strings] => { $ crate :: SyntaxKind :: STRINGS_KW } ; [condition] => { $ crate :: SyntaxKind :: CONDITION_KW } ; [meta] => { $ crate :: SyntaxKind :: META_KW } ; [private] => { $ crate :: SyntaxKind :: PRIVATE_KW } ; [global] => { $ crate :: SyntaxKind :: GLOBAL_KW } ; [import] => { $ crate :: SyntaxKind :: IMPORT_KW } ; [include] => { $ crate :: SyntaxKind :: INCLUDE_KW } ; [ascii] => { $ crate :: SyntaxKind :: ASCII_KW } ; [wide] => { $ crate :: SyntaxKind :: WIDE_KW } ; [nocase] => { $ crate :: SyntaxKind :: NOCASE_KW } ; [fullword] => { $ crate :: SyntaxKind :: FULLWORD_KW } ; [xor] => { $ crate :: SyntaxKind :: XOR_KW } ; [base64] => { $ crate :: SyntaxKind :: BASE64_KW } ; [base64wide] => { $ crate :: SyntaxKind :: BASE64WIDE_KW } ; [contains] => { $ crate :: SyntaxKind :: CONTAINS_KW } ; [icontains] => { $ crate :: SyntaxKind :: ICONTAINS_KW } ; [startswith] => { $ crate :: SyntaxKind :: STARTSWITH_KW } ; [istartswith] => { $ crate :: SyntaxKind :: ISTARTSWITH_KW } ; [endswith] => { $ crate :: SyntaxKind :: ENDSWITH_KW } ; [iendswith] => { $ crate :: SyntaxKind :: IENDSWITH_KW } ; [iequals] => { $ crate :: SyntaxKind :: IEQUALS_KW } ; [matches] => { $ crate :: SyntaxKind :: MATCHES_KW } ; [defined] => { $ crate :: SyntaxKind :: DEFINED_KW } ; [filesize] => { $ crate :: SyntaxKind :: FILESIZE_KW } ; [entrypoint] => { $ crate :: SyntaxKind :: ENTRYPOINT_KW } ; [at] => { $ crate :: SyntaxKind :: AT_KW } ; [in] => { $ crate :: SyntaxKind :: IN_KW } ; [of] => { $ crate :: SyntaxKind :: OF_KW } ; [them] => { $ crate :: SyntaxKind :: THEM_KW } ; [all] => { $ crate :: SyntaxKind :: ALL_KW } ; [any] => { $ crate :: SyntaxKind :: ANY_KW } ; [none] => { $ crate :: SyntaxKind :: NONE_KW } ; [for] => { $ crate :: SyntaxKind :: FOR_KW } ; [identifier] => { $ crate :: SyntaxKind :: IDENTIFIER } ; [variable] => { $ crate :: SyntaxKind :: VARIABLE } ; [variable_count] => { $ crate :: SyntaxKind :: VARIABLE_COUNT } ; [variable_offset] => { $ crate :: SyntaxKind :: VARIABLE_OFFSET } ; [variable_length] => { $ crate :: SyntaxKind :: VARIABLE_LENGTH } ; [string_lit] => { $ crate :: SyntaxKind :: STRING_LIT } ; [int_lit] => { $ crate :: SyntaxKind :: INT_LIT } ; [float_lit] => { $ crate :: SyntaxKind :: FLOAT_LIT } ; [bool_lit] => { $ crate :: SyntaxKind :: BOOL_LIT } ; [hex_lit] => { $ crate :: SyntaxKind :: HEX_LIT } ; [regex_lit] => { $ crate :: SyntaxKind :: REGEX_LIT } ; [dot_matches_all] => { $ crate :: SyntaxKind :: DOT_MATCHES_ALL } ; [case_insensitive] => { $ crate :: SyntaxKind :: CASE_INSENSITIVE } ; [backslash] => { $ crate :: SyntaxKind :: BACKSLASH } ; }
 pub use T;

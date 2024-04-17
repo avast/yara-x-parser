@@ -1,0 +1,10 @@
+//Rule comment
+rule test
+{
+	//Rule block comment
+	strings:
+		$a = "foo"
+		$b = "bar"
+	condition:
+		$a in (0..100) and $b in (100..filesize)
+}

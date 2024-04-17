@@ -24,7 +24,7 @@ SOURCE_FILE@0..54
         COLON@45..46 ":"
         WHITESPACE@46..49 "\n\t\t"
         EXPRESSION_STMT@49..51
-          LITERAL@49..51
+          BOOLEAN_TERM@49..51
             VARIABLE@49..51 "$a"
       WHITESPACE@51..52 "\n"
       R_BRACE@52..53 "}"

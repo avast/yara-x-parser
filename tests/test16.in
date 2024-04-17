@@ -1,0 +1,7 @@
+rule test
+{
+	strings:
+		$a = { F4 [0-3] A4 [4] ( 62 (45 54 | 48) | 56 | 45 ?? 67 ) ~45 }
+	condition:
+		$a
+}

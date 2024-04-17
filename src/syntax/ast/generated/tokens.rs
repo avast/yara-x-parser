@@ -82,17 +82,67 @@ impl AstToken for StringLit {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Number {
+pub struct IntLit {
     pub(crate) syntax: SyntaxToken,
 }
-impl std::fmt::Display for Number {
+impl std::fmt::Display for IntLit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.syntax, f)
     }
 }
-impl AstToken for Number {
+impl AstToken for IntLit {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == NUMBER
+        kind == INT_LIT
+    }
+    fn cast(syntax: SyntaxToken) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxToken {
+        &self.syntax
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct BoolLit {
+    pub(crate) syntax: SyntaxToken,
+}
+impl std::fmt::Display for BoolLit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(&self.syntax, f)
+    }
+}
+impl AstToken for BoolLit {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == BOOL_LIT
+    }
+    fn cast(syntax: SyntaxToken) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxToken {
+        &self.syntax
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct FloatLit {
+    pub(crate) syntax: SyntaxToken,
+}
+impl std::fmt::Display for FloatLit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(&self.syntax, f)
+    }
+}
+impl AstToken for FloatLit {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == FLOAT_LIT
     }
     fn cast(syntax: SyntaxToken) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {

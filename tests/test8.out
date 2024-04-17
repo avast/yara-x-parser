@@ -17,38 +17,42 @@ SOURCE_FILE@0..149
       WHITESPACE@85..87 "\n\t"
       ERROR@87..93
         IDENTIFIER@87..93 "string"
-      COLON@93..94 ":"
+      ERROR@93..94
+        COLON@93..94 ":"
       WHITESPACE@94..97 "\n\t\t"
-      VARIABLE_STMT@97..107
+      ERROR@97..99
         VARIABLE@97..99 "$b"
-        WHITESPACE@99..100 " "
+      WHITESPACE@99..100 " "
+      ERROR@100..101
         ASSIGN@100..101 "="
-        WHITESPACE@101..102 " "
-        PATTERN@102..107
-          STRING_LIT@102..107 "\"bar\""
+      WHITESPACE@101..102 " "
+      ERROR@102..107
+        STRING_LIT@102..107 "\"bar\""
       WHITESPACE@107..109 "\n\t"
       CONDITION@109..146
         CONDITION_KW@109..118 "condition"
         COLON@118..119 ":"
         WHITESPACE@119..122 "\n\t\t"
         EXPRESSION_STMT@122..146
-          EXPRESSION@122..146
-            EXPRESSION@122..137
-              LITERAL@122..124
+          BOOLEAN_EXPR@122..146
+            BOOLEAN_EXPR@122..137
+              BOOLEAN_TERM@122..124
                 VARIABLE@122..124 "$b"
               WHITESPACE@124..125 " "
               AND_KW@125..128 "and"
               WHITESPACE@128..129 " "
-              PREFIX_EXPR@129..137
-                NOT_KW@129..132 "not"
-                WHITESPACE@132..133 " "
-                LITERAL@133..137
-                  TRUE_KW@133..137 "true"
+              BOOLEAN_EXPR@129..137
+                BOOLEAN_TERM@129..137
+                  NOT_KW@129..132 "not"
+                  WHITESPACE@132..133 " "
+                  BOOLEAN_TERM@133..137
+                    BOOL_LIT@133..137 "true"
             WHITESPACE@137..138 " "
             OR_KW@138..140 "or"
             WHITESPACE@140..141 " "
-            LITERAL@141..146
-              FALSE_KW@141..146 "false"
+            BOOLEAN_EXPR@141..146
+              BOOLEAN_TERM@141..146
+                BOOL_LIT@141..146 "false"
       WHITESPACE@146..147 "\n"
       R_BRACE@147..148 "}"
   WHITESPACE@148..149 "\n"

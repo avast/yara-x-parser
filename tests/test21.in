@@ -1,0 +1,6 @@
+//Rule comment
+rule test
+{
+	condition:
+		9 + 9 == 18
+}

@@ -1,0 +1,38 @@
+SOURCE_FILE@0..53
+  RULE@0..53
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 " "
+    BLOCK_EXPR@10..53
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..16 "\n    "
+      CONDITION@16..51
+        CONDITION_KW@16..25 "condition"
+        COLON@25..26 ":"
+        WHITESPACE@26..35 "\n        "
+        EXPRESSION_STMT@35..51
+          BOOLEAN_TERM@35..51
+            EXPR_BODY@35..51
+              FUNCTION_CALL_EXPR@35..47
+                PRIMARY_EXPR@35..42
+                  FIELD_ACESS@35..42
+                    IDENTIFIER_NODE@35..38
+                      IDENTIFIER@35..38 "foo"
+                    DOT@38..39 "."
+                    IDENTIFIER_NODE@39..42
+                      IDENTIFIER@39..42 "bar"
+                EXPR_TUPLE@42..47
+                  L_PAREN@42..43 "("
+                  PRIMARY_EXPR@43..44
+                    INT_LIT@43..44 "1"
+                  COMMA@44..45 ","
+                  PRIMARY_EXPR@45..46
+                    INT_LIT@45..46 "2"
+                  R_PAREN@46..47 ")"
+              DOT@47..48 "."
+              PRIMARY_EXPR@48..51
+                IDENTIFIER_NODE@48..51
+                  IDENTIFIER@48..51 "baz"
+      WHITESPACE@51..52 "\n"
+      R_BRACE@52..53 "}"

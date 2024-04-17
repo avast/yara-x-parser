@@ -1,0 +1,13 @@
+//Rule comment
+rule test
+{
+	//Rule block comment
+    strings:
+        $a = {
+            AA 55 8B EC 83 EC //test comment
+            0C 56 8B 75 08 57
+        }
+        $b = "\\x2E\\x70\\x68\\x70\\x3F\\"
+	condition:
+		$a or $b
+}

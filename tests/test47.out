@@ -1,0 +1,88 @@
+SOURCE_FILE@0..95
+  RULE@0..94
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 "\n"
+    BLOCK_EXPR@10..94
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..13 "\n\t"
+      STRINGS@13..34
+        STRINGS_KW@13..20 "strings"
+        COLON@20..21 ":"
+        WHITESPACE@21..24 "\n\t\t"
+        VARIABLE_STMT@24..34
+          VARIABLE@24..26 "$a"
+          WHITESPACE@26..27 " "
+          ASSIGN@27..28 "="
+          WHITESPACE@28..29 " "
+          PATTERN@29..34
+            STRING_LIT@29..34 "\"foo\""
+      WHITESPACE@34..36 "\n\t"
+      CONDITION@36..92
+        CONDITION_KW@36..45 "condition"
+        COLON@45..46 ":"
+        WHITESPACE@46..49 "\n\t\t"
+        EXPRESSION_STMT@49..92
+          BOOLEAN_TERM@49..92
+            BOOLEAN_TERM_EXPR@49..92
+              BOOLEAN_TERM_EXPR@49..87
+                BOOLEAN_TERM_EXPR@49..74
+                  PRIMARY_EXPR@49..61
+                    VARIABLE_COUNT@49..61
+                      VARIABLE_COUNT@49..51 "#a"
+                      WHITESPACE@51..52 " "
+                      IN_RANGE@52..61
+                        IN_KW@52..54 "in"
+                        WHITESPACE@54..55 " "
+                        RANGE@55..61
+                          L_PAREN@55..56 "("
+                          PRIMARY_EXPR@56..57
+                            INT_LIT@56..57 "1"
+                          DOTDOT@57..59 ".."
+                          PRIMARY_EXPR@59..60
+                            INT_LIT@59..60 "5"
+                          R_PAREN@60..61 ")"
+                  WHITESPACE@61..62 " "
+                  EQ@62..64 "=="
+                  WHITESPACE@64..65 " "
+                  EXPR_BODY@65..74
+                    PRIMARY_EXPR@65..66
+                      INT_LIT@65..66 "1"
+                    WHITESPACE@66..67 " "
+                    PLUS@67..68 "+"
+                    WHITESPACE@68..69 " "
+                    PRIMARY_EXPR@69..74
+                      VARIABLE_LENGTH@69..74
+                        VARIABLE_LENGTH@69..71 "!a"
+                        EXPR_INDEX@71..74
+                          L_BRACKET@71..72 "["
+                          PRIMARY_EXPR@72..73
+                            INT_LIT@72..73 "2"
+                          R_BRACKET@73..74 "]"
+                WHITESPACE@74..75 " "
+                EQ@75..77 "=="
+                WHITESPACE@77..78 " "
+                EXPR_BODY@78..87
+                  PRIMARY_EXPR@78..79
+                    INT_LIT@78..79 "2"
+                  WHITESPACE@79..80 " "
+                  PLUS@80..81 "+"
+                  WHITESPACE@81..82 " "
+                  PRIMARY_EXPR@82..87
+                    VARIABLE_OFFSET@82..87
+                      VARIABLE_OFFSET@82..84 "@a"
+                      EXPR_INDEX@84..87
+                        L_BRACKET@84..85 "["
+                        PRIMARY_EXPR@85..86
+                          IDENTIFIER_NODE@85..86
+                            IDENTIFIER@85..86 "i"
+                        R_BRACKET@86..87 "]"
+              WHITESPACE@87..88 " "
+              EQ@88..90 "=="
+              WHITESPACE@90..91 " "
+              PRIMARY_EXPR@91..92
+                INT_LIT@91..92 "3"
+      WHITESPACE@92..93 "\n"
+      R_BRACE@93..94 "}"
+  WHITESPACE@94..95 "\n"

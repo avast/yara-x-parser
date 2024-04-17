@@ -1,0 +1,109 @@
+SOURCE_FILE@0..108
+  RULE@0..107
+    RULE_KW@0..4 "rule"
+    WHITESPACE@4..5 " "
+    IDENTIFIER@5..9 "test"
+    WHITESPACE@9..10 "\n"
+    BLOCK_EXPR@10..107
+      L_BRACE@10..11 "{"
+      WHITESPACE@11..13 "\n\t"
+      STRINGS@13..88
+        STRINGS_KW@13..20 "strings"
+        COLON@20..21 ":"
+        WHITESPACE@21..24 "\n\t\t"
+        VARIABLE_STMT@24..88
+          VARIABLE@24..26 "$a"
+          WHITESPACE@26..27 " "
+          ASSIGN@27..28 "="
+          WHITESPACE@28..29 " "
+          PATTERN@29..88
+            HEX_PATTERN@29..88
+              L_BRACE@29..30 "{"
+              WHITESPACE@30..31 " "
+              HEX_TOKEN@31..86
+                HEX_BYTE@31..33
+                  HEX_LIT@31..33 "F4"
+                WHITESPACE@33..34 " "
+                HEX_TOKEN_TAIL@34..42
+                  HEX_JUMP@34..39
+                    L_BRACKET@34..35 "["
+                    INT_LIT@35..36 "0"
+                    HYPHEN@36..37 "-"
+                    INT_LIT@37..38 "3"
+                    R_BRACKET@38..39 "]"
+                  WHITESPACE@39..40 " "
+                  HEX_BYTE@40..42
+                    HEX_LIT@40..42 "A4"
+                WHITESPACE@42..43 " "
+                HEX_TOKEN_TAIL@43..82
+                  HEX_JUMP@43..46
+                    L_BRACKET@43..44 "["
+                    INT_LIT@44..45 "4"
+                    R_BRACKET@45..46 "]"
+                  WHITESPACE@46..47 " "
+                  HEX_ALTERNATIVE@47..82
+                    L_PAREN@47..48 "("
+                    WHITESPACE@48..49 " "
+                    HEX_TOKEN@49..64
+                      HEX_BYTE@49..51
+                        HEX_LIT@49..51 "62"
+                      WHITESPACE@51..52 " "
+                      HEX_TOKEN_TAIL@52..64
+                        HEX_ALTERNATIVE@52..64
+                          L_PAREN@52..53 "("
+                          HEX_TOKEN@53..58
+                            HEX_BYTE@53..55
+                              HEX_LIT@53..55 "45"
+                            WHITESPACE@55..56 " "
+                            HEX_TOKEN_TAIL@56..58
+                              HEX_BYTE@56..58
+                                HEX_LIT@56..58 "54"
+                          WHITESPACE@58..59 " "
+                          HEX_PIPE@59..63
+                            PIPE@59..60 "|"
+                            WHITESPACE@60..61 " "
+                            HEX_TOKEN@61..63
+                              HEX_BYTE@61..63
+                                HEX_LIT@61..63 "48"
+                          R_PAREN@63..64 ")"
+                    WHITESPACE@64..65 " "
+                    HEX_PIPE@65..69
+                      PIPE@65..66 "|"
+                      WHITESPACE@66..67 " "
+                      HEX_TOKEN@67..69
+                        HEX_BYTE@67..69
+                          HEX_LIT@67..69 "56"
+                    WHITESPACE@69..70 " "
+                    HEX_PIPE@70..80
+                      PIPE@70..71 "|"
+                      WHITESPACE@71..72 " "
+                      HEX_TOKEN@72..80
+                        HEX_BYTE@72..74
+                          HEX_LIT@72..74 "45"
+                        WHITESPACE@74..75 " "
+                        HEX_TOKEN_TAIL@75..77
+                          HEX_BYTE@75..77
+                            HEX_LIT@75..77 "??"
+                        WHITESPACE@77..78 " "
+                        HEX_TOKEN_TAIL@78..80
+                          HEX_BYTE@78..80
+                            HEX_LIT@78..80 "67"
+                    WHITESPACE@80..81 " "
+                    R_PAREN@81..82 ")"
+                WHITESPACE@82..83 " "
+                HEX_TOKEN_TAIL@83..86
+                  HEX_BYTE@83..86
+                    HEX_LIT@83..86 "~45"
+              WHITESPACE@86..87 " "
+              R_BRACE@87..88 "}"
+      WHITESPACE@88..90 "\n\t"
+      CONDITION@90..105
+        CONDITION_KW@90..99 "condition"
+        COLON@99..100 ":"
+        WHITESPACE@100..103 "\n\t\t"
+        EXPRESSION_STMT@103..105
+          BOOLEAN_TERM@103..105
+            VARIABLE@103..105 "$a"
+      WHITESPACE@105..106 "\n"
+      R_BRACE@106..107 "}"
+  WHITESPACE@107..108 "\n"

@@ -1,0 +1,98 @@
+SOURCE_FILE@0..144
+  RULE@0..143
+    COMMENT@0..14 "//Rule comment"
+    WHITESPACE@14..15 "\n"
+    RULE_KW@15..19 "rule"
+    WHITESPACE@19..20 " "
+    IDENTIFIER@20..24 "test"
+    WHITESPACE@24..25 "\n"
+    BLOCK_EXPR@25..143
+      L_BRACE@25..26 "{"
+      WHITESPACE@26..28 "\n\t"
+      STRINGS@28..62
+        STRINGS_KW@28..35 "strings"
+        COLON@35..36 ":"
+        WHITESPACE@36..39 "\n\t\t"
+        VARIABLE_STMT@39..49
+          VARIABLE@39..41 "$a"
+          WHITESPACE@41..42 " "
+          ASSIGN@42..43 "="
+          WHITESPACE@43..44 " "
+          PATTERN@44..49
+            STRING_LIT@44..49 "\"foo\""
+        WHITESPACE@49..52 "\n\t\t"
+        VARIABLE_STMT@52..62
+          VARIABLE@52..54 "$b"
+          WHITESPACE@54..55 " "
+          ASSIGN@55..56 "="
+          WHITESPACE@56..57 " "
+          PATTERN@57..62
+            STRING_LIT@57..62 "\"bar\""
+      WHITESPACE@62..64 "\n\t"
+      CONDITION@64..141
+        CONDITION_KW@64..73 "condition"
+        COLON@73..74 ":"
+        WHITESPACE@74..77 "\n\t\t"
+        EXPRESSION_STMT@77..141
+          BOOLEAN_EXPR@77..141
+            BOOLEAN_EXPR@77..107
+              BOOLEAN_TERM@77..79
+                VARIABLE@77..79 "$a"
+              WHITESPACE@79..80 " "
+              OR_KW@80..82 "or"
+              WHITESPACE@82..83 " "
+              BOOLEAN_EXPR@83..107
+                BOOLEAN_EXPR@83..107
+                  BOOLEAN_TERM@83..94
+                    BOOLEAN_TERM_EXPR@83..94
+                      EXPR_BODY@83..88
+                        PRIMARY_EXPR@83..84
+                          INT_LIT@83..84 "9"
+                        WHITESPACE@84..85 " "
+                        PLUS@85..86 "+"
+                        WHITESPACE@86..87 " "
+                        PRIMARY_EXPR@87..88
+                          INT_LIT@87..88 "9"
+                      WHITESPACE@88..89 " "
+                      EQ@89..91 "=="
+                      WHITESPACE@91..92 " "
+                      PRIMARY_EXPR@92..94
+                        INT_LIT@92..94 "18"
+                  WHITESPACE@94..95 " "
+                  AND_KW@95..98 "and"
+                  WHITESPACE@98..99 " "
+                  BOOLEAN_EXPR@99..107
+                    BOOLEAN_TERM@99..107
+                      NOT_KW@99..102 "not"
+                      WHITESPACE@102..103 " "
+                      BOOLEAN_TERM@103..107
+                        BOOL_LIT@103..107 "true"
+            WHITESPACE@107..108 " "
+            OR_KW@108..110 "or"
+            WHITESPACE@110..111 " "
+            BOOLEAN_EXPR@111..141
+              BOOLEAN_EXPR@111..141
+                BOOLEAN_TERM@111..113
+                  VARIABLE@111..113 "$b"
+                WHITESPACE@113..114 " "
+                AND_KW@114..117 "and"
+                WHITESPACE@117..118 " "
+                BOOLEAN_EXPR@118..141
+                  BOOLEAN_TERM@118..141
+                    BOOLEAN_TERM_EXPR@118..141
+                      EXPR_BODY@118..126
+                        PRIMARY_EXPR@118..121
+                          FLOAT_LIT@118..121 "1.1"
+                        WHITESPACE@121..122 " "
+                        SHL@122..124 "<<"
+                        WHITESPACE@124..125 " "
+                        PRIMARY_EXPR@125..126
+                          INT_LIT@125..126 "2"
+                      WHITESPACE@126..127 " "
+                      CONTAINS_KW@127..135 "contains"
+                      WHITESPACE@135..136 " "
+                      PRIMARY_EXPR@136..141
+                        STRING_LIT@136..141 "\"bar\""
+      WHITESPACE@141..142 "\n"
+      R_BRACE@142..143 "}"
+  WHITESPACE@143..144 "\n"

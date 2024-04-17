@@ -1,0 +1,10 @@
+//Rule comment
+rule test
+{
+	//Rule block comment
+	strings:
+		$a = "foo"
+		$b = "bar"
+	condition:
+		$a and ($b or $a) and not $b
+}

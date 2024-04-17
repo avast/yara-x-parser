@@ -40,20 +40,22 @@ SOURCE_FILE@0..158
         COLON@132..133 ":"
         WHITESPACE@133..136 "\n\t\t"
         EXPRESSION_STMT@136..155
-          EXPRESSION@136..155
-            EXPRESSION@136..147
-              LITERAL@136..138
+          BOOLEAN_EXPR@136..155
+            BOOLEAN_EXPR@136..147
+              BOOLEAN_TERM@136..138
                 VARIABLE@136..138 "$a"
               WHITESPACE@138..139 " "
               AND_KW@139..142 "and"
               WHITESPACE@142..145 "\n\t\t"
-              LITERAL@145..147
-                VARIABLE@145..147 "$b"
+              BOOLEAN_EXPR@145..147
+                BOOLEAN_TERM@145..147
+                  VARIABLE@145..147 "$b"
             WHITESPACE@147..148 " "
             OR_KW@148..150 "or"
             WHITESPACE@150..151 " "
-            LITERAL@151..155
-              TRUE_KW@151..155 "true"
+            BOOLEAN_EXPR@151..155
+              BOOLEAN_TERM@151..155
+                BOOL_LIT@151..155 "true"
       WHITESPACE@155..156 "\n"
       R_BRACE@156..157 "}"
   WHITESPACE@157..158 "\n"

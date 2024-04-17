@@ -36,8 +36,6 @@ impl<'t> Parser<'t> {
 
     /// Lookahead `n` tokens
     pub(crate) fn nth(&self, n: usize) -> SyntaxKind {
-        assert!(n < 3);
-
         let steps = self.steps.get();
         assert!(steps <= 10000000, "infinite loop detected");
         self.steps.set(steps + 1);

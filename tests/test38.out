@@ -1,0 +1,71 @@
+SOURCE_FILE@0..120
+  RULE@0..119
+    COMMENT@0..14 "//Rule comment"
+    WHITESPACE@14..15 "\n"
+    RULE_KW@15..19 "rule"
+    WHITESPACE@19..20 " "
+    IDENTIFIER@20..24 "test"
+    WHITESPACE@24..25 "\n"
+    BLOCK_EXPR@25..119
+      L_BRACE@25..26 "{"
+      WHITESPACE@26..28 "\n\t"
+      CONDITION@28..117
+        COMMENT@28..48 "//Rule block comment"
+        WHITESPACE@48..50 "\n\t"
+        CONDITION_KW@50..59 "condition"
+        COLON@59..60 ":"
+        WHITESPACE@60..63 "\n\t\t"
+        EXPRESSION_STMT@63..117
+          BOOLEAN_EXPR@63..117
+            BOOLEAN_TERM@63..109
+              FOR_EXPR@63..109
+                FOR_KW@63..66 "for"
+                WHITESPACE@66..67 " "
+                QUANTIFIER@67..70
+                  ANY_KW@67..70 "any"
+                WHITESPACE@70..71 " "
+                IDENTIFIER_NODE@71..74
+                  IDENTIFIER@71..74 "foo"
+                IDENTIFIER_NODE@74..79
+                  COMMA@74..75 ","
+                  WHITESPACE@75..76 " "
+                  IDENTIFIER@76..79 "bar"
+                WHITESPACE@79..80 " "
+                IN_KW@80..82 "in"
+                WHITESPACE@82..83 " "
+                EXPR_TUPLE@83..90
+                  L_PAREN@83..84 "("
+                  PRIMARY_EXPR@84..85
+                    INT_LIT@84..85 "1"
+                  COMMA@85..86 ","
+                  PRIMARY_EXPR@86..87
+                    INT_LIT@86..87 "2"
+                  COMMA@87..88 ","
+                  PRIMARY_EXPR@88..89
+                    INT_LIT@88..89 "3"
+                  R_PAREN@89..90 ")"
+                WHITESPACE@90..91 " "
+                COLON@91..92 ":"
+                WHITESPACE@92..93 " "
+                L_PAREN@93..94 "("
+                WHITESPACE@94..95 " "
+                BOOLEAN_TERM@95..107
+                  BOOLEAN_TERM_EXPR@95..107
+                    PRIMARY_EXPR@95..96
+                      INT_LIT@95..96 "1"
+                    WHITESPACE@96..97 " "
+                    GT@97..98 ">"
+                    WHITESPACE@98..99 " "
+                    PRIMARY_EXPR@99..107
+                      FILESIZE_KW@99..107 "filesize"
+                WHITESPACE@107..108 " "
+                R_PAREN@108..109 ")"
+            WHITESPACE@109..110 " "
+            OR_KW@110..112 "or"
+            WHITESPACE@112..113 " "
+            BOOLEAN_EXPR@113..117
+              BOOLEAN_TERM@113..117
+                BOOL_LIT@113..117 "true"
+      WHITESPACE@117..118 "\n"
+      R_BRACE@118..119 "}"
+  WHITESPACE@119..120 "\n"

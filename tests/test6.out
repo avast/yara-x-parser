@@ -19,7 +19,7 @@ SOURCE_FILE@0..157
       ERROR@92..98
         IDENTIFIER@92..98 "string"
       ERROR@98..99
-        ERROR@98..99 "*"
+        ERROR@98..99 "`"
       WHITESPACE@99..102 "\n\t\t"
       ERROR@102..103
         IDENTIFIER@102..103 "a"
@@ -28,7 +28,7 @@ SOURCE_FILE@0..157
         ASSIGN@104..105 "="
       WHITESPACE@105..106 " "
       ERROR@106..111
-        NUMBER@106..111 "00000"
+        INT_LIT@106..111 "00000"
       WHITESPACE@111..114 "\n\t\t"
       ERROR@114..116
         VARIABLE@114..116 "$b"
@@ -39,22 +39,24 @@ SOURCE_FILE@0..157
       ERROR@119..124
         STRING_LIT@119..124 "\"bar\""
       WHITESPACE@124..126 "\n\t"
-      CONDITION@126..153
+      CONDITION@126..140
         CONDITION_KW@126..135 "condition"
         COLON@135..136 ":"
         WHITESPACE@136..139 "\n\t\t"
-        ERROR@139..140
-          IDENTIFIER@139..140 "a"
-        WHITESPACE@140..141 " "
-        ERROR@141..144
-          IDENTIFIER@141..144 "ord"
-        WHITESPACE@144..147 "\n\t\t"
-        EXPRESSION_STMT@147..149
-          LITERAL@147..149
-            VARIABLE@147..149 "$b"
-        WHITESPACE@149..150 " "
-        ERROR@150..153
-          IDENTIFIER@150..153 "ant"
+        EXPRESSION_STMT@139..140
+          BOOLEAN_TERM@139..140
+            PRIMARY_EXPR@139..140
+              IDENTIFIER_NODE@139..140
+                IDENTIFIER@139..140 "a"
+      WHITESPACE@140..141 " "
+      ERROR@141..144
+        IDENTIFIER@141..144 "ord"
+      WHITESPACE@144..147 "\n\t\t"
+      ERROR@147..149
+        VARIABLE@147..149 "$b"
+      WHITESPACE@149..150 " "
+      ERROR@150..153
+        IDENTIFIER@150..153 "ant"
       WHITESPACE@153..155 " \n"
       R_BRACE@155..156 "}"
   WHITESPACE@156..157 "\n"

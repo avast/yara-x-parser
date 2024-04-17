@@ -1,13 +1,37 @@
-SourceFile = Rule*
+SourceFile = 
+    ImportStmt* | IncludeStmt* |Rule*
+
+IncludeStmt = 
+    'include' 'string_lit'
+
+ImportStmt = 
+    'import' 'string_lit'
 
 Rule = 
-    'rule' 'identifier'
-    body:BlockExpr
+    Modifier* 'rule' 'identifier' ':'? Tag*
+        body:BlockExpr
+
+Modifier = 
+    'private' | 'global'
+
+Tag = 
+    'identifier'
 
 BlockExpr = 
     '{'
-        Strings? Condition
+        Meta? Strings? Condition
     '}'
+
+Meta = 
+    'meta' ':'
+        MetaStmt*
+
+MetaStmt =
+    'identifier' '=' 
+        |  'bool_lit'
+        |  'string_lit'
+        |  'int_lit'
+        |  'float_lit'
 
 Strings =
     'strings' ':'
@@ -17,27 +41,198 @@ VariableStmt =
     'variable' '=' Pattern
 
 Pattern = 
-    'string_lit'
+        'string_lit' PatternMod*
+    |   HexPattern PatternMod*
+    |   RegexPattern PatternMod*
+
+RegexPattern = 
+    'regex_lit' RegexMod*
+
+RegexMod =
+    'case_insensitive' | 'dot_matches_all'
+
+HexPattern =
+    '{' HexToken '}'
+
+HexToken = 
+    (HexByte | HexAlternative) HexTokenTail*
+
+HexTokenTail =
+    HexJump* (HexByte | HexAlternative)
+
+HexByte = 
+    'hex_lit'
+
+HexAlternative = 
+    '(' HexToken HexPipe* ')'
+
+HexPipe = 
+    '|' HexToken
+
+HexJump =
+    '[' 
+        (
+            lhs:'int_lit'? '-' rhs:'int_lit'?
+        |   lhs:'int_lit' 
+        )
+    ']'
+
+PatternMod = 
+    'ascii'
+|   'wide'
+|   'nocase'
+|   'private'
+|   'fullword'
+|   'base64wide'
+|   'base64'
+|   'xor'
+|   BaseAlphabet?
+|   XorRange?
+
+BaseAlphabet = 
+    '(' 'string_lit' ')'
+
+XorRange = 
+    '(' 
+        (
+            lhs:'int_lit' '-' rhs:'int_lit'
+        |   lhs:'int_lit'
+        )
+    ')'
 
 Condition =
-    'condition' ':'
-        ExpressionStmt
+    'condition' ':' ExpressionStmt
 
-ExpressionStmt = Expr
-
-Expr = 
-    Expression
-|   PrefixExpr
-|   Literal
+ExpressionStmt = Expression
 
 Expression = 
+    BooleanExpr
+|   BooleanTerm
+
+BooleanExpr = 
+    lhs:Expression
+        op:(
+            'and'| 'or'
+        )
+    rhs:Expression
+
+BooleanTerm = 
+    'variable' VariableAnchor?
+|   Expr
+|   BooleanTermExpr
+|   'bool_lit'
+|   'not' BooleanTerm
+|   'defined' BooleanTerm
+|   '(' BooleanExpr ')'
+|   OfExpr
+|   ForExpr
+
+BooleanTermExpr =
     lhs:Expr 
-        op:('and' | 'or')
+        op:(
+            '==' | '!=' | '<' | '<=' | '>' | '>=' |
+            'contains' | 'icontains' | 'startswith' | 'istartswith' | 'endswith' | 'iendswith' | 'iequals' | 'matches'
+        )
     rhs:Expr
 
-PrefixExpr = 
-        'not'
-    Expr
+Expr = 
+    PrimaryExpr
+|   IndexingExpr
+|   FunctionCallExpr
+|   ExprBody
 
-Literal =
-    value:('true' | 'false' | 'variable')
+ExprBody = 
+    lhs:Expr
+        op:(
+            '+' | '-' | '*' | 'backslash' | '%' |
+            '&' | '|' | '^' | '<<' | '>>' | '.' 
+        )
+    rhs:Expr
+
+PrimaryExpr = 
+    'float_lit'
+|   'int_lit'
+|   'string_lit'
+|   VariableCount
+|   VariableOffset
+|   VariableLength
+|   'filesize'
+|   'entrypoint'
+|   RegexPattern
+|   '-' Expr
+|   '~' Expr
+|   '(' Expr ')'
+|   IdentifierNode
+|   FieldAcess
+
+FieldAcess =
+    (IdentifierNode ('.' IdentifierNode)*)
+
+VariableCount = 
+    'variable_count' InRange?
+
+VariableOffset = 
+    'variable_offset' ExprIndex?
+
+VariableLength = 
+    'variable_length' ExprIndex?
+
+InRange = 
+    'in' Range
+
+ExprIndex = 
+    '[' Expr ']'
+
+IndexingExpr = 
+    PrimaryExpr ExprIndex
+
+FunctionCallExpr =
+    PrimaryExpr ExprTuple
+
+VariableAnchor = 
+    'at' Expr
+|   'in' Range
+
+Range = 
+    '('
+        lhs:Expr '..' rhs:Expr
+    ')'
+
+OfExpr = 
+    Quantifier 'of' ('them' | PatternIdentTuple) VariableAnchor?
+|   Quantifier 'of' BooleanExprTuple
+
+ForExpr =
+    (
+        'for' Quantifier 'of' ('them' | PatternIdentTuple)
+    |   'for' Quantifier (IdentifierNode (',' IdentifierNode)*) 'in' Iterable
+    )
+    ':' '(' Expression ')'
+
+Quantifier = 
+    'all'
+|   'any'
+|   'none'
+|   PrimaryExpr '%'?
+
+Iterable = 
+    Range 
+|   NestedExpr
+|   ExprTuple
+
+NestedExpr = Expr
+
+PatternIdentTuple = 
+    '(' (VariableWildcard (',' VariableWildcard)*) ')'
+
+VariableWildcard =
+    'variable' '*'?
+
+BooleanExprTuple =
+    '(' (BooleanExpr (',' BooleanExpr)*) ')'
+
+ExprTuple = 
+    '(' (Expr (',' Expr)*) ')'
+
+IdentifierNode =
+    'identifier'

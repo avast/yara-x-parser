@@ -1,0 +1,9 @@
+//Rule comment
+rule test
+{
+	//Rule block comment
+	strings:
+		$b = "bar"
+	condition:
+		$b and filesize < 100KB or entrypoint == 0x400
+}

@@ -1,0 +1,4 @@
+rule test {
+    condition:
+        foo.bar[0].baz == foo.bar.baz()
+}
