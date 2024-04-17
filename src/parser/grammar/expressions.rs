@@ -17,7 +17,7 @@ const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
 /// `rule_body` and `block_expr`.
 pub(crate) fn block_expr(p: &mut Parser) {
     if !p.at(T!['{']) {
-        p.error("expected a block expression");
+        p.error("expected a block expression or rule tags");
         return;
     }
     let m = p.start();
@@ -66,11 +66,15 @@ pub(super) fn rule_body(p: &mut Parser) {
                 has_condition = true;
             }
             _ => {
-                // It did not contain strings or condition in valid form
-                // but we can still try to parse their body and throw an error for parent
-                // for now it just looks at next 2 tokens to differenciate between valid strings
-                // body or condition body. This should probably be adjusted later
-                p.err_and_bump("expected meta, strings or condition keyword");
+                if has_condition {
+                    p.err_and_bump("invalid yara expression");
+                } else {
+                    // It did not contain strings or condition in valid form
+                    // but we can still try to parse their body and throw an error for parent
+                    // for now it just looks at next 2 tokens to differenciate between valid strings
+                    // body or condition body. This should probably be adjusted later
+                    p.err_and_bump("expected meta, strings or condition keyword");
+                }
             }
         }
     }
@@ -142,31 +146,29 @@ pub(super) fn strings_body(p: &mut Parser) {
 
         if p.at(T![variable]) {
             p.bump(T![variable]);
-        } else {
-            p.err_and_bump("expected a variable");
-        }
-        p.expect(T![=]);
 
-        // so far only strings are supported, later add match for hex strings and regex
-        let n = p.start();
-        match p.current() {
-            STRING_LIT => p.bump(STRING_LIT),
-            T!['{'] => hex_pattern(p),
-            T![/] => regex_pattern(p),
-            _ => {
-                p.err_and_bump("expected a valid string");
-                while !p.at(T!['}']) {
-                    p.bump_any();
+            p.expect(T![=]);
+
+            // so far only strings are supported, later add match for hex strings and regex
+            let n = p.start();
+            match p.current() {
+                STRING_LIT => p.bump(STRING_LIT),
+                T!['{'] => hex_pattern(p),
+                T![/] => regex_pattern(p),
+                _ => {
+                    p.err_and_bump("expected a valid string pattern");
                 }
-                p.bump_any();
             }
-        }
-        if p.at_ts(PATTERN_MODIFIERS_SET) {
-            string_modifiers(p);
-        }
-        n.complete(p, PATTERN);
+            if p.at_ts(PATTERN_MODIFIERS_SET) {
+                string_modifiers(p);
+            }
+            n.complete(p, PATTERN);
 
-        m.complete(p, VARIABLE_STMT);
+            m.complete(p, VARIABLE_STMT);
+        } else {
+            m.abandon(p);
+            p.err_and_bump("expected a new pattern statement or pattern modifier");
+        }
     }
 }
 

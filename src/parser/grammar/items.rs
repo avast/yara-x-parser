@@ -49,7 +49,7 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
     m.abandon(p);
     match p.current() {
         T!['{'] => {
-            error_block(p, "expected an item");
+            error_block(p, "expected an import statement, include statement or a rule");
         }
         T!['}'] if !stop_on_r_brace => {
             let e = p.start();
@@ -57,8 +57,8 @@ pub(super) fn process_top_level(p: &mut Parser, stop_on_r_brace: bool) {
             p.bump(T!['}']);
             e.complete(p, ERROR);
         }
-        EOF | T!['}'] => p.error("expected an item"),
-        _ => p.err_and_bump("expected an item"),
+        EOF | T!['}'] => p.error("invalid rule body"),
+        _ => p.err_and_bump("expected an import statement, include statement or a rule"),
     }
 }
 

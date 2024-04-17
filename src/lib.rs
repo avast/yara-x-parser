@@ -2,18 +2,17 @@
 /// It should provide also token for whitespaces
 /// as we want full fidelity and error resilience.;
 use crate::syntax::{
-    syntax_error::SyntaxError, syntax_node::SyntaxNode, text_token_source::TextTokenSource,
-    text_tree_sink::TextTreeSink,
+    syntax_error::SyntaxError, text_token_source::TextTokenSource, text_tree_sink::TextTreeSink,
 };
 
 pub use crate::parser::SyntaxKind;
 pub use crate::syntax::ast::*;
-pub use crate::syntax::syntax_node::{SyntaxToken, YARALanguage};
+pub use crate::syntax::syntax_node::{SyntaxNode, SyntaxToken, YARALanguage};
+pub use crate::syntax::Parse;
 pub use crate::syntax::SourceFile;
+pub use rowan_test::{NodeOrToken, WalkEvent};
 
 // use only for tests
-#[cfg(test)]
-use rowan_test::{NodeOrToken, WalkEvent};
 #[cfg(test)]
 use std::fs;
 #[cfg(test)]
@@ -269,11 +268,12 @@ fn api_walktrough() {
 
         // There are some errors
         assert!(!parse_struct.errors().is_empty());
-        assert!(parse_struct.errors().len() == 4);
-        assert!(parse_struct.errors()[0].to_string() == "expected a variable");
+        assert!(parse_struct.errors().len() == 6);
         assert!(
-            parse_struct.errors()[1].to_string() == "expected meta, strings or condition keyword"
+            parse_struct.errors()[0].to_string()
+                == "expected a new pattern statement or pattern modifier"
         );
+        assert!(parse_struct.errors()[3].to_string() == "invalid yara expression");
 
         // We still have the AST and we can traverse it
         let ast = parse_struct.tree();
@@ -308,13 +308,13 @@ fn api_walktrough() {
         }
         // We can also search a token that produced the error
         // Even though it produces range, ParseErrors only supports text offsets
-        assert_eq!(parse_struct.errors()[1].range(), TextRange::new(173.into(), 173.into()));
+        assert_eq!(parse_struct.errors()[3].range(), TextRange::new(173.into(), 173.into()));
 
         // But luckily we can obtain the token at the offset
         // and from it we can get both its text and length
         let tkn = ast
             .syntax()
-            .token_at_offset(parse_struct.errors()[1].range().start())
+            .token_at_offset(parse_struct.errors()[3].range().start())
             .right_biased()
             .unwrap();
 
