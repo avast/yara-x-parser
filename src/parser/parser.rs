@@ -182,6 +182,7 @@ impl Marker {
     }
 }
 
+#[allow(dead_code)]
 pub(crate) struct CompletedMarker {
     pos: u32,
     kind: SyntaxKind,
@@ -219,6 +220,7 @@ impl CompletedMarker {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn kind(&self) -> SyntaxKind {
         self.kind
     }

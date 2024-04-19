@@ -321,6 +321,7 @@ pub(super) fn condition_body(p: &mut Parser) {
     m.complete(p, EXPRESSION_STMT);
 }
 
+#[allow(dead_code)]
 enum Associativity {
     Left,
     Right,

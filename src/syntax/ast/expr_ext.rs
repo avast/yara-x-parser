@@ -7,7 +7,7 @@ use crate::{
     syntax::ast::{
         self,
         operators::{BinaryOp, BoolTermExprOp, ExprOp, LogicOp},
-        support, AstNode, AstToken,
+        support, AstNode,
     },
     SyntaxToken, T,
 };

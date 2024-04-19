@@ -57,6 +57,7 @@ impl<T> Clone for Parse<T> {
 }
 
 impl<T> Parse<T> {
+    #[allow(dead_code)]
     fn new(green: GreenNode, errors: Vec<SyntaxError>) -> Parse<T> {
         Parse { green, errors: Arc::new(errors), _ty: PhantomData }
     }

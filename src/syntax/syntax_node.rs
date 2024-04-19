@@ -29,9 +29,11 @@ impl Language for YARALanguage {
 
 pub type SyntaxNode = rowan_test::SyntaxNode<YARALanguage>;
 pub type SyntaxToken = rowan_test::SyntaxToken<YARALanguage>;
+#[allow(dead_code)]
 pub type SyntaxElement = rowan_test::SyntaxElement<YARALanguage>;
 pub type SyntaxNodeChildren = rowan_test::SyntaxNodeChildren<YARALanguage>;
 pub type SyntaxElementChildren = rowan_test::SyntaxElementChildren<YARALanguage>;
+#[allow(dead_code)]
 pub type PreorderWithTokens = rowan_test::api::PreorderWithTokens<YARALanguage>;
 
 #[derive(Default)]
