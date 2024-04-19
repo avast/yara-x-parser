@@ -18,10 +18,12 @@ pub enum YARALanguage {}
 impl Language for YARALanguage {
     type Kind = SyntaxKind;
 
+    /// Convert from raw kind to SyntaxKind
     fn kind_from_raw(raw: rowan_test::SyntaxKind) -> SyntaxKind {
         SyntaxKind::from(raw.0)
     }
 
+    /// Convert from SyntaxKind to raw kind
     fn kind_to_raw(kind: SyntaxKind) -> rowan_test::SyntaxKind {
         rowan_test::SyntaxKind(kind.into())
     }
@@ -43,25 +45,30 @@ pub struct SyntaxTreeBuilder {
 }
 
 impl SyntaxTreeBuilder {
+    /// Finish building the tree and return the result as a pair of GreenNode and list of errors
     pub(crate) fn finish_raw(self) -> (GreenNode, Vec<SyntaxError>) {
         let green = self.inner.finish();
         (green, self.errors)
     }
 
+    /// Create a token
     pub fn token(&mut self, kind: SyntaxKind, text: &str) {
         let kind = YARALanguage::kind_to_raw(kind);
         self.inner.token(kind, text)
     }
 
+    /// Start a new node
     pub fn start_node(&mut self, kind: SyntaxKind) {
         let kind = YARALanguage::kind_to_raw(kind);
         self.inner.start_node(kind)
     }
 
+    /// Finish the current node
     pub fn finish_node(&mut self) {
         self.inner.finish_node()
     }
 
+    /// Add a new syntax error to the list of errors
     pub fn error(&mut self, error: parser::ParseError, text_pos: TextSize) {
         self.errors.push(SyntaxError::new_at_offset(error.0, text_pos))
     }

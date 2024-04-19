@@ -1,12 +1,12 @@
+// Example of YARA rule for testing purposes
+
 import "macho"
 include "test"
-//Global comment
 
 //Rule comment
 rule test : bla test
 {
 	//Rule block comment
-
 	meta:
 		author = "Author"
 		description = 20

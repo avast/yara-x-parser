@@ -1,5 +1,6 @@
 use super::*;
 
+// Pattern modifiers
 const PATTERN_MODIFIERS_SET: TokenSet = TokenSet::new(&[
     T![ascii],
     T![wide],
@@ -28,8 +29,8 @@ pub(crate) fn block_expr(p: &mut Parser) {
 }
 
 /// Parse a rule body
-/// A rule body consists of `strings` and `condition` blocks
-/// `strings` part is optional but condition is required
+/// A rule body consists of `meta`, `strings` and `condition` blocks
+/// `strings` or `meta` part is optional but condition is required
 /// but each of them can be defined only once and have to be in order
 pub(super) fn rule_body(p: &mut Parser) {
     let mut has_strings = false;
@@ -69,10 +70,6 @@ pub(super) fn rule_body(p: &mut Parser) {
                 if has_condition {
                     p.err_and_bump("invalid yara expression");
                 } else {
-                    // It did not contain strings or condition in valid form
-                    // but we can still try to parse their body and throw an error for parent
-                    // for now it just looks at next 2 tokens to differenciate between valid strings
-                    // body or condition body. This should probably be adjusted later
                     p.err_and_bump("expected meta, strings or condition keyword");
                 }
             }
@@ -327,7 +324,7 @@ enum Associativity {
     Right,
 }
 
-/// Binding powers of operators for a Pratt parser.
+/// Binding powers of operators in top level (boolean expression) for a Pratt parser.
 fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
         T![and] => (4, T![and], Associativity::Left),
@@ -336,6 +333,7 @@ fn current_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     }
 }
 
+/// Binding powers of operators in second level for a Pratt parser.
 fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
         T![|] => (10, T![|], Associativity::Left),
@@ -353,6 +351,7 @@ fn expr_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     }
 }
 
+/// Binding powers of operators in third level for a Pratt parser.
 fn expr_stmt_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
     match p.current() {
         T![==] => (6, T![==], Associativity::Left),
@@ -379,6 +378,8 @@ fn expr_stmt_op(p: &mut Parser) -> (u8, SyntaxKind, Associativity) {
 /// This is also used to reflect operator precedence and associativity
 /// It is inspired by Pratt parser used in rust-analyter
 /// <https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html>
+///
+/// There are multiple layers of Pratt parser used to parse different levels of expressions
 fn boolean_expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
     let mut lhs = match boolean_term(p) {
@@ -409,6 +410,8 @@ fn boolean_expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMa
     Some(lhs)
 }
 
+/// Parse a boolean term
+/// It can be a boolean literal, variable, defined, for, unary or binary expression
 fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
     let m = p.start();
     match p.current() {
@@ -445,6 +448,7 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
             for_expr(p);
         }
         _ => {
+            // Calculate the length of primary expression
             let mut parentheses_count = 0;
             let mut primary_expr_len = primary_expr_length(p, 0, &mut parentheses_count);
             if parentheses_count != 0 {
@@ -457,6 +461,8 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
                 primary_expr_len += 1;
             }
 
+            // Decide if it is a primary expression, of expression or a statement
+            // If it is a primary expression, we need to check if it is followed by "of" keyword
             if p.at(T!['(']) && primary_expr_len == 0 {
                 p.bump(T!['(']);
                 boolean_expr(p, None, 1);
@@ -476,6 +482,7 @@ fn boolean_term(p: &mut Parser) -> Option<CompletedMarker> {
     Some(cm)
 }
 
+/// Pratt parser for parsing expression statements layer
 fn expr_stmt(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
     let mut lhs = match expr(p, None, bp) {
@@ -504,6 +511,7 @@ fn expr_stmt(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarke
     Some(lhs)
 }
 
+/// Pratt parser for parsing expr layer
 fn expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     let m = m.unwrap_or_else(|| p.start());
     let mut lhs = match term(p) {
@@ -532,6 +540,8 @@ fn expr(p: &mut Parser, m: Option<Marker>, bp: u8) -> Option<CompletedMarker> {
     Some(lhs)
 }
 
+/// Parse a term
+/// It can be a primary expression, indexing expression or function call expression
 fn term(p: &mut Parser) -> Option<CompletedMarker> {
     let m = p.start();
     let pe = primary_expr(p);
@@ -568,6 +578,9 @@ fn term(p: &mut Parser) -> Option<CompletedMarker> {
     Some(cm)
 }
 
+/// Parse a primary expression
+/// It can be a float, int, string, variable count, variable offset, variable length,
+/// filesize, entrypoint, regex pattern, unary expression or identifier
 fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
     let m = p.start();
     match p.current() {
@@ -639,6 +652,7 @@ fn primary_expr(p: &mut Parser) -> Option<CompletedMarker> {
     Some(cm)
 }
 
+/// Parse a variable count expression
 fn variable_count(p: &mut Parser) {
     let m = p.start();
     p.bump(T![variable_count]);
@@ -651,6 +665,7 @@ fn variable_count(p: &mut Parser) {
     m.complete(p, VARIABLE_COUNT);
 }
 
+/// Parse a variable offset expression
 fn variable_offset(p: &mut Parser) {
     let m = p.start();
     p.bump(T![variable_offset]);
@@ -664,6 +679,7 @@ fn variable_offset(p: &mut Parser) {
     m.complete(p, VARIABLE_OFFSET);
 }
 
+/// Parse a variable length expression
 fn variable_length(p: &mut Parser) {
     let m = p.start();
     p.bump(T![variable_length]);
@@ -677,6 +693,7 @@ fn variable_length(p: &mut Parser) {
     m.complete(p, VARIABLE_LENGTH);
 }
 
+/// Parse a range expression
 fn range(p: &mut Parser) {
     let m = p.start();
     p.expect(T!['(']);
@@ -687,6 +704,7 @@ fn range(p: &mut Parser) {
     m.complete(p, RANGE);
 }
 
+/// Parse an of expression
 fn of_expr(p: &mut Parser) {
     let m = p.start();
 
@@ -728,6 +746,7 @@ fn of_expr(p: &mut Parser) {
     m.complete(p, OF_EXPR);
 }
 
+/// Parse a for expression
 fn for_expr(p: &mut Parser) {
     let m = p.start();
     p.expect(T![for]);
@@ -751,6 +770,7 @@ fn for_expr(p: &mut Parser) {
     m.complete(p, FOR_EXPR);
 }
 
+/// Parse a quantifier expression
 fn quantifier(p: &mut Parser) {
     let m = p.start();
     match p.current() {
@@ -773,6 +793,7 @@ fn quantifier(p: &mut Parser) {
     m.complete(p, QUANTIFIER);
 }
 
+/// Parse an iterable expression
 fn iterable(p: &mut Parser) {
     match p.current() {
         T!['('] => {
@@ -801,6 +822,7 @@ fn iterable(p: &mut Parser) {
     }
 }
 
+/// Parse a boolean expression tuple
 fn boolean_expr_tuple(p: &mut Parser) {
     let m = p.start();
     p.expect(T!['(']);
@@ -813,6 +835,7 @@ fn boolean_expr_tuple(p: &mut Parser) {
     m.complete(p, BOOLEAN_EXPR_TUPLE);
 }
 
+/// Parse a pattern identifier tuple
 fn pattern_ident_tupple(p: &mut Parser) {
     let m = p.start();
     p.expect(T!['(']);
@@ -825,6 +848,7 @@ fn pattern_ident_tupple(p: &mut Parser) {
     m.complete(p, PATTERN_IDENT_TUPLE);
 }
 
+/// Parse an identifier tuple
 fn ident_tuple(p: &mut Parser) {
     let m = p.start();
     p.expect(T![identifier]);
@@ -834,6 +858,7 @@ fn ident_tuple(p: &mut Parser) {
     }
 }
 
+/// Parse an ident list expression
 fn ident_list(p: &mut Parser) {
     let m = p.start();
     p.expect(T![,]);
@@ -841,6 +866,7 @@ fn ident_list(p: &mut Parser) {
     m.complete(p, IDENTIFIER_NODE);
 }
 
+/// Parse a variable wildcard expression
 fn variable_wildcard(p: &mut Parser) {
     let m = p.start();
     p.expect(T![variable]);
@@ -850,6 +876,9 @@ fn variable_wildcard(p: &mut Parser) {
     m.complete(p, VARIABLE_WILDCARD);
 }
 
+/// Calculate the length of primary expression
+/// It is used to decide if the expression is a primary expression, of expression or a statement
+/// and to determine if primary expression is in valid form
 fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) -> usize {
     match p.nth(len) {
         T![float_lit] | T![int_lit] | T![string_lit] | T![filesize] | T![entrypoint] => len + 1,
@@ -870,6 +899,7 @@ fn primary_expr_length(p: &mut Parser, len: usize, parentheses_count: &mut i32) 
     }
 }
 
+/// Calculate the length of range expression
 fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
     // Check if the pattern starts with `/` and ends with `/`
     if p.nth(len) == T![/] && p.nth(len + 1) == REGEX_LIT && p.nth(len + 2) == T![/] {
@@ -884,6 +914,7 @@ fn regex_pattern_length(p: &mut Parser, mut len: usize) -> usize {
     len
 }
 
+/// Calculate the length of variable count expression
 fn variable_count_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T![in] {
@@ -893,6 +924,7 @@ fn variable_count_length(p: &mut Parser, mut len: usize) -> usize {
     len
 }
 
+/// Calculate the length of range expression
 fn range_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     len = expr_length(p, len, &mut 0);
@@ -901,6 +933,7 @@ fn range_length(p: &mut Parser, mut len: usize) -> usize {
     len + 1
 }
 
+/// Calculate the length of variable offset expression
 fn variable_offset_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
@@ -911,6 +944,7 @@ fn variable_offset_length(p: &mut Parser, mut len: usize) -> usize {
     len
 }
 
+/// Calculate the length of variable length expression
 fn variable_length_length(p: &mut Parser, mut len: usize) -> usize {
     len += 1;
     if p.nth(len) == T!['['] {
@@ -921,6 +955,7 @@ fn variable_length_length(p: &mut Parser, mut len: usize) -> usize {
     len
 }
 
+/// Calculate the length of term expression
 fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
     len = primary_expr_length(p, len, parentheses_count);
 
@@ -948,6 +983,7 @@ fn term_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> u
     }
 }
 
+/// Calculate the length of expression
 fn expr_length(p: &mut Parser, mut len: usize, parentheses_count: &mut i32) -> usize {
     // Check if the expression starts with `(`
     if p.nth(len) == T!['('] {

@@ -8,6 +8,7 @@ pub(crate) struct KindsSrc<'a> {
     pub(crate) nodes: &'a [&'a str],
 }
 
+// Definition of tokens and nodes for AST generation
 pub(crate) const KINDS_SRC: KindsSrc = KindsSrc {
     punct: &[
         (":", "COLON"),

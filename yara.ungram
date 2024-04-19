@@ -1,3 +1,11 @@
+// This is the ungrammar for the YARA language
+// It follows the syntax of the YARA language as described in the official documentation
+// and PEST grammar used by current YARA-X parser: https://github.com/VirusTotal/yara-x/blob/main/parser/src/parser/grammar.pest
+// It is inspired by ungrammar for Rust Language: https://github.com/rust-analyzer/ungrammar/blob/master/rust.ungram
+// Some aspects are modified in order to provide easier integration to YARA-X or usage in language server
+// This grammar is only used for creation of typed layer on top of the AST. It does not have to be unambiguous,
+// as the parsing is not following this structure.
+
 SourceFile = 
     ImportStmt* | IncludeStmt* |Rule*
 

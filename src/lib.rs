@@ -1,6 +1,9 @@
-/// This library is used to create a parser for YARA language
-/// It should provide also token for whitespaces
-/// as we want full fidelity and error resilience.;
+//! This library is used to create a parser for YARA language
+//!  It should provide also token for whitespaces
+//! as we want full fidelity and error resilience.;
+//! It is inspired by the Swift's libSyntax and the Rust's rowan.
+//!
+//! author: Tomáš Ďuriš
 use crate::syntax::{
     syntax_error::SyntaxError, text_token_source::TextTokenSource, text_tree_sink::TextTreeSink,
 };
@@ -46,7 +49,6 @@ fn api_walktrough() {
     // SourceFile is the main entry point for any given file
     // it contains a `parse` method which returns a `Parse` struct
     // that contains AST and list of errors
-
     let parse_struct = SourceFile::parse(source_code);
     assert!(parse_struct.errors().is_empty());
 
@@ -134,43 +136,49 @@ fn api_walktrough() {
         }
 
         // For the condition part, we can similarly get its body which is
-        // an `BOOLEAN_EXPR` node
+        // an `EXPRESSION` node
         let condition = block.condition().unwrap();
         let expression_stmt = condition.expression_stmt().unwrap();
 
         let expression = expression_stmt.expression().unwrap();
 
+        // Expression can be either a `BOOLEAN_EXPR` or `BOOLEAN_TERM`
+        // In this example we have `BOOLEAN_EXPR`
         let boolean_expr = match &expression {
             Expression::BooleanExpr(e) => e,
             _ => unreachable!(),
         };
 
-        // Now we can obtain `lhs`, `rhs` or `op` nodes for top level expression
+        // Now we can obtain `lhs`, `rhs` or `op` nodes for top level boolean expression
         // in this case we have `OR` operator
         assert!(boolean_expr.op_token().is_some());
         assert!(boolean_expr.op_token().unwrap().kind() == SyntaxKind::OR_KW);
 
-        // On the left hand side we have a LITERAL token
+        // On the left hand side we have a `BOOLEAN_TERM` node
         let lhs = boolean_expr.lhs().unwrap();
         let lhs_literal = match &lhs {
             Expression::BooleanTerm(l) => l,
             _ => unreachable!(),
         };
+        // It contains a `VARIABLE` node
+        // which is essentially a variable token $a
         assert!(lhs_literal.variable_token().unwrap().kind() == SyntaxKind::VARIABLE);
         assert_eq!(lhs_literal.variable_token().unwrap().text(), "$a");
 
-        // On the right hand side we have a `BOOLEAN_EXPT` node
+        // On the right hand side we have a `BOOLEAN_EXPR` node
         let rhs = boolean_expr.rhs().unwrap();
-
-        // It contains prefix expression which is essentially a `BOOLEAN_TERM` node
-        // in this case we have `NOT` node and nested `VARIABLE` node
         let rhs_literal = match &rhs {
             Expression::BooleanExpr(r) => r,
             _ => unreachable!(),
         };
 
+        // As it is again an expression we can obtain the operator,
+        // left hand side and right hand side
         let lhs_of_rhs = rhs_literal.lhs().unwrap();
 
+        // In this case we only have a left hand side
+        // which is a `BOOLEAN_TERM` node and contains a `NOT` operator
+        // followed by a `BOOLEAN_TERM` node with a `BOOL_LIT` token
         let lhs = match &lhs_of_rhs {
             Expression::BooleanTerm(l) => l,
             _ => unreachable!(),
@@ -191,6 +199,7 @@ fn api_walktrough() {
 
         // Syntax node have also bunch of methods
         // for example we can obtain the parent node
+        // Parent node is whole condition block
         let parent = expression_stmt_syntax.parent().unwrap();
         assert_eq!(parent.kind(), SyntaxKind::CONDITION);
         assert_eq!(parent.text().to_string(), "condition:\n                $a or not true");
@@ -267,6 +276,9 @@ fn api_walktrough() {
         let parse_struct = SourceFile::parse(source_code);
 
         // There are some errors
+        // First three are for invalid pattern declaration in strings section
+        // The rest is for an invalid part of a condition
+        //(nor operator is invalid so also everything after it in condition block)
         assert!(!parse_struct.errors().is_empty());
         assert!(parse_struct.errors().len() == 6);
         assert!(
@@ -293,7 +305,7 @@ fn api_walktrough() {
             };
 
             // The operator is wrong, therefore we only have
-            // a variable
+            // a variable in expression statement
             assert!(boolean_term.variable_token().unwrap().kind() == SyntaxKind::VARIABLE);
 
             // and we can obtain the error token
@@ -304,6 +316,7 @@ fn api_walktrough() {
                 .unwrap();
 
             assert!(error_token.kind() == SyntaxKind::ERROR);
+            // it contains the token for wrong operator inside (as an identifier)
             assert!(error_token.as_node().unwrap().text() == "nor");
         }
         // We can also search a token that produced the error

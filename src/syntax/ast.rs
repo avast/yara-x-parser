@@ -85,6 +85,7 @@ impl<N: AstNode> Iterator for AstChildren<N> {
     }
 }
 
+/// Helper module to work with AST nodes and obtaining their children
 pub mod support {
     use super::{AstChildren, AstNode, SyntaxKind, SyntaxNode, SyntaxToken};
 

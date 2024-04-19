@@ -25,6 +25,7 @@ enum State {
 }
 
 impl<'a> TreeSink for TextTreeSink<'a> {
+    /// Attach a token to the current node
     fn token(&mut self, kind: SyntaxKind, n_tokens: u8) {
         match mem::replace(&mut self.state, State::Normal) {
             State::PendingStart => unreachable!(),
@@ -42,6 +43,8 @@ impl<'a> TreeSink for TextTreeSink<'a> {
         self.do_token(kind, len, n_tokens);
     }
 
+    /// Start a new node
+    /// This method also handles attaching trivia to the node
     fn start_node(&mut self, kind: SyntaxKind) {
         match mem::replace(&mut self.state, State::Normal) {
             State::PendingStart => {
@@ -74,6 +77,7 @@ impl<'a> TreeSink for TextTreeSink<'a> {
         self.eat_n_trivias(n_attached_trivias);
     }
 
+    /// Finish the current node
     fn finish_node(&mut self) {
         match mem::replace(&mut self.state, State::PendingFinish) {
             State::PendingStart => unreachable!(),
@@ -113,6 +117,7 @@ impl<'a> TextTreeSink<'a> {
         self.inner.finish_raw()
     }
 
+    /// Consumes trivias until the next non-trivia token
     fn eat_trivias(&mut self) {
         while let Some(&token) = self.tokens.get(self.token_pos) {
             if !token.kind.is_trivia() {
@@ -122,6 +127,7 @@ impl<'a> TextTreeSink<'a> {
         }
     }
 
+    /// Consumes n trivias
     fn eat_n_trivias(&mut self, n: usize) {
         for _ in 0..n {
             let token = self.tokens[self.token_pos];
@@ -130,6 +136,7 @@ impl<'a> TextTreeSink<'a> {
         }
     }
 
+    /// Consumes a token and attaches it to the current node
     fn do_token(&mut self, kind: SyntaxKind, len: TextSize, n_tokens: usize) {
         let range = TextRange::at(self.text_pos, len);
         let text = &self.text[range];
@@ -139,6 +146,9 @@ impl<'a> TextTreeSink<'a> {
     }
 }
 
+/// Returns the number of attached trivias for the given node kind
+/// Trivias are attached to the node if they are directly before the node
+/// and there is no empty line between the trivia and the node
 fn n_attached_trivias<'a>(
     kind: SyntaxKind,
     trivias: impl Iterator<Item = (SyntaxKind, &'a str)>,

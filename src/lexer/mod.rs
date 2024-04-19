@@ -26,6 +26,7 @@ impl fmt::Display for LexingError {
     }
 }
 
+/// Root lexer for YARA language.
 #[derive(Logos, Debug, PartialEq)]
 #[logos(error = LexingError)]
 pub(crate) enum LogosToken {
@@ -211,6 +212,7 @@ pub(crate) enum LogosToken {
     MultilineComment,
 }
 
+/// Lexer for hexadecimal string.
 #[derive(Logos, Debug, PartialEq)]
 #[logos(error = LexingError)]
 pub(crate) enum HexLogosToken {
@@ -267,9 +269,11 @@ pub fn tokenize(text: &str) -> (Vec<Token>, Vec<SyntaxError>) {
         let token_range = TextRange::at(offset.try_into().unwrap(), token_len);
         let syntaxkind = match token {
             Ok(token) => {
+                // Handle hexadecimal string token separately
                 if let LogosToken::HexString(hex_string) = token {
                     process_hex_string_token(hex_string, &mut tokens, &mut errors, &mut offset);
                     continue;
+                // Handle regex string token separately
                 } else if let LogosToken::Regexp(regex) = token {
                     let detailed_tokens = process_regex_string_token(regex);
                     for (kind, len) in detailed_tokens {
@@ -384,6 +388,9 @@ fn logos_tokenkind_to_syntaxkind(token: LogosToken) -> SyntaxKind {
     }
 }
 
+/// Process regex string token to generate detailed tokens
+/// This is the representation that YARA-X uses, therefore for an
+/// easier integration with YARA-X, we need to keep this representation
 fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
     let mut tokens = Vec::new();
     let mut chars = regex.chars().peekable();
@@ -419,7 +426,9 @@ fn process_regex_string_token(regex: String) -> Vec<(SyntaxKind, usize)> {
     tokens
 }
 
-// Process hexadecimal string token to generate detailed tokens
+/// Process hexadecimal string token to generate detailed tokens
+/// This is the representation that YARA-X uses, therefore for an
+/// easier integration with YARA-X, we need to keep this representation
 fn process_hex_string_token(
     hex_string: String,
     tokens: &mut Vec<Token>,

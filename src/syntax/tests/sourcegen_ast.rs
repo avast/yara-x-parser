@@ -3,6 +3,7 @@
 //! It uses `ungrammar` crate to parse `yara.ungram` file and generate AST
 //! It is not a grammar, it does not validate anything. Just generates methods
 //! and types for AST layer
+//! It is inspired by rust-analyzer's code generation using ungrammar
 
 use std::{collections::HashSet, fmt::Write};
 
@@ -634,7 +635,6 @@ fn lower_comma_list(
     true
 }
 
-//TODO: possible deduplication and enum extraction and struct traits, so far not needed
 fn extract_struct_traits(ast: &mut AstSrc) {
     let nodes_with_comments = ["SourceFile", "Rule", "BlockExpr", "Strings", "Condition"];
 
