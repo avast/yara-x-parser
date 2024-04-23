@@ -98,13 +98,13 @@ pub(crate) enum LogosToken {
     #[regex(r"/(([^\\/\n])|(\\.))+/[a-zA-Z0-9]*", |lex| lex.slice().to_string())]
     Regexp(String),
     // Hexadecimal string
-    #[regex(r"=\s\{(([\s0-9A-Fa-f?~()|\[\] -]|//.*)*)\}", |lex| lex.slice().to_string())]
+    #[regex(r"=[ \n]{0,10}\{(([\s0-9A-Fa-f?~()|\[\] -]|//.*)*)\}", |lex| lex.slice().to_string())]
     HexString(String),
     // Strings
     #[regex(r#""(([^"\\]|\\x[0-9a-fA-F]{2}|\\[trn"\\]|\\.)*)""#, |lex| lex.slice().to_string())]
     String(String),
     // Identifiers
-    #[regex(r"[a-zA-Z][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
+    #[regex(r"[a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
     Identifier(String),
     // Variables
     #[regex(r"\$[a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
@@ -236,7 +236,7 @@ pub(crate) enum HexLogosToken {
     Whitespace,
     #[regex(r"~?[0-9a-fA-F?]{2}")]
     Lit,
-    #[regex(r"\[\-?[0-9]*\-?[0-9]*\]")]
+    #[regex(r"\[\-?[0-9]* ?\-? ?[0-9]*\]")]
     Range,
     #[regex(r"//.*")]
     Comment,
